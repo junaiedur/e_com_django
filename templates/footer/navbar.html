@@ -27,7 +27,7 @@
 				<div class="col-lg-2 col-md-3 col-6">
 					<!-- akn amra nicher line a {% url 'core:home' %} ai line a ('core:home') use koreci karon amra alada akta app ba core namok app a amra (home) function use koreci ai jnno ('apps name:function name' ) use korte hoitece  -->
 					<a href="{% url 'core:home' %}" class="brand-wrap"> 
-						<img class="logo" src="{% static './images/logo.png' %}">
+						<img class="logo" src="{% static './images/mart.jpg' %}">
 					</a>
 				</div>
 				<div class="col-lg col-sm col-md col-6 flex-grow-0">
@@ -47,9 +47,9 @@
 				<a href="{% url 'store' %}" class="btn btn-outline-primary">Store</a>
 			</div>
 			<div class="col-lg  col-md-6 col-sm-12 col">
-				<form action="#" class="search">
+				<form action="{% url 'search' %}" class="search" method='GET'>
 					<div class="input-group w-100">
-						<input type="text" class="form-control" style="width:60%;" placeholder="Search">
+						<input type="text" class="form-control" style="width:60%;" placeholder="Search", name="keyword">
 						<div class="input-group-append">
 							<button class="btn btn-primary" type="submit">
 								<i class="fa fa-search"></i>
@@ -67,9 +67,9 @@
 							<a href="{% static './register.html' %}"> Register</a>
 						</div>
 					</div>
-					<a href="{% static './cart.html' %}" class="widget-header pl-3 ml-3">
+					<a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
 					<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-					<span class="badge badge-pill badge-danger notify">0</span>
+					<span class="badge badge-pill badge-danger notify">{{ cart_count }}</span>
 					</a>
 				</div>
 
