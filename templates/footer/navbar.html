@@ -40,7 +40,6 @@
 							{% for category in links %}
 							  <a class="dropdown-item" href="{{ category.get_url }}">{{ category.category_name }}</a>
 							{% endfor %}
-							
 						</div>
 					</div>
 				</div>
@@ -48,6 +47,7 @@
 			</div>
 			<div class="col-lg  col-md-6 col-sm-12 col">
 				<form action="{% url 'search' %}" class="search" method='GET'>
+					{% csrf_token %}
 					<div class="input-group w-100">
 						<input type="text" class="form-control" style="width:60%;" placeholder="Search", name="keyword">
 						<div class="input-group-append">
@@ -60,13 +60,23 @@
 			</div>
 			<div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
 				<div class="d-flex justify-content-end mb-3 mb-lg-0">
-					<div class="widget-header">
-						<small class="title text-muted">Welcome guest!></small>
+					{% if user.id is not None %}
+					  <div class="widget-header">
+						<small class="title text-muted"> Welcome guest!</small>
 						<div>
-							<a href="{% static './signin.html' %}">Sign in</a> <span class="dark-trans"> | </span>
-							<a href="{% static './register.html' %}"> Register</a>
+							<a href="{% url 'login' %}">Sign in</a> <span class="dark-trans"></span>
+							<a href="{% url 'register' %}"> Register</a>
 						</div>
-					</div>
+					  </div>
+					  {% else %}
+					  <div class="widget-header">
+						<small class="title text-muted">Welcome {{ user.first_name }} </small>
+						<div>
+							<a href="{% url 'dashboard' %}">Dashboard</a> <span class="dark-trans"></span>
+							<a href="{% url 'logout' %}"> Logout </a>
+						</div>
+					  </div>
+					{% endif %}
 					<a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
 					<div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
 					<span class="badge badge-pill badge-danger notify">{{ cart_count }}</span>

@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .models import Cart, CartItem
 from store.models import Product , Variation
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
 
 # Create your views here.
 def _cart_id(request):
@@ -33,8 +34,9 @@ def add_cart(request, product_id):
         cart = Cart.objects.create(
             cart_id = _cart_id(request)
         )
-
     cart.save()
+    #msg
+    messages.success(request, "product added successfully")
     is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart)
     if is_cart_item_exists:
         cart_item = CartItem.objects.filter(product=product , cart=cart)

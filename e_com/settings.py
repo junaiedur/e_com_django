@@ -137,10 +137,45 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
-
 # MEDIA_URL = '/images/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+# massage alart
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR:"danger",
+}
+
+#configration:
+# EMAIL_BACKEND = 'django.core.mail.backends.smpt.EmailBackend'
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'sadikislam410@gmail.com'
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_PORT = 587
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#changes
+mail = os.environ.get("MAIL")
+mail_pass = os.environ.get("PASSWORD")
+#configration:
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = "sadikislam410@gmail.com"
+EMAIL_HOST_USER = mail
+EMAIL_HOST_PASSWORD = mail_pass
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = mail
+
+LOGIN_REDIRECT_URL = "/"
+#changes
+
+
+
+#
+from dotenv import load_dotenv
+load_dotenv()
+#
