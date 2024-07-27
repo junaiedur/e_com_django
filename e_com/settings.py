@@ -148,34 +148,16 @@ MESSAGE_TAGS = {
     messages.ERROR:"danger",
 }
 
-#configration:
-# EMAIL_BACKEND = 'django.core.mail.backends.smpt.EmailBackend'
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'sadikislam410@gmail.com'
-# EMAIL_HOST_PASSWORD = ''
-# EMAIL_PORT = 587
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # Port 587 is used for TLS
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'sadikislam410@gmail.com'  # Your Gmail email address
+EMAIL_HOST_PASSWORD = 'mwen usnp gcjj szlg' #Use the App Password generated whice create in google account 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL = '/'
 
-#changes
-mail = os.environ.get("MAIL")
-mail_pass = os.environ.get("PASSWORD")
-#configration:
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_USE_TLS = True
-EMAIL_HOST = "sadikislam410@gmail.com"
-EMAIL_HOST_USER = mail
-EMAIL_HOST_PASSWORD = mail_pass
-EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = mail
-
-LOGIN_REDIRECT_URL = "/"
-#changes
-
-
-
-#
-from dotenv import load_dotenv
-load_dotenv()
-#
+#castomize admin pannel:
