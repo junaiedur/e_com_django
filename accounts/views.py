@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
 from .forms import RegistationForm
 from .models import Account
@@ -19,6 +19,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from .tokens import account_activation_token
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+import requests
 
 # Create your views here.
 #customize:
@@ -114,8 +115,6 @@ def login(request):
         else:
             messages.error(request, 'Invalid login credentials')
             return redirect('login')
-            
-
     return render(request, 'account/login.html')
 
 @login_required(login_url = 'login')
