@@ -139,7 +139,7 @@ def add_cart(request, product_id):
         return redirect('cart')
 
 #remove from cart
-def remove_from_cart(request,product_id, cart_item_id):
+def remove_from_cart(request, product_id, cart_item_id):
     product = get_object_or_404(Product, id=product_id)
     try:
         if request.user.is_authenticated:
@@ -203,8 +203,11 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     try:
         vat = 0
         total_price = 0
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
@@ -223,4 +226,4 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'total_price' : total_price,
         # 'delevary' : delevary,
     }
-    return render(request, 'cart/checkout.html')
+    return render(request, 'cart/checkout.html',context)

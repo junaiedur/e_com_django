@@ -110,7 +110,16 @@ def login(request):
                 pass
             auth.login(request, user)
             messages.success(request, 'You are now logged in.')
-            return redirect('dashboard')
+            
+            url = request.META.get('HTTP_REFERER') # HTTP_REFERER will do is it will just grap the previous url from where you came
+            try:
+                query = requests.utils.urlparse(url).query
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                return redirect('dashboard')
             # return HttpResponseRedirect(reverse('home'))
         else:
             messages.error(request, 'Invalid login credentials')
