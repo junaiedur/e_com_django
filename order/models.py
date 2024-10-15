@@ -31,11 +31,10 @@ class Order(models.Model):
     last_name = models.CharField(max_length=50)
     phone = models.CharField(max_length=15)
     email = models.EmailField(max_length=50)
-    address_line_1 = models.CharField(max_length=100)  # increased length
-    address_line_2 = models.CharField(max_length=100, blank=True)  # increased length
-    country = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
+    division = models.CharField(max_length=50)
+    area = models.CharField(max_length=50)
+    full_address = models.CharField(max_length=200)  # increased length
     order_note = models.CharField(max_length=100, blank=True)
     order_total = models.FloatField()
     tax = models.FloatField()
