@@ -1,12 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from carts.models import Cart, CartItem
 from .forms import OrderForm
+from .models import Order, Payment , OrderProduct
 import datetime
 # Create your views here.
+
+#payment method Start:
+def payments(request, total=0, quantity=0 ):
+    return render(request, 'payment/payment.html')
+#payments method end
+
+
+
 def place_order(request, total=0, quantity=0):
     current_user = request.user
-    cart_item = CartItem.object.filter(user=current_user)
-    cart_count = cart_item.count()
+    cart_items = CartItem.objects.filter(user=current_user)
+    cart_count = cart_items.count()
     if cart_count <= 0:
 
         return redirect('store')
@@ -27,16 +36,19 @@ def place_order(request, total=0, quantity=0):
             #store all the billing information in order
             # amra checkout.html a ja ja nibo jeguli akn a dibo
             data = Order()
-            data.first_name = form.cleaned_data('first_name')
-            data.last_name = form.cleaned_data('last_name')
-            data.phone = form.cleaned_data('phone')
-            data.email =form.cleaned_data('email')
-            data.full_address = form.cleaned_data('full_address')
-            data.city = form.cleaned_data('city')
-            data.division = form.cleaned_data('division')
-            data.area = form.cleaned_data('area')
-            data.order_note = form.cleaned_data('order_note')
-            data.order_total = total_price.cleaned_data('order_total')
+            data.user= current_user
+            data.first_name = form.cleaned_data['first_name']
+            data.last_name = form.cleaned_data['last_name']
+            data.phone = form.cleaned_data['phone']
+            data.email =form.cleaned_data['email']
+            data.address_line_1 = form.cleaned_data['address_line_1']
+            data.address_line_2 = form.cleaned_data['address_line_2']
+            data.country = form.cleaned_data['country']
+            data.state = form.cleaned_data['state']
+            data.city = form.cleaned_data['city']
+            data.order_note = form.cleaned_data['order_note']
+            # data.order_total = total_price.cleaned_data['order_total']
+            data.order_total = total_price
             data.tax = vat
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
@@ -51,7 +63,22 @@ def place_order(request, total=0, quantity=0):
 
             data.order_number = order_number
             data.save()
-            return redirect('checkout')
+
+
+            # Start Pyament Method
+            # end payment method
+            order = Order.objects.get(user=current_user, is_ordered=False,order_number=order_number)
+            context = { #payment method kete dileo ai line takbe kintu
+                'order' : order, #payment method kete dileo ai line takbe kintu
+                'cart_items' : cart_items, #payment method kete dileo ai line takbe kintu
+                'total' : total, #payment method kete dileo ai line takbe kintu
+                'vat' : vat, #payment method kete dileo ai line takbe kintu
+                'total_price' : total_price #payment method kete dileo ai line takbe kintu
+            }
+            #end payment method
+            
+            
+            return render(request, 'payment/payment.html', context)
         
         else:
             return redirect('checkout')

@@ -8,7 +8,7 @@ class PaymentAdmin(admin.ModelAdmin):
     list_editable = ('payment_id',)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display =('user','first_name', 'payment', 'email', 'full_address','status','is_ordered','updated_at')
+    list_display =('order_number','full_name','payment', 'email', 'status','is_ordered','updated_at')
     list_editable = ('is_ordered',)
     # list_filter =['product', 'variation_value', 'created_date']
 
