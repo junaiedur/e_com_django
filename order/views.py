@@ -3,6 +3,9 @@ from carts.models import Cart, CartItem
 from .forms import OrderForm
 from .models import Order, Payment , OrderProduct
 import datetime
+from Coupon.forms import ApplyCouponForm
+from Coupon.models import Coupon
+from django.utils import timezone
 # Create your views here.
 
 #payment method Start:
@@ -17,7 +20,6 @@ def place_order(request, total=0, quantity=0):
     cart_items = CartItem.objects.filter(user=current_user)
     cart_count = cart_items.count()
     if cart_count <= 0:
-
         return redirect('store')
 
     #tax ar jnno kicu code likhbo:
@@ -73,7 +75,7 @@ def place_order(request, total=0, quantity=0):
                 'cart_items' : cart_items, #payment method kete dileo ai line takbe kintu
                 'total' : total, #payment method kete dileo ai line takbe kintu
                 'vat' : vat, #payment method kete dileo ai line takbe kintu
-                'total_price' : total_price #payment method kete dileo ai line takbe kintu
+                'total_price' : total_price, #payment method kete dileo ai line takbe kintu
             }
             #end payment method
             
