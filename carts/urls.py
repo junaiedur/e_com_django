@@ -11,5 +11,6 @@ urlpatterns = [
     
     #checkout page desing:
     path('checkout/',views.checkout, name='checkout'),
+    path('apply_coupon/',views.checkout, name ='apply_coupon'),
 
 ]

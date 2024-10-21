@@ -88,29 +88,55 @@
             <aside class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
+                        <!-- <form method="POST" action="{% url 'cart' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="coupon_code">Coupon Code:</label>
+                                <input type="text" name="coupon_code" class="form-control" placeholder="Enter your coupon">
+                                <button type="submit" class="btn btn-primary mt-2">Apply Coupon</button>
+                            </div>
+                        </form> -->
                         <dl class="dlist-align">
                             <dt>Total price:</dt>
-                            <dd class="text-right">{{total}} Tk</dd>
-                        </dl>
-                        <dl class="dlist-align">
-                            <dt>Vat:</dt>
-                            <dd class="text-right">{{vat}}Tk</dd>
+                            <dd class="text-right">{{ total }} Tk</dd>
                         </dl>
                         <!-- <dl class="dlist-align">
-                            <dt>Delivary Charge:</dt>
-                            <dd class="text-right">{{delevary}}Tk</dd>
+                            <dt>Discount:</dt>
+                            <dd class="text-right">{{ discount_amount }} Tk</dd>
                         </dl> -->
                         <dl class="dlist-align">
-                            <dt>Total:</dt>
-                            <dd class="text-right text-dark b"><strong>{{total_price}}Tk</strong></dd>
+                            <dt>Vat:</dt>
+                            <dd class="text-right">{{ vat }} Tk</dd>
                         </dl>
+                        <dl class="dlist-align">
+                            <dt>Discount:</dt>
+                            <dd class="text-right">{{ discount|floatformat:2 }} Tk</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Total:</dt>
+                            <dd class="text-right text-dark b"><strong>{{ total_price }} Tk</strong></dd>
+                        </dl>
+                        
+                        <!-- <dl class="dlist-align">
+                            <dt>Total Price:</dt>
+                            <dd class="text-right text-dark b"><strong>{{ totals|floatformat:2 }} Tk</strong></dd>
+                        </dl> -->
+                        <!-- <form action="{% url 'apply_coupon' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="coupon_code">Have a coupon?</label>
+                                <input type="text" name="coupon_code" class="form-control" placeholder="Enter coupon code">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Apply Coupon</button>
+                        </form> -->
+                        
                         <hr>
                         <p class="text-center mb-3">
-                            <img src="'{% static './images/misc/payments.png' %}'" height="26">
+                            <img src="{% static 'images/misc/payments.png' %}" height="26">
                         </p>
-                        <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
+                        <a href="{% url 'checkout' %}" class="btn btn-primary btn-block">Checkout</a>
                         <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
-                    </div>  <!-- card-body.// -->
+                    </div> <!-- card-body.// -->
                 </div> <!-- card.// -->
             </aside>
           </div>

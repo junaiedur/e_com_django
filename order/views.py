@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect
 from carts.models import Cart, CartItem
 from .forms import OrderForm
-from .models import Order, Payment , OrderProduct
+from .models import Order, Payment, OrderProduct
 import datetime
 from Coupon.forms import ApplyCouponForm
 from Coupon.models import Coupon
 from django.utils import timezone
+import datetime
+from Coupon.forms import ApplyCouponForm
+
+
 # Create your views here.
 
 #payment method Start:
@@ -25,12 +29,32 @@ def place_order(request, total=0, quantity=0):
     #tax ar jnno kicu code likhbo:
     vat = 0
     total_price = 0
+   
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
     vat = (1 * total)/100
     total_price = total + vat # akn a je vat dilam aita ke amra niche ar ai app a models.py a tax hisabe dorci
+ 
+    # Handle coupon application
 
+    # applicable_items = []
+    # if request.method == 'POST':
+    #     code = request.POST.get('coupon_code')
+    #     now = timezone.now()
+
+    #     try:
+    #         coupon = Coupon.objects.get(code=code, active=True, valid_from__lte=now, valid_to__gte=now)
+    #     except Coupon.DoesNotExist:
+    #         coupon = None
+
+    #     if coupon:
+    #         applicable_items = cart_items.filter(product__in=coupon.applicable_products.all())
+    #         if applicable_items.exists():
+    #             for item_product in applicable_items:
+    #                 discount_amount = item_product.product.price * (coupon.discount / 100)
+    #                 total_price -= discount_amount
+    # # Handle coupon application end
 
     if request.method =='POST':
         form = OrderForm(request.POST)
@@ -53,6 +77,7 @@ def place_order(request, total=0, quantity=0):
             data.order_total = total_price
             data.tax = vat
             data.ip = request.META.get('REMOTE_ADDR')
+            
             data.save()
 
             #akn a date ke venge likhbo
@@ -76,6 +101,7 @@ def place_order(request, total=0, quantity=0):
                 'total' : total, #payment method kete dileo ai line takbe kintu
                 'vat' : vat, #payment method kete dileo ai line takbe kintu
                 'total_price' : total_price, #payment method kete dileo ai line takbe kintu
+                # 'discount_amount': discount_amount,
             }
             #end payment method
             
