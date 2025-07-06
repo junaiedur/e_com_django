@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from Coupon.forms import ApplyCouponForm
-from Coupon .models import Coupon
+from Coupon .models import Coupon 
 from order .models import Order, Payment, OrderProduct
 import datetime
 from django.utils import timezone
@@ -249,20 +249,6 @@ def cart(request, total=0, quantity=0, cart_items=None):
     }
     return render(request, 'cart/cart.html', context)
 
-def apply_coupon(request):
-    if request.method == "POST":
-        coupon_code = request.POST.get('coupon_code')
-        try:
-            # Check if the coupon exists and is valid
-            coupon = Coupon.objects.get(code=coupon_code, active=True)
-            cart = Cart.objects.get(user=request.user)
-            cart.discount = coupon.discount
-            cart.save()
-            messages.success(request, f"Coupon '{coupon_code}' applied successfully!")
-        except Coupon.DoesNotExist:
-            messages.error(request, "Invalid coupon code.")
-    return redirect('checkout')
-    
 #checkout page design:
 @login_required(login_url='login') #ai line ta use korar karon amra jodi site a login kora nah take tahole amra cart product gula jodi checkout korar time a amake login korte bola hobe 
 def checkout(request, total=0, quantity=0, cart_items=None):
@@ -279,16 +265,37 @@ def checkout(request, total=0, quantity=0, cart_items=None):
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
         
+        if request.method == 'POST':
+            form = ApplyCouponForm(request.POST)
+            if form.is_valid():
+                code = form.cleaned_data['code']
+                now = timezone.now()
+                
+                try:
+                    # Look up the coupon by code and check if it's valid
+                    coupon = Coupon.objects.get(code__iexact=code, valid_from__lte=now, valid_to__gte=now, active=True)
+                    
+                    # Get the user's cart
+                    cart = Cart.objects.get(user=request.user)
+                    cart.coupon = coupon
+                    cart.save()
+                    
+                    messages.success(request, 'Coupon applied successfully!')
+                except Coupon.DoesNotExist:
+                    messages.error(request, 'This coupon does not exist or is invalid.')
+                return redirect('cart')
+        else:
+            form = ApplyCouponForm()
 
-        cart_items = CartItem.objects.filter(user=request.user)
-        totals = sum(item.sub_total for item in cart_items)
-        coupon_id = request.session.get('coupon_id')
-        discount = 0
+        # cart_items = CartItem.objects.filter(user=request.user)
+        # totals = sum(item.sub_total for item in cart_items)
+        # coupon_id = request.session.get('coupon_id')
+        # discount = 0
 
-        if coupon_id:
-            coupon = get_object_or_404(Coupon, id=coupon_id)
-            discount = (coupon.discount / 100) * totals
-            totals -= discount
+        # if coupon_id:
+        #     coupon = get_object_or_404(Coupon, id=coupon_id)
+        #     discount = (coupon.discount / 100) * totals
+        #     totals -= discount
 
         # coupon_form = ApplyCouponForm(request.POST)
         # if coupon_form.is_valid():
@@ -322,7 +329,7 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'vat': vat,
         'total_price' : total_price,
         'totals' : totals,
-        'discount': discount,
+        # 'discount': discount,
         # 'coupon_form': coupon_form,
         # 'coupon_code': coupon_code,
         # 'total_price_after_discount': total_price_after_discount

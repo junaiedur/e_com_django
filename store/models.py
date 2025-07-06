@@ -1,11 +1,14 @@
 from django.db import models
-from category.models import Category
+from category.models import Category , SubCategory, SubSubCategory
 from django.urls import reverse
 # from ckeditor.fields import RichTextField
+# অথবা SubCategory বা Category
 
-# Create your models here.
+
 class Product(models.Model):
     product_name = models.CharField(max_length=255, unique=True)
+    subsubcategory = models.ForeignKey(SubSubCategory, on_delete=models.CASCADE, null=True, blank=True) #ai line ta gemini teke neya
+
     slug = models.SlugField(max_length=250, unique=True)
     description = models.CharField(max_length=500, unique=True)
     # detail=RichTextField()

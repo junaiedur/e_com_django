@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from store.models import Product
-# Create your models here.
+# Create your models here:
 
 class Coupon(models.Model):
     code = models.CharField(max_length=50, unique=True)# coupon ar code all time kintu unique hobe

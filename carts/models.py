@@ -22,7 +22,7 @@ class Cart(models.Model):
             total -= total * (self.coupon.discount_percentage / 100)
         return total - self.discount
 
-
+ 
 class CartItem(models.Model):
     user = models.ForeignKey(Account,on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
