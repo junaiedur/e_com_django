@@ -2,7 +2,6 @@
 
 {% load static %}
 <!-- start -->
-
 {% block content %}
   <section class="section-content padding-y bg">
     <div class="container">
@@ -72,8 +71,8 @@
                                 </td>
                                 <td>
                                     <div class="price-wrap">
-                                        <var class="price">{{ cart_item.sub_total }} Tk</var>
-                                        <small class="text-muted">{{ cart_item.product.price }}</small>
+                                        <var class="price">{{ cart_item.sub_total|floatformat:2 }} Tk</var>
+                                        <small class="text-muted">{{ cart_item.product.price|floatformat:2 }}Tk each</small>
                                     </div>  <!-- price-wrap .// -->
                                 </td>
                                 <td class="text-right">
@@ -97,24 +96,29 @@
                             </div>
                         </form> -->
                         <dl class="dlist-align">
-                            <dt>Total price:</dt>
-                            <dd class="text-right">{{ total }} Tk</dd>
+                            <dt>Totalprice:</dt>
+                            <dd class="text-right">{{ total|floatformat:2 }} Tk</dd>
                         </dl>
                         <!-- <dl class="dlist-align">
                             <dt>Discount:</dt>
                             <dd class="text-right">{{ discount_amount }} Tk</dd>
                         </dl> -->
                         <dl class="dlist-align">
-                            <dt>Vat:</dt>
-                            <dd class="text-right">{{ vat }} Tk</dd>
+                            <dt>Vat(1%):</dt>
+                            <dd class="text-right">{{ vat|floatformat:2 }} Tk</dd>
                         </dl>
+                        {% if coupon %}
+                          <dl class="dlist-align">
+                            <dt>Coupon ({{ coupon.code }} - {{ coupon.discount_percentage|floatformat:0 }}% off):</dt>
+                          </dl>
+                        {% endif %}
                         <dl class="dlist-align">
-                            <dt>Discount:</dt>
-                            <dd class="text-right">{{ discount|floatformat:2 }} Tk</dd>
+                            <dt>Delivery Charge:</dt>
+                            <dd class="text-right">{{ delivery_charge|floatformat:2 }} Tk</dd>
                         </dl>
                         <dl class="dlist-align">
                             <dt>Total:</dt>
-                            <dd class="text-right text-dark b"><strong>{{ total_price }} Tk</strong></dd>
+                            <dd class="text-right text-dark b"><strong>{{ total_price|floatformat:2 }} Tk</strong></dd>
                         </dl>
                         
                         <!-- <dl class="dlist-align">

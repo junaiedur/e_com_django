@@ -7,8 +7,9 @@ from django.urls import reverse
 
 class Product(models.Model):
     product_name = models.CharField(max_length=255, unique=True)
-    subsubcategory = models.ForeignKey(SubSubCategory, on_delete=models.CASCADE, null=True, blank=True) #ai line ta gemini teke neya
-
+ # ... অন্যান্য ফিল্ড ...
+    # অথবা subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     slug = models.SlugField(max_length=250, unique=True)
     description = models.CharField(max_length=500, unique=True)
     # detail=RichTextField()
@@ -16,13 +17,47 @@ class Product(models.Model):
     image = models.ImageField(upload_to='photos/products')
     stock = models.IntegerField()
     is_available = models.BooleanField(default=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, default=1, related_name='store_products_by_subcategory')
+    subsubcategory = models.ForeignKey(SubSubCategory, on_delete=models.CASCADE, default=1, related_name='store_products_by_subsubcategory') # Unique related_name
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
 
+    # def get_url(self):
+    #     if self.subcategory and self.subsubcategory:
+    #         return reverse('product_detail', args=[self.category.slug, self.subcategory.slug, self.subsubcategory.slug, self.slug])
+    #     elif self.subcategory:
+    #         # If only subcategory exists, maybe a different URL pattern?
+    #         # Example: return reverse('product_detail_by_subcategory', args=[self.category.slug, self.subcategory.slug, self.slug])
+    #         return reverse('product_detail', args=[self.category.slug, self.subcategory.slug, 'no-subsub', self.slug]) # Placeholder or specific URL
+    #     else:
+    #         # If only category exists
+    #         # Example: return reverse('product_detail_by_category', args=[self.category.slug, self.slug])
+    #         return reverse('product_detail', args=[self.category.slug, self.subcategory.slug, self.subsubcategory.slug, self.slug])
     def get_url(self):
-        return reverse('product_detail', args=[self.category.slug, self.slug])
+        try:
+            if self.subsubcategory:
+                return reverse('product detail',args=[
+                    self.subsubcategory.sub_category.category.slug,
+                    self.subsubcategory.sub_category.slug,
+                    self.subsubcategory.slug,
+                    self.slug
+                ])
+            elif self.subcategory:
+                return reverse('products_by_subcategory', args=[
+                    self.subcategory.category.slug,
+                    self.subcategory.slug,
+                    self.slug
+                ])
+            elif self.category:
+                return reverse('products_by_category', args=[
+                    self.category.slug,
+                    self.slug
+                ])
+            
+            return reverse('product_detail_generic', args=[self.slug])
+        except Exception:
+            return '#'
 
     def __str__(self):
         return self.product_name

@@ -4,7 +4,10 @@ from .models import Coupon  # Assuming you have a Coupon model
 
 
 class ApplyCouponForm(forms.Form):
-    code = forms.CharField(max_length=50, label="Coupon Code")
+    code = forms.CharField( label="Coupon Code", max_length=50, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter coupon code'
+    }))
 
     def clean_code(self):
         code = self.cleaned_data['code']

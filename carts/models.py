@@ -2,6 +2,7 @@ from django.db import models
 from store.models import Product, Variation
 from accounts.models import Account
 from Coupon.models import Coupon
+from django.utils import timezone
 
 # Create your models here.
 class Cart(models.Model):
@@ -32,9 +33,17 @@ class CartItem(models.Model):
     is_active = models.BooleanField(default=True)
 
     def sub_total(self):
+        # if self.quantity is not None and self.product.price is not None:
         return self.product.price * self.quantity
-
+        # else:
+            # return 0 
     def __unicode__(self):
         return self.product
-
-
+    
+##ai line ta gemini teke neya
+    def __str__(self):
+        return self.product.product_name
+    
+##ai line ta deepseek teke neya
+    def __str__(self):
+        return f"{self.product.product_name} - {self.quantity}"

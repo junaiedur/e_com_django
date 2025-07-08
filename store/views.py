@@ -30,10 +30,11 @@ def store(request, category_slug=None):
     }
     return render(request, 'store/store.html', context)
 
-def product_detail(request, category_slug, product_slug):
+def product_detail(request, category_slug, subcategory_slug, subsubcategory_slug, product_slug):
     
     try:
-        single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
+        # single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
+        single_product = get_object_or_404(Product,category__slug=category_slug,subcategory__slug=subcategory_slug,subsubcategory__slug=subsubcategory_slug,slug=product_slug)
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
         
     except Exception as e:

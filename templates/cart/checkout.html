@@ -102,8 +102,8 @@
                       </td>
                       <td>
                         <div class="price-wrap">
-                          <var class="price">{{ cart_item.sub_total }} Tk</var>
-                          <small class="text-muted">{{ cart_item.product.price }}</small>
+                          <var class="price">{{ cart_item.sub_total|floatformat:2 }} Tk</var>
+                          <small class="text-muted">{{ cart_item.product.price|floatformat:2 }}</small>
                         </div>
                       </td>
                     </tr>
@@ -111,6 +111,10 @@
                       <tr>
                         <th>Total price:</th>
                         <td>{{ total_price|floatformat:2 }} Tk</td>
+                      </tr>
+                      <tr>
+                        <th>VAT:</th>
+                        <td>{{ vat|floatformat:2 }} Tk</td>
                       </tr>
                       <tr>
                         <th>Discount:</th>
@@ -121,6 +125,11 @@
                         <td>{{ totals|floatformat:2 }} Tk</td>
                       </tr>
                     </table>
+                    <form method="POST" action="{% url 'apply_coupon' %}">
+                      {% csrf_token %}
+                      {{ form.as_p }}
+                      <button type="submit" class="btn btn-primary btn-block">Apply Coupon</button>
+                    </form>
                   {% endfor %}
                 </tbody>
               </table>
