@@ -2,10 +2,15 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .models import Product, Variation
 from django.db.models import Q
-from category.models import Category
+from category.models import Category 
 from carts.views import _cart_id
 from carts.models import CartItem, Cart
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
+from django.urls import reverse
+from django.utils import timezone
+from order.models import Order, OrderProduct
+
 # Create your views here.
 def store(request, category_slug=None):
     categories = None
@@ -30,21 +35,33 @@ def store(request, category_slug=None):
     }
     return render(request, 'store/store.html', context)
 
-def product_detail(request, category_slug, subcategory_slug, subsubcategory_slug, product_slug):
+def product_detail(request, category_slug, product_slug):
     
     try:
-        # single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
-        single_product = get_object_or_404(Product,category__slug=category_slug,subcategory__slug=subcategory_slug,subsubcategory__slug=subsubcategory_slug,slug=product_slug)
+        single_product = Product.objects.get(category__slug=category_slug, slug=product_slug)
+        # single_product = get_object_or_404(Product,category__slug=category_slug, slug=product_slug)
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=single_product).exists()
         
     except Exception as e:
         raise e
-    
+
+    if request.user.is_authenticated:
+        try:
+            order_product = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
+            # order_product = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
+        except OrderProduct.DoesNotExist:
+            order_product = None
+    else:
+        order_product = None
+
+
     context = {
         'single_product': single_product,
         'in_cart': in_cart,
-    }
+        'orderproduct': order_product,
+       
 
+    }
     return render(request, 'store/product_detail.html', context)
 
 #search diye kojar jnno use korteci
@@ -59,3 +76,4 @@ def search(request):
         'product_count': product_count,
     }
     return render(request, 'store/store.html', context)
+

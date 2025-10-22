@@ -1,0 +1,7 @@
+product_name,slug,description,category,price,stock,is_available
+ফুল হাতা শার্ট,full-sleeve-shirt,ফরমাল ফুল হাতা শার্ট,শার্ট,800,60,True
+ডেনিম জিন্স,denim-jeans,স্ট্রেইট ফিট ডেনিম জিন্স,পেন্ট,1800,45,True
+স্পোর্টস স্নিকার,sports-sneaker,এথলেটিক স্নিকার্স,জুতা,2200,35,True
+কটন ভেস্ট,cotton-vest,সিম্পল কটন ভেস্ট,গেঞ্জি,350,90,True
+বেইজবল ক্যাপ,baseball-cap,স্ট্রিট স্টাইল ক্যাপ,টুপি,300,50,True
+... [এভাবে আরও প্রোডাক্ট]

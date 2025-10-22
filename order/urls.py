@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('place_order/', views.place_order, name='place_order'),
     #payment method Start:
-    path('payments/', views.payments, name='payments'),
-    #payments method end
+    #path('payment/', views.payment, name='payment'),
+    #path('order_complete/', views.order_complete, name='order_complete'),
+
 ]

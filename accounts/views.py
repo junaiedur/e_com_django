@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
+
 from .forms import RegistationForm
 from .models import Account
 from core.views import home
@@ -22,8 +23,10 @@ from django.urls import reverse
 import requests
 
 # Create your views here.
+
 #customize:
 def register(request):
+    
     if request.method == 'POST':
         form = RegistationForm(request.POST)
         if form.is_valid():
@@ -58,6 +61,38 @@ def register(request):
             email_string = "?command=verification&email={email}"
             return redirect('/account/login/' + email_string)
 
+            # messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address [rathan.kumar@gmail.com]. Please verify it.')
+##           # return redirect('login')
+            # return redirect('home')
+#             # messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address [rathan.kumar@gmail.com]. Please verify it.') 
+#             # return redirect('login')
+#             # return redirect('home') 
+#             # return redirect('dashboard')
+#             # return redirect('home')
+#             # return HttpResponseRedirect(reverse('home'))
+#             # return redirect('home')
+#             # return redirect('dashboard')
+#             # return redirect('login')
+#             # return redirect('home')
+#             # return redirect('dashboard')
+#             # return redirect('login')
+#ai line ta project teke neya:
+
+## USER ACTIVATION
+#             current_site = get_current_site(request)
+#             mail_subject = 'Please activate your account'
+#             message = render_to_string('accounts/account_verification_email.html', {
+#                 'user': user,
+#                 'domain': current_site,
+#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                 'token': default_token_generator.make_token(user),
+#             })
+#             to_email = email
+#             send_email = EmailMessage(mail_subject, message, to=[to_email])
+#             send_email.send()
+#             # messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address [rathan.kumar@gmail.com]. Please verify it.')
+#             return 
+
             
     else:
         form = RegistationForm()
@@ -75,7 +110,7 @@ def login(request):
         user= auth.authenticate(email=email, password=password)
         if user is not None:
             try:
-                cart = Cart.objects.get(cart_id=cart_id(request))
+                cart = Cart.objects.get(cart_id=_cart_id(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
                 if is_cart_item_exists:
                     cart_item = CartItem.objects.filter(cart=cart)

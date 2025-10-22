@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+d{% extends 'base.html' %}
 
 {% load static %}
-<!-- start -->
+<!-- start --> 
 {% block content %}
   <section class="section-content padding-y bg">
     <div class="container">
@@ -87,52 +87,81 @@
             <aside class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
-                        <!-- <form method="POST" action="{% url 'cart' %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="coupon_code">Coupon Code:</label>
-                                <input type="text" name="coupon_code" class="form-control" placeholder="Enter your coupon">
-                                <button type="submit" class="btn btn-primary mt-2">Apply Coupon</button>
-                            </div>
-                        </form> -->
+                        
                         <dl class="dlist-align">
-                            <dt>Totalprice:</dt>
+                            <dt>Total price:</dt>
                             <dd class="text-right">{{ total|floatformat:2 }} Tk</dd>
                         </dl>
-                        <!-- <dl class="dlist-align">
-                            <dt>Discount:</dt>
-                            <dd class="text-right">{{ discount_amount }} Tk</dd>
-                        </dl> -->
+                        
                         <dl class="dlist-align">
                             <dt>Vat(1%):</dt>
                             <dd class="text-right">{{ vat|floatformat:2 }} Tk</dd>
                         </dl>
-                        {% if coupon %}
-                          <dl class="dlist-align">
-                            <dt>Coupon ({{ coupon.code }} - {{ coupon.discount_percentage|floatformat:0 }}% off):</dt>
-                          </dl>
-                        {% endif %}
+                        <!-- delivery methods  -->
+                        <div class="mb-3">
+                            <label><strong>Delivery Methods</strong></label>
+                            <form method="POST" action="{% url 'select_delivery' %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <select name="delivery_method_id" class="form-control" onchange="this.form.submit()">
+                                        <option value="">Select Delivery Method</option>
+                                        {% for method in delivery_methods %}
+                                          <option value="{{ method.id }}" {% if selected_delivery_method and selected_delivery_method.id == method.id %}selected{% endif %}>
+                                                {{ method.name }} - 
+                                                {% if method.is_free_delivery %}
+                                                    
+                                                    {% if total >= method.min_order_amount %}
+                                                      FREE
+                                                    {% else %}
+                                                        {{ method.price }} Tk (Add {{ method.min_order_amount|floatformat:2 }} Tk for free delivery)
+                                                    {% endif %}
+                                                {% else %}
+                                                    {{ method.price|floatformat:2 }} Tk
+                                                {% endif %}
+                                                ({{ method.estimated_days }} days)
+                                          </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+
                         <dl class="dlist-align">
                             <dt>Delivery Charge:</dt>
-                            <dd class="text-right">{{ delivery_charge|floatformat:2 }} Tk</dd>
+                            <dd class="text-right">
+                                {% if selected_delivery_method and selected_delivery_method.is_free_delivery and total >= selected_delivery_method.min_order_amount %}
+                                    <span class="text-success"> FREE</span>
+                                {% else %}
+                                    {{ delivery_charge|floatformat:2 }} Tk
+                                {% endif %}
+                            </dd>
                         </dl>
+                        {% if coupon_code %}
+                          <dl class="dlist-align">
+                              <dt>Coupon ({{ coupon_code }}):</dt>
+                              <dd class="text-right">--{{ discount_amount|floatformat:2 }} Tk</dd>
+                          </dl>
+                          <a href="{% url 'remove_coupon' %}" class="btn btn-sm btn-warning">Remove Coupon</a>
+                        {% else %}
+                            <form method="POST" action="{% url 'apply_coupon' %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="coupon_code">Coupon Code:</label>
+                                    <div class="input-group">
+                                        <input type="text" name="code" class="form-control" placeholder="Enter coupon code">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-primary">Apply</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        {% endif %}
                         <dl class="dlist-align">
                             <dt>Total:</dt>
                             <dd class="text-right text-dark b"><strong>{{ total_price|floatformat:2 }} Tk</strong></dd>
                         </dl>
                         
-                        <!-- <dl class="dlist-align">
-                            <dt>Total Price:</dt>
-                            <dd class="text-right text-dark b"><strong>{{ totals|floatformat:2 }} Tk</strong></dd>
-                        </dl> --> 
-                        <!-- <form action="{% url 'apply_coupon' %}" method="POST">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="coupon_code">Have a coupon?</label>
-                                <input type="text" name="coupon_code" class="form-control" placeholder="Enter coupon code">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Apply Coupon</button>
-                        </form> -->
+                        
                         
                         <hr>
                         <p class="text-center mb-3">
@@ -150,5 +179,4 @@
 {% endblock %}
 
 <!-- end -->
-
 

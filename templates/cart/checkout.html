@@ -56,6 +56,55 @@
                     <input type="text" name="country" class="form-control" required>
                   </div>
                 </div>
+                <!-- delivary method start -->
+                <div class="form-row">
+                  <div class="col form-group">
+                    <label for="delivery_method">Delivery Method*</label>
+                    <select name="delivery_method" class="form-control" required>
+                      <option value="">Select Delivery Method</option>
+                      <!-- <option value="standard">Standard Delivery</option>
+                      <option value="express">Express Delivery</option> -->
+                      {% for method in delivery_method %}
+                        <option value="{{ method.id }}" 
+                          {% if selected_delivery_method and selected_delivery_method.id == method.id %}selected{% endif %} 
+                          data-price="{{ method.price }}">
+                          {{ method.name }} - 
+                          {% if method.is_free_delivery and total >= method.min_order_amount %}
+                            FREE
+                          {% else %}
+                            {{ method.price|floatformat:2 }} Tk
+                          {% endif %}
+                          ({{ method.estimated_days }} days)
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <!-- <table class="table table-borderless">
+    <tr>
+        <th>Subtotal:</th>
+        <td>{{ total|floatformat:2 }} Tk</td>
+    </tr>
+    <tr>
+        <th>VAT (1%):</th>
+        <td>{{ vat|floatformat:2 }} Tk</td>
+    </tr>
+    <tr>
+        <th>Delivery Charge:</th>
+        <td>{{ delivery_charge|floatformat:2 }} Tk</td>
+    </tr>
+    {% if discount_amount %}
+    <tr>
+        <th>Discount ({{ coupon_code }}):</th>
+        <td>-{{ discount_amount|floatformat:2 }} Tk</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <th>Total:</th>
+        <td><strong>{{ total_price|floatformat:2 }} Tk</strong></td>
+    </tr>
+</table> -->
+                <!-- delivery method end  -->
                 <div class="form-row">
                   <label for="">Order Note</label>
                   <textarea name="order_note" rows="2" class="form-control"></textarea>
@@ -103,7 +152,7 @@
                       <td>
                         <div class="price-wrap">
                           <var class="price">{{ cart_item.sub_total|floatformat:2 }} Tk</var>
-                          <small class="text-muted">{{ cart_item.product.price|floatformat:2 }}</small>
+                          <small class="text-muted">{{ cart_item.product.price|floatformat:2 }} Tk each</small>
                         </div>
                       </td>
                     </tr>
@@ -117,27 +166,35 @@
                         <td>{{ vat|floatformat:2 }} Tk</td>
                       </tr>
                       <tr>
-                        <th>Discount:</th>
-                        <td>{{ discount|floatformat:2 }} Tk</td>
+                        <th>  Delivary Charge: </th>
+                        <td>{{ delivery_charge|floatformat:2 }} Tk</td>
                       </tr>
-                      <tr>
-                        <th>Total Amount:</th>
-                        <td>{{ totals|floatformat:2 }} Tk</td>
-                      </tr>
+                      {% if discount_amount %}
+                        <tr>
+                          <th>Discount ({{ coupon_code }}):</th>
+                          <td>-{{ discount_amount|floatformat:2 }} Tk</td>
+                        </tr>
+                      {% endif %}
                     </table>
-                    <form method="POST" action="{% url 'apply_coupon' %}">
-                      {% csrf_token %}
-                      {{ form.as_p }}
-                      <button type="submit" class="btn btn-primary btn-block">Apply Coupon</button>
-                    </form>
                   {% endfor %}
+                  <tfoot>
+                    <tr>
+                      <th>Total price:</th>
+                      <td>{{ total_price|floatformat:2 }} Tk</td>
+                    </tr>
+                  </tfoot>
                 </tbody>
               </table>
+              <button type="submit" class="btn btn-primary btn-block">Proceed to Checkout</button>
+              <a href="{% url 'store' %}" class="btn btn-secondary btn-block">Continue Shopping</a>
             </div>
+
           </div>
 
         </aside>
       </div>
+
     </div>
+
   </section>
 {% endblock %}

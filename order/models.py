@@ -1,9 +1,11 @@
 from django.db import models
 from accounts.models import Account
 from store.models import Product, Variation
+from carts.models import Coupon, DeliveryMethod
 from django.core.validators import MinValueValidator
 from decimal import Decimal
-
+from django.conf import settings
+from django.shortcuts import redirect, get_object_or_404
 # Create your models here.
 class Payment(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -52,7 +54,9 @@ class Order(models.Model):
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
+    discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    delivary_method = models.ForeignKey(DeliveryMethod , on_delete=models.SET_NULL, null=True, blank=True)
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
     
@@ -74,5 +78,13 @@ class OrderProduct(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # def __str__(self):
+    #     return self.product.product_name
+    
+#ai product ta ami error asle delete kore dio and oupo r 2 ta line ami comment kora teke uncomment kore rakho
     def __str__(self):
-        return self.product.product_name
+
+        return f"{self.quantity} x {self.product.name} (Order: {self.order.id})"
+    
+    class Meta:
+        unique_together = ('order', 'product')

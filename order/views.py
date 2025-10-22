@@ -1,22 +1,20 @@
-from django.shortcuts import render, redirect
-from carts.models import Cart, CartItem
+from django.shortcuts import render, redirect, get_object_or_404
+from carts.models import CartItem
 from .forms import OrderForm
-from .models import Order, Payment, OrderProduct
+from .models import Order, OrderProduct, Payment
 import datetime
-from Coupon.forms import ApplyCouponForm
-from Coupon.models import Coupon
+from django.http import HttpResponse, JsonResponse
+from carts.models import Coupon, DeliveryMethod
+
 from django.utils import timezone
 import datetime
-from Coupon.forms import ApplyCouponForm
+from store.models import Product, Variation
 
-
-# Create your views here.
-
-#payment method Start:
-def payments(request, total=0, quantity=0 ):
-    return render(request, 'payment/payment.html')
-#payments method end
-
+import stripe
+import json
+from django.conf import settings
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 
 def place_order(request, total=0, quantity=0):
@@ -29,38 +27,37 @@ def place_order(request, total=0, quantity=0):
     #tax ar jnno kicu code likhbo:
     vat = 0
     total_price = 0
+    discount_amount = 0
+    delivery_charge = 0
    
     for cart_item in cart_items:
         total += (cart_item.product.price * cart_item.quantity)
         quantity += cart_item.quantity
     vat = (1 * total)/100
-    total_price = total + vat # akn a je vat dilam aita ke amra niche ar ai app a models.py a tax hisabe dorci
- 
-    # Handle coupon application
-
-    # applicable_items = []
-    # if request.method == 'POST':
-    #     code = request.POST.get('coupon_code')
-    #     now = timezone.now()
-
-    #     try:
-    #         coupon = Coupon.objects.get(code=code, active=True, valid_from__lte=now, valid_to__gte=now)
-    #     except Coupon.DoesNotExist:
-    #         coupon = None
-
-    #     if coupon:
-    #         applicable_items = cart_items.filter(product__in=coupon.applicable_products.all())
-    #         if applicable_items.exists():
-    #             for item_product in applicable_items:
-    #                 discount_amount = item_product.product.price * (coupon.discount / 100)
-    #                 total_price -= discount_amount
-    # # Handle coupon application end
+    # total_price = total + vat # akn a je vat dilam aita ke amra niche ar ai app a models.py a tax hisabe dorci
+    coupon_id = request.session.get('coupon_id')
+    coupon = None
+    if coupon_id:
+        try:
+            coupon = Coupon.objects.get(id=coupon_id)
+            if coupon.is_valid(order.total):
+                discount_amount = coupon.get_discount_amount(order.total)
+        except Coupon.DoesNotExist:
+            discount_amount = 0
+    delivery_method_id = request.POST.get('delivery_method')
+    delivery_method = None
+    if delivery_method_id:
+        try:
+            delivery_method = DeliveryMethod.objects.get(id=delivery_method_id)
+            delivery_charge = delivery_method.price
+        except DeliveryMethod.DoesNotExist:
+            delivery_charge = 0
+    total_price = total + vat  + delivery_charge - discount_amount
 
     if request.method =='POST':
+
         form = OrderForm(request.POST)
         if form.is_valid():
-            #store all the billing information in order
-            # amra checkout.html a ja ja nibo jeguli akn a dibo
             data = Order()
             data.user= current_user
             data.first_name = form.cleaned_data['first_name']
@@ -73,9 +70,16 @@ def place_order(request, total=0, quantity=0):
             data.state = form.cleaned_data['state']
             data.city = form.cleaned_data['city']
             data.order_note = form.cleaned_data['order_note']
-            # data.order_total = total_price.cleaned_data['order_total']
+            data.order_total = total_price.cleaned_data['order_total']
             data.order_total = total_price
             data.tax = vat
+            data.discount = discount_amount
+            data.delivery_charge = delivery_charge
+
+            if coupon:
+                data.coupon = coupon
+            if delivery_method:
+                data.delivery_method = delivery_method
             data.ip = request.META.get('REMOTE_ADDR')
             
             data.save()
@@ -90,19 +94,24 @@ def place_order(request, total=0, quantity=0):
 
             data.order_number = order_number
             data.save()
-
-
-            # Start Pyament Method
-            # end payment method
+            if coupon:
+                coupon.used_count += 1
+                coupon.save()
             order = Order.objects.get(user=current_user, is_ordered=False,order_number=order_number)
             context = { #payment method kete dileo ai line takbe kintu
                 'order' : order, #payment method kete dileo ai line takbe kintu
                 'cart_items' : cart_items, #payment method kete dileo ai line takbe kintu
                 'total' : total, #payment method kete dileo ai line takbe kintu
                 'vat' : vat, #payment method kete dileo ai line takbe kintu
+                'discount_amount': discount_amount, # নতুন যোগ করুন
+                'delivery_charge': delivery_charge, # নতুন যোগ করুন
                 'total_price' : total_price, #payment method kete dileo ai line takbe kintu
-                # 'discount_amount': discount_amount,
+                'coupon_code': coupon.code if coupon else None, # নতুন যোগ করুন
             }
+            if 'coupon_id' in request.session:
+                del request.session['coupon_id']
+            if 'coupon_code' in request.session:
+                del request.session['coupon_code']
             #end payment method
             
             
@@ -110,6 +119,3 @@ def place_order(request, total=0, quantity=0):
         
         else:
             return redirect('checkout')
-
-            
-            

@@ -1,7 +1,8 @@
-from django.db import models
+from django.db import models 
 from store.models import Product, Variation
 from accounts.models import Account
-from Coupon.models import Coupon
+from django.core.validators import MinValueValidator, MaxValueValidator
+import datetime
 from django.utils import timezone
 
 # Create your models here.
@@ -9,19 +10,8 @@ class Cart(models.Model):
     cart_id = models.CharField(max_length=250, blank=True)
     date_added = models.DateField(auto_now_add=True)
 
-    user = models.OneToOneField(Account, on_delete=models.CASCADE, null=True)
-    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
-    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
-
     def __str__(self):
         return self.cart_id
-
-    def get_total_price(self):
-        total = sum(item.sub_total() for item in self.cart_items.all())
-
-        if self.coupon:
-            total -= total * (self.coupon.discount_percentage / 100)
-        return total - self.discount
 
  
 class CartItem(models.Model):
@@ -39,11 +29,60 @@ class CartItem(models.Model):
             # return 0 
     def __unicode__(self):
         return self.product
+
+# New models for Coupon and Delivery
+class Coupon(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    discount_type = models.CharField(max_length=10, choices=[('percentage', 'Percentage'), ('fixed', 'Fixed Amount')])
+    discount_value = models.DecimalField(max_digits=10, decimal_places=2)
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()
+    max_usage = models.PositiveIntegerField(default=1)
+    used_count = models.PositiveIntegerField(default=0)
+    min_order_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self, order_total=0):
+        now = timezone.now()
+        return (self.is_active and 
+                self.valid_from <= now <= self.valid_to and 
+                self.used_count < self.max_usage and
+                order_total >= self.min_order_amount)
     
-##ai line ta gemini teke neya
-    def __str__(self):
-        return self.product.product_name
+    def get_discount_amount(self, order_total):
+        if self.discount_type == 'percentage':
+            return (self.discount_value * order_total) / 100
+        else:
+            return min(self.discount_value, order_total)
     
-##ai line ta deepseek teke neya
     def __str__(self):
-        return f"{self.product.product_name} - {self.quantity}"
+        return self.code
+
+
+class DeliveryMethod(models.Model): 
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField(blank=True)
+    estimated_days = models.PositiveIntegerField()
+    is_active = models.BooleanField(default=True)
+    is_free_delivery = models.BooleanField(default=False)
+    min_order_amount  = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return self.name
+    
+    def get_display_price(self, cart_total=0):
+        if self.is_free_delivery and cart_total >= self.min_order_amount:
+            return "FREE"
+        return f"{self.price} Tk"
+
+
+class UsedCoupon(models.Model):
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+    used_at = models.DateTimeField(auto_now_add=True)
+    order = models.ForeignKey('order.Order', on_delete=models.CASCADE, null=True)
+    
+    class Meta:
+        unique_together = ('user', 'coupon')

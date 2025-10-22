@@ -13,6 +13,15 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
+# ai line ta ami gimini teke copy koira marci
+import environ
+# django-environ সেটআপ
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env() # .env ফাইল রিড করবে
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -48,6 +57,7 @@ INSTALLED_APPS = [
     'carts',
     'order',
     'Coupon',
+  
 ]
 
 MIDDLEWARE = [
@@ -91,13 +101,21 @@ AUTH_USER_MODEL = 'accounts.Account'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'e_com',
+        'NAME': 'e_com_projects',
         'USER': 'root',
         'PASSWORD': 'SaaDik@410',
         'HOST': 'localhost',
         'PORT': '3306',
     }
-} #mysql pass: SaaDik@410
+} 
+#mysql pass: SaaDik@410
+# (env) C:\Users\SADIK\e_com>python manage.py createsuperuser
+# Email: sadikslam410@gmail.com
+# Username: sadik
+# First name: SADIKUL
+# Last name: ISLAM
+# Password: 72345
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -122,11 +140,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = True #if you want to use timezone & mendatory
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -155,7 +173,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Port 587 is used for TLS
 EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+EMAIL_USE_SSL = False # EMAIL_USE_TLS True হলে এটি False হবে
 EMAIL_HOST_USER = 'sadikislam410@gmail.com'  # Your Gmail email address
 EMAIL_HOST_PASSWORD = 'mwen usnp gcjj szlg' #Use the App Password generated whice create in google account 
 
