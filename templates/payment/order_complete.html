@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container" style="margin-top: 50px;">
+    <center>
+        <i class="fas fa-check-circle" style="font-size: 72px;margin-bottom: 20px;color: #28A745;"></i>
+        <h2 class="text-center">Order Placed Successfully!</h2>
+        <p class="text-center">Thank you for your order. Your order number is: <strong>{{ order.order_number }}</strong></p>
+    </center>
+    <div class="text-center mt-4">
+        <a href="{% url 'store' %}" class="btn btn-success">Continue Shopping</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">View Order History</a>
+    </div>
+  </div>
+  <div class="container" style="margin: 0 auto;width: 80%;padding: 50px;background: #f1f1f1;margin-top: 50px;margin-bottom: 50px;">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Order Details</h4>
+            <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+            <p><strong>Payment Method:</strong> {{ payment.get_payment_method_display }}</p>
+            <p><strong>Payment Status:</strong> {{ payment.get_status_display }}</p>
+        </div>
+        <div class="col-md-6">
+            <h4>Shipping Address</h4>
+            <p>{{ order.full_name }}</p>
+            <p>{{ order.full_address }}</p>
+            <p>{{ order.city }}, {{ order.state }}, {{ order.country }}</p>
+            <p>Phone: {{ order.phone }}</p>
+            <p>Email: {{ order.email }}</p>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <h4>Order Items</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_product in order_products %}
+                          <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ order_product.product.image.url }}" class="img-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                                </div>
+                                <div class="ml-3">
+                                    <strong>{{ order_product.product.name }}</strong>
+                                    {% if order_product.variation.all %}
+                                      <br>
+                                      <small class="text-muted">
+                                        {% for variation in order_product.variations.all %}
+                                          {{ variation.variation_category|capfirst }}: {{ variation.variation_value|capfirst }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                      </small>
+                                    {% endif %}
+                                </div>
+                                </div>
+                            </td>
+                            <td>
+                                <td class="text-center">{{ order_product.quantity }}</td>
+                                <td class="text-center">{{ order_product.product_price|floatformat:2 }} Tk</td>
+                                <td class="text-center">{{ order_product.product_price|floatformat:2 }} Tk</td>
+                            </td>
+                          </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
+                            <td class="text-center">{{ order.order_total|floatformat:2 }} Tk</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>VAT:</strong></td>
+                            <td class="text-center">{{ order.tax|floatformat:2 }} Tk</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Delivery Charge:</strong></td>
+                            <td class="text-center">{{ order.delivery_charge|floatformat:2 }} Tk</td>
+                        </tr>
+                        {% if order.discount %}
+                          <tr>
+                            <td colspan="3" class="text-right"><strong>Discount:</strong></td>
+                            <td class="text-center">-{{ order.discount|floatformat:2 }} Tk</td>
+                          </tr>
+                        {% endif %}
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Grand Total:</strong></td>
+                            <td class="text-center"><strong>{{ order.order_total|floatformat:2 }} Tk</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,4 +1,4 @@
-
+d
 
 {% extends 'base.html' %}
 {% load static %}
@@ -23,14 +23,127 @@
             </div>
 
           </div>
-          <div class="card">
-            <h5 class="card-header">Payment Method</h5>
-            <div class="card-body">
-              <p class="card-text">PayPal</p> 
-              <b>OR</b> <br>
-              <p class="card-text">Cash On Delivary</p>
+          <section class="section-content padding-y bg">
+            <div class="container">
+              <h4 class="text-center mb-4">Select Payment Method</h4>
+              <div class="row">
+                <div class="col-lg-8">
+                  <div class="card">
+                    <div class="card-body">
+                      <form method="POST" action="{% url 'payment' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <label class ="font-weight-bold">Select Payment Method:</label><br>
+                          <div class="payment-methods">
+                            {% for value, name in form.payment_method.field.choices %}
+                              <div class="form-check m-3">
+
+                                <input class="form-check-input" type="radio" name="payment_method" id="payment{{ value }}" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
+                                <label class="form-check-label" for="payment{{ value }}">
+                                  <strong>{{ name }}</strong>
+                                </label>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        </div>
+                        <!-- Mobile Payment Fields -->
+                        <div id="mobile_payment_fields" class="payment-fields">
+                          <div class="form-group">
+                            <label>Mobile Number *</label>
+                            <input type="text" name="mobile_number" class="form-control" placeholder="01XXXXXXXXX" maxlength="15">
+                          </div>
+                          <div class="form-group">
+                            <label>Transaction ID *</label>
+                            <input type="text" name="transaction_id" class="form-control" placeholder="Enter Transaction ID">
+                          </div>
+                        </div>
+                        <!-- Card Payment Fields -->
+                        <div id="card_payment_fields" class="payment-fields" style="display: none;">
+                          <div class="form-group">
+                            <label>Card Number *</label>
+                            <input type="text" name="card_number" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19">
+                          </div>                        
+                        </div>
+                        <div class="form-group">
+                          <label>Card Holder Name *</label>
+                          <input type="text" name="card_holder_name" class="form-control card-field" placeholder="John Doe">
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Expiry Date (MM/YY) *</label>
+                              <input type="text" name="expiry_date" class="form-control card-field" placeholder="12/25" maxlength="5">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>CVV *</label>
+                              <input type="text" name="cvv" class="form-control card-field" placeholder="123" maxlength="3">
+                            </div>
+                          </div>                            
+                        </div>
+                         <!-- EMI Fields -->
+                        <div id="emi_fields" class="payment-fields" style="display: none;">
+                          <div class="form-group">
+                            <label>EMI Duration *</label>
+                            <div>
+                              {% for value,name in form.emi_month.field.choices %}
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="emi_month" id="emi{{ value }}" value="{{ value }}">
+                                  <label class="form-check-label" for="emi_{{ value }}">{{ name }}</label>
+                                </div>
+                              {% endfor %}
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label>Card Name *</label>
+                            <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                            
+                          </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mt-4"> Proceed to Pay </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <!-- Order Summary -->
+                <div class="col-lg-4">
+                  <div class="card">
+                    <div class="card-body">
+                       <h5 class="card-title">Order Summary</h5>
+                        <dl class="dlist-align">
+                          <dt>Subtotal:</dt>
+                          <dd class="text-right">{{ total|floatformat:2 }} Tk</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                          <dt>VAT (1%):</dt>
+                          <dd class="text-right">{{ vat|floatformat:2 }} Tk</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                          <dt>Delivery Charge:</dt>
+                          <dd class="text-right">{{ delivery_charge|floatformat:2 }} Tk</dd>
+                        </dl>
+                        {% if discount_amount  %}
+                          <dl class="dlist-align">
+                            <dt>Discount:</dt>
+                            <dd class="text-right">-{{ discount_amount|floatformat:2 }} Tk</dd>
+                          </dl>
+                        {% endif %}
+                        <hr>
+                        <dl class="dlist-align">
+                          <dt><strong>Total:</strong></dt>
+                          <dd class="text-right text-dark b">
+                          <strong>{{ total_price|floatformat:2 }} Tk</strong>
+                          </dd>
+                        </dl>
+                      </div>
+                  </div>
+                </div>
+
+
+              </div>
             </div>
-          </div>
+          </section>
           <div class="card">
             <h5 class="card-header">Review Products</h5>
             <div class="card-body">
@@ -120,4 +233,49 @@
     </div>
 
   </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+      const mobileFields = document.getElementById('mobile_payment_fields');
+      const cardFields = document.getElementById('card_payment_fields');
+      const emiFields = document.getElementById('emi_fields');
+      
+      function togglePaymentFields() {
+        const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+        // Hide all fields first
+        mobileFields.style.display = 'none';
+        cardFields.style.display = 'none';
+        emiFields.style.display = 'none';
+
+        // Show relevant fields
+         if (['bkash', 'nagad', 'rocket', 'upay'].includes(selectedMethod)) {
+          mobileFields.style.display = 'block';
+        } else if (selectedMethod === 'card') {
+          cardFields.style.display = 'block';
+        } else if (selectedMethod === 'emi') {
+          emiFields.style.display = 'block';
+         }
+      }
+      paymentMethods.forEach(method => {
+        method.addEventListener('change', togglePaymentFields);
+      });
+      // Initial call to set the correct fields on page load
+      togglePaymentFields();
+    });
+  </script>
+  <style>
+    .payment-fields {
+      margin-top: 15px 0;
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    .form-check-label {
+
+      font-size: 16px;
+    }
+    .card-field {
+      border: 1px solid #ddd;
+    }
+  </style>
 {% endblock %}

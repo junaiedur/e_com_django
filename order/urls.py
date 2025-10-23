@@ -6,5 +6,6 @@ urlpatterns = [
     #payment method Start:
     #path('payment/', views.payment, name='payment'),
     #path('order_complete/', views.order_complete, name='order_complete'),
-
+    path('payments/', views.payments, name='payments'),
+    path('order_complete/', views.order_complete, name='order_complete'),
 ]

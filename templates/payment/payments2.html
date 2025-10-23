@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="section-content padding-y bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Select Payment Method</h4>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="{% url 'payments' %}" id="paymentForm">
+              {% csrf_token %}
+              
+              {% if form_errors %}
+                <div class="alert alert-danger">
+                  <strong>Please correct the following errors:</strong>
+                  <ul>
+                    {% for field, errors in form_errors.items %}
+                      {% for error in errors %}
+                        <li>{{ error }}</li>
+                      {% endfor %}
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              <!-- Payment Method Selection -->
+              <div class="form-group">
+                <label class="font-weight-bold h5">Choose your payment method:</label>
+                <div class="payment-methods mt-3">
+                  {% for value, name in form.payment_method.field.choices %}
+                  <div class="payment-method-item mb-3 p-3 border rounded">
+                    <div class="form-check">
+                      <input class="form-check-input payment-method-radio" type="radio" 
+                             name="payment_method" id="payment_{{ value }}" value="{{ value }}"
+                             {% if forloop.first %}checked{% endif %}>
+                      <label class="form-check-label h6 mb-0" for="payment_{{ value }}">
+                        <i class="fas fa-{% if value == 'bkash' %}mobile-alt{% elif value == 'card' %}credit-card{% elif value == 'emi' %}calendar-alt{% elif value == 'cod' %}money-bill-wave{% else %}wallet{% endif %} me-2"></i>
+                        {{ name }}
+                      </label>
+                    </div>
+                    
+                    <!-- Payment Method Instructions -->
+                    <div class="payment-instructions mt-2 text-muted small" id="instructions_{{ value }}" style="display: none;">
+                      {% if value == 'bkash' %}
+                        • Send money to: <strong>017XXXXXXXX</strong><br>
+                        • Use Order ID as reference<br>
+                        • Enter transaction details below
+                      {% elif value == 'nagad' %}
+                        • Send money to: <strong>017XXXXXXXX</strong><br>
+                        • Use Order ID as reference<br>
+                        • Enter transaction details below
+                      {% elif value == 'card' %}
+                        • Enter your card details securely<br>
+                        • We support Visa, MasterCard, Amex
+                      {% elif value == 'emi' %}
+                        • Pay in easy monthly installments<br>
+                        • 12% interest per annum
+                      {% elif value == 'cod' %}
+                        • Pay when you receive your order<br>
+                        • Additional 30 TK processing fee
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Mobile Payment Fields -->
+              <div id="mobile_payment_fields" class="payment-fields-section">
+                <h5 class="border-bottom pb-2">Mobile Payment Details</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>{{ form.mobile_number.label }} *</label>
+                      {{ form.mobile_number }}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>{{ form.transaction_id.label }} *</label>
+                      {{ form.transaction_id }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Payment Fields -->
+              <div id="card_payment_fields" class="payment-fields-section">
+                <h5 class="border-bottom pb-2">Card Details</h5>
+                <div class="form-group">
+                  <label>{{ form.card_number.label }} *</label>
+                  {{ form.card_number }}
+                </div>
+                <div class="form-group">
+                  <label>{{ form.card_holder_name.label }} *</label>
+                  {{ form.card_holder_name }}
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>{{ form.expiry_date.label }} *</label>
+                      {{ form.expiry_date }}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>{{ form.cvv.label }} *</label>
+                      {{ form.cvv }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- EMI Fields -->
+              <div id="emi_fields" class="payment-fields-section">
+                <h5 class="border-bottom pb-2">EMI Details</h5>
+                <div class="form-group">
+                  <label class="d-block">{{ form.emi_month.label }} *</label>
+                  <div class="emi-options">
+                    {% for value, name in form.emi_month.field.choices %}
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input emi-radio" type="radio" 
+                             name="emi_month" id="emi_{{ value }}" value="{{ value }}">
+                      <label class="form-check-label" for="emi_{{ value }}">{{ name }}</label>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Card Number *</label>
+                  {{ form.card_number }}
+                </div>
+                <div class="form-group">
+                  <label>Card Holder Name *</label>
+                  {{ form.card_holder_name }}
+                </div>
+                
+                <!-- EMI Calculation Display -->
+                <div id="emi_calculation" class="alert alert-info mt-3" style="display: none;">
+                  <strong>EMI Breakdown:</strong>
+                  <div id="emi_details"></div>
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                  <i class="fas fa-lock me-2"></i>Complete Payment - ৳{{ total_price|floatformat:2 }}
+                </button>
+                <a href="{% url 'checkout' %}" class="btn btn-secondary btn-block mt-2">
+                  <i class="fas fa-arrow-left me-2"></i>Back to Checkout
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Order Summary</h5>
+          </div>
+          <div class="card-body">
+            <div class="order-summary">
+              <dl class="dlist-align">
+                <dt>Subtotal:</dt>
+                <dd class="text-right">৳{{ total|floatformat:2 }}</dd>
+              </dl>
+              <dl class="dlist-align">
+                <dt>VAT (1%):</dt>
+                <dd class="text-right">৳{{ vat|floatformat:2 }}</dd>
+              </dl>
+              <dl class="dlist-align">
+                <dt>Delivery Charge:</dt>
+                <dd class="text-right">৳{{ delivery_charge|floatformat:2 }}</dd>
+              </dl>
+              {% if discount_amount %}
+              <dl class="dlist-align">
+                <dt>Discount:</dt>
+                <dd class="text-right text-success">-৳{{ discount_amount|floatformat:2 }}</dd>
+              </dl>
+              {% endif %}
+              <hr>
+              <dl class="dlist-align">
+                <dt class="h5">Total:</dt>
+                <dd class="text-right h5 text-primary">৳{{ total_price|floatformat:2 }}</dd>
+              </dl>
+            </div>
+            
+            <!-- Order Information -->
+            <div class="order-info mt-4">
+              <h6>Order Information</h6>
+              <p><strong>Order ID:</strong> {{ order.order_number }}</p>
+              <p><strong>Items:</strong> {{ cart_items|length }} products</p>
+              <p><strong>Delivery:</strong> {{ order.city }}, {{ order.state }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Badge -->
+        <div class="card mt-3">
+          <div class="card-body text-center">
+            <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+            <h6>Secure Payment</h6>
+            <p class="small text-muted mb-0">
+              <i class="fas fa-lock me-1"></i>
+              Your payment information is encrypted and secure
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JavaScript for Dynamic Form Handling -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+  const mobileFields = document.getElementById('mobile_payment_fields');
+  const cardFields = document.getElementById('card_payment_fields');
+  const emiFields = document.getElementById('emi_fields');
+  const emiCalculation = document.getElementById('emi_calculation');
+  const emiDetails = document.getElementById('emi_details');
+  const totalAmount = {{ total_price }};
+
+  // Hide all payment fields initially
+  function hideAllFields() {
+    const allSections = document.querySelectorAll('.payment-fields-section');
+    allSections.forEach(section => {
+      section.style.display = 'none';
+    });
+    
+    // Hide all instructions
+    document.querySelectorAll('.payment-instructions').forEach(instruction => {
+      instruction.style.display = 'none';
+    });
+  }
+
+  // Show relevant fields based on selected payment method
+  function showRelevantFields() {
+    hideAllFields();
+    
+    const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    
+    // Show instructions for selected method
+    const selectedInstructions = document.getElementById(`instructions_${selectedMethod}`);
+    if (selectedInstructions) {
+      selectedInstructions.style.display = 'block';
+    }
+    
+    // Show relevant input fields
+    if (['bkash', 'nagad', 'rocket', 'upay'].includes(selectedMethod)) {
+      mobileFields.style.display = 'block';
+    } else if (selectedMethod === 'card') {
+      cardFields.style.display = 'block';
+    } else if ()selectedMethod === 'emi') {
+      emiFields.style.display = 'block';
+    }
