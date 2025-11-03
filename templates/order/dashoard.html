@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dashboard</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Feather Icons CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    <!-- Google Font (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Apply the Inter font family */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* cool-gray-300 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; /* cool-gray-400 */
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; /* cool-gray-100 */
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #6366f1; /* indigo-500 */
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 flex-shrink-0 w-64 overflow-y-auto transition-transform duration-300 ease-in-out transform -translate-x-full bg-gray-900 md:relative md:translate-x-0">
+            <!-- ... existing sidebar code ... -->
+            <div class="flex flex-col h-full text-white">
+                <!-- Sidebar Header -->
+                <div class="flex items-center justify-center h-20 px-6 border-b border-gray-700">
+                    <i data-feather="grid" class="w-8 h-8 text-indigo-400"></i>
+                    <span class="ml-3 text-2xl font-semibold">Dashboard</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="flex-1 px-4 py-6 space-y-2">
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-100 bg-gray-700 rounded-lg">
+                        <i data-feather="home" class="w-5 h-5"></i>
+                        <span class="ml-3">Home</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white">
+                        <i data-feather="bar-chart-2" class="w-5 h-5"></i>
+                        <span class="ml-3">Analytics</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white">
+                        <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                        <span class="ml-3">E-commerce</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white">
+                        <i data-feather="users" class="w-5 h-5"></i>
+                        <span class="ml-3">Users</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white">
+                        <i data-feather="settings" class="w-5 h-5"></i>
+                        <span class="ml-3">Settings</span>
+                    </a>
+                </nav>
+
+                <!-- Sidebar Footer -->
+                <div class="p-4 border-t border-gray-700">
+                    <div class="flex items-center">
+                        <img class="object-cover w-10 h-10 rounded-full" src="https://placehold.co/100x100/6366f1/white?text=A" alt="User avatar">
+                        <div class="ml-3">
+                            <p class="text-sm font-medium">Admin User</p>
+                            <p class="text-xs text-gray-400">admin@example.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ... end of existing sidebar code ... -->
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex flex-col flex-1 w-0 overflow-hidden">
+            <!-- Header -->
+            <header class="relative z-10 flex-shrink-0 h-16 bg-white shadow-md">
+                <div class="flex items-center justify-between h-full px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                    <!-- Mobile Menu Button -->
+                    <button id="menu-btn" class="text-gray-500 md:hidden focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                        <span class="sr-only">Open sidebar</span>
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+
+                    <!-- Search Bar -->
+                    <div class="relative flex-1 max-w-xs ml-4 md:ml-0">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i data-feather="search" class="w-5 h-5 text-gray-400"></i>
+                        </span>
+                        <input class="w-full py-2 pl-10 pr-4 text-gray-700 bg-gray-100 border border-transparent rounded-lg focus:outline-none focus:bg-white focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="text" placeholder="Search...">
+                    </div>
+
+                    <!-- Header Icons -->
+                    <div class="flex items-center ml-4 space-x-2">
+                        <!-- NEW: Gemini Insights Button -->
+                        <button id="get-insights-btn" class="flex items-center px-3 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span class="mr-1">✨</span> Get Insights
+                        </button>
+
+                        <button class="p-2 text-gray-500 bg-white rounded-full hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span class="sr-only">View notifications</span>
+                            <i data-feather="bell" class="w-6 h-6"></i>
+                        </button>
+                        <button class="p-2 text-gray-500 bg-white rounded-full hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <span class="sr-only">View messages</span>
+                            <i data-feather="message-circle" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Overlay for mobile sidebar -->
+            <div id="sidebar-overlay" class="fixed inset-0 z-20 bg-black bg-opacity-50 md:hidden" style="display: none;"></div>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container px-6 py-8 mx-auto">
+                    <h3 class="text-3xl font-medium text-gray-700">Dashboard</h3>
+
+                    <!-- Stat Cards -->
+                    <div id="stat-cards-container" class="grid gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <div class="p-6 bg-white rounded-lg shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-semibold text-gray-500">Total Revenue</span>
+                                <span class="p-2 text-green-500 bg-green-100 rounded-full">
+                                    <i data-feather="dollar-sign" class="w-5 h-5"></i>
+                                </span>
+                            </div>
+                            <p class="mt-2 text-3xl font-bold text-gray-800">$34,567</p>
+                            <p class="mt-1 text-sm text-green-600">+5.2% from last month</p>
+                        </div>
+
+                        <div class="p-6 bg-white rounded-lg shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-semibold text-gray-500">New Users</span>
+                                <span class="p-2 text-indigo-500 bg-indigo-100 rounded-full">
+                                    <i data-feather="users" class="w-5 h-5"></i>
+                                </span>
+                            </div>
+                            <p class="mt-2 text-3xl font-bold text-gray-800">1,204</p>
+                            <p class="mt-1 text-sm text-green-600">+12.4% from last month</p>
+                        </div>
+
+                        <div class="p-6 bg-white rounded-lg shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-semibold text-gray-500">Total Orders</span>
+                                <span class="p-2 text-blue-500 bg-blue-100 rounded-full">
+                                    <i data-feather="shopping-cart" class="w-5 h-5"></i>
+                                </span>
+                            </div>
+                            <p class="mt-2 text-3xl font-bold text-gray-800">589</p>
+                            <p class="mt-1 text-sm text-red-600">-1.8% from last month</p>
+                        </div>
+                        
+                        <div class="p-6 bg-white rounded-lg shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-semibold text-gray-500">Pending Tasks</span>
+                                <span class="p-2 text-yellow-500 bg-yellow-100 rounded-full">
+                                    <i data-feather="activity" class="w-5 h-5"></i>
+                                </span>
+                            </div>
+                            <p class="mt-2 text-3xl font-bold text-gray-800">23</p>
+                            <p class="mt-1 text-sm text-gray-500">In progress</p>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Grid (Chart, Table, and NEW AI Helper) -->
+                    <div class="grid grid-cols-1 gap-6 mt-8 lg:grid-cols-3">
+                        <!-- Revenue Chart -->
+                        <div class="p-6 bg-white rounded-lg shadow-lg lg:col-span-2">
+                            <h4 class="text-xl font-semibold text-gray-700">Revenue Overview</h4>
+                            <div class="mt-4">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- NEW: AI Task Helper -->
+                        <div class="p-6 bg-white rounded-lg shadow-lg">
+                            <h4 class="text-xl font-semibold text-gray-700">✨ AI Task Helper</h4>
+                            <p class="mt-2 text-sm text-gray-600">Break down a complex task into steps:</p>
+                            <div class="mt-4">
+                                <textarea id="task-input" class="w-full p-2 text-gray-700 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" rows="3" placeholder="e.g., Plan social media campaign for Q4"></textarea>
+                                <button id="task-btn" class="w-full px-4 py-2 mt-2 font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+                                    Break Down Task
+                                </button>
+                                <div id="task-output" class="mt-4 text-sm text-gray-700">
+                                    <!-- AI-generated tasks will appear here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders Table (moved to its own row for better layout) -->
+                    <div class="p-6 mt-8 bg-white rounded-lg shadow-lg">
+                        <h4 class="text-xl font-semibold text-gray-700">Recent Orders</h4>
+                        <div class="mt-4 overflow-x-auto">
+                            <table id="orders-table" class="w-full min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Order ID</th>
+                                        <th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Customer</th>
+                                        <th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">#1201</td>
+                                        <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">Jane Doe</td>
+                                        <td class="px-4 py-3 text-sm whitespace-nowrap">
+                                            <span class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">Shipped</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">#1202</td>
+                                        <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">John Smith</td>
+                                        <td class="px-4 py-3 text-sm whitespace-nowrap">
+                                            <span class="inline-flex px-2 text-xs font-semibold leading-5 text-yellow-800 bg-yellow-100 rounded-full">Processing</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">#1203</td>
+                                        <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">Bob Johnson</td>
+                                        <td class="px-4 py-3 text-sm whitespace-nowrap">
+                                            <span class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full">Canceled</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">#1204</td>
+                                        <td class="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">Alice Brown</td>
+                                        <td class="px-4 py-3 text-sm whitespace-nowrap">
+                                            <span class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">Shipped</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- NEW: Insights Modal -->
+    <div id="insights-modal" class="fixed inset-0 z-40 flex items-center justify-center w-full h-full modal-overlay bg-black bg-opacity-50" style="display: none;">
+        <div class="w-full max-w-lg p-6 bg-white rounded-lg shadow-2xl modal-content">
+            <div class="flex items-center justify-between pb-3 border-b">
+                <h4 class="text-xl font-semibold text-gray-700">✨ AI Dashboard Insights</h4>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div id="modal-body" class="mt-4">
+                <!-- Loading spinner -->
+                <div id="modal-loading" class="flex flex-col items-center justify-center w-full h-32">
+                    <div class="spinner"></div>
+                    <p class="mt-3 text-gray-600">Analyzing your data...</p>
+                </div>
+                <!-- AI content -->
+                <div id="modal-content" class="text-gray-700">
+                    <!-- Insights will be injected here -->
+                </div>
+                <!-- Error message -->
+                <div id="modal-error" class="hidden p-3 text-red-800 bg-red-100 rounded-lg">
+                    <!-- Error text will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // --- Mobile sidebar toggle ---
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        const toggleSidebar = () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.style.display = sidebar.classList.contains('-translate-x-full') ? 'none' : 'block';
+        };
+
+        menuBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // --- Chart.js - Revenue Chart ---
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const chartData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Revenue',
+                data: [5000, 6200, 7100, 6800, 7500, 8000, 7800, 8200, 8900, 9500, 9100, 10000],
+                borderColor: 'rgb(99, 102, 241)', // indigo-500
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                borderWidth: 2,
+                tension: 0.4, // Makes the line smooth
+                fill: true,
+            }]
+        };
+        const revenueChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (value) => '$' + value.toLocaleString()
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                interaction: { intersect: false, mode: 'index' },
+            }
+        });
+
+        // --- NEW: Gemini API Integration ---
+
+        // --- Modal Control ---
+        const insightsModal = document.getElementById('insights-modal');
+        const openModalBtn = document.getElementById('get-insights-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalBody = document.getElementById('modal-body');
+        const modalLoading = document.getElementById('modal-loading');
+        const modalContent = document.getElementById('modal-content');
+        const modalError = document.getElementById('modal-error');
+
+        const openModal = () => {
+            insightsModal.style.display = 'flex';
+            modalLoading.style.display = 'flex';
+            modalContent.innerHTML = '';
+            modalError.style.display = 'none';
+        };
+        const closeModal = () => {
+            insightsModal.style.display = 'none';
+        };
+
+        openModalBtn.addEventListener('click', () => {
+            openModal();
+            getDashboardInsights(); // Call the API function
+        });
+        closeModalBtn.addEventListener('click', closeModal);
+        // Close modal if overlay is clicked
+        insightsModal.addEventListener('click', (e) => {
+            if (e.target === insightsModal) {
+                closeModal();
+            }
+        });
+
+        // --- AI Task Helper ---
+        const taskInput = document.getElementById('task-input');
+        const taskBtn = document.getElementById('task-btn');
+        const taskOutput = document.getElementById('task-output');
+
+        taskBtn.addEventListener('click', async () => {
+            const taskDescription = taskInput.value.trim();
+            if (!taskDescription) {
+                taskOutput.innerHTML = '<p class="text-red-500">Please enter a task description.</p>';
+                return;
+            }
+
+            taskBtn.disabled = true;
+            taskBtn.innerHTML = 'Thinking...';
+            taskOutput.innerHTML = '<div class="flex justify-center"><div class="spinner"></div></div>';
+
+            const systemPrompt = "You are a project management assistant. Your job is to break down complex tasks into a simple, bulleted list of actionable sub-tasks. Respond only with the bulleted list.";
+            const userQuery = `Please break down the following complex task into a simple, bulleted list of actionable sub-tasks: "${taskDescription}"`;
+
+            try {
+                const result = await callGemini(userQuery, systemPrompt);
+                // Format the text response into an HTML list
+                const formattedResult = result
+                    .split(/[\n*]+/) // Split by newlines and asterisks
+                    .filter(item => item.trim().length > 0)
+                    .map(item => `<li class="ml-5 list-disc">${item.trim()}</li>`)
+                    .join('');
+                taskOutput.innerHTML = `<ul class="space-y-1">${formattedResult}</ul>`;
+            } catch (error) {
+                taskOutput.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+            } finally {
+                taskBtn.disabled = false;
+                taskBtn.innerHTML = 'Break Down Task';
+            }
+        });
+
+        // --- Dashboard Insights Function ---
+        const getDashboardInsights = async () => {
+            // 1. Gather data from the dashboard
+            let dashboardData = "Here is a summary of the dashboard:\n\n";
+
+            // Stat Cards
+            dashboardData += "Key Metrics:\n";
+            document.querySelectorAll('#stat-cards-container .p-6').forEach(card => {
+                const title = card.querySelector('span.text-sm').innerText;
+                const value = card.querySelector('p.text-3xl').innerText;
+                const change = card.querySelector('p.text-sm:not(.text-gray-500)').innerText;
+                dashboardData += `- ${title}: ${value} (${change})\n`;
+            });
+
+            // Chart Data
+            dashboardData += "\nRevenue Trend (by month):\n";
+            chartData.labels.forEach((label, index) => {
+                dashboardData += `- ${label}: $${chartData.datasets[0].data[index].toLocaleString()}\n`;
+            });
+
+            // Table Data
+            dashboardData += "\nRecent Orders Summary:\n";
+            document.querySelectorAll('#orders-table tbody tr').forEach(row => {
+                const id = row.cells[0].innerText;
+                const customer = row.cells[1].innerText;
+                const status = row.cells[2].innerText.trim();
+                dashboardData += `- Order ${id} for ${customer} is ${status}\n`;
+            });
+            
+            // 2. Call Gemini API
+            const systemPrompt = "You are a senior business analyst. Your job is to look at dashboard data and provide 2-3 concise, bulleted, actionable insights for a business owner. Do not just repeat the data. Provide actual advice or point out significant patterns (e.g., 'Revenue is up, but a decrease in new orders suggests a retention issue'). Respond only with the bulleted list.";
+            const userQuery = dashboardData;
+
+            try {
+                const result = await callGemini(userQuery, systemPrompt);
+                // Format response
+                const formattedResult = result
+                    .split(/[\n*]+/)
+                    .filter(item => item.trim().length > 0)
+                    .map(item => `<li class="ml-5 list-disc mb-2">${item.trim()}</li>`)
+                    .join('');
+                
+                modalContent.innerHTML = `<ul class="space-y-1">${formattedResult}</ul>`;
+            } catch (error) {
+                modalError.innerText = `Failed to get insights: ${error.message}`;
+                modalError.style.display = 'block';
+            } finally {
+                modalLoading.style.display = 'none';
+            }
+        };
+
+        // --- Core Gemini API Call Function ---
+        const API_KEY = ""; // Leave blank, will be handled by the environment
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+
+        // Utility for exponential backoff retry
+        const exponentialBackoff = async (fn, maxRetries = 5, baseDelay = 1000) => {
+            let attempt = 0;
+            while (attempt < maxRetries) {
+                try {
+                    return await fn();
+                } catch (error) {
+                    if (error.status === 429 || error.status >= 500) {
+                        attempt++;
+                        if (attempt >= maxRetries) throw error;
+                        const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        throw error; // Re-throw non-retryable errors
+                    }
+                }
+            }
+        };
+
+        const callGemini = async (userQuery, systemPrompt = "") => {
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+            };
+
+            if (systemPrompt) {
+                payload.systemInstruction = {
+                    parts: [{ text: systemPrompt }]
+                };
+            }
+
+            const fetchWithRetry = async () => {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const error = new Error(`HTTP error! status: ${response.status}`);
+                    error.status = response.status;
+                    throw error;
+                }
+                return response.json();
+            };
+
+            try {
+                const result = await exponentialBackoff(fetchWithRetry);
+                const candidate = result.candidates?.[0];
+                
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    return candidate.content.parts[0].text;
+                } else {
+                    throw new Error("Invalid response structure from API.");
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                throw new Error(error.message || "Failed to call Gemini API.");
+            }
+        };
+
+    </script>
+
+</body>
+</html>
+

@@ -5,15 +5,26 @@
 {% block content %}
   <section class="section-content padding-y bg">
     <div class="container">
-        {% if not cart_items %}
-          <h2 class="text-center">Your Shopping Is Empty</h2>
-          <br>
-          <div class="text-center">
-            <a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a>
+      <div class="row">
+        <aside class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <p class="card-text">{{order.first_name}} {{order.last_name}}</p>
+            </div>
           </div>
-        {% else %}
+        </aside>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
           <div class="row">
-            <aside class="col-lg-9">
+            
                 <div class="card">
                     {% for msg in messages %}
                       <div class="alert alert-warning alert-dismissible fade show" role="alert">

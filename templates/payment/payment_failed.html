@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container text-center" style="margin-top: 100px; margin-bottom: 100px;">
+    <i class="fas fa-times-circle" style="font-size: 80px; color: #dc3545;"></i>
+    <h2 class="mt-4">Payment Failed</h2>
+    <p class="lead">We were unable to process your payment.</p>
+    {% if error %}
+    <p>{{ error }}</p>
+    {% endif %}
+    <p>Please try again or contact support if the problem persists.</p>
+    <a href="{% url 'checkout' %}" class="btn btn-warning mt-3">Try Again</a>
+    <a href="{% url 'store' %}" class="btn btn-secondary mt-3">Continue Shopping</a>
+</div>
+{% endblock %}

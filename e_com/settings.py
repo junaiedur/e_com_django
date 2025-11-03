@@ -39,6 +39,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# সঠিক settings
+# DEBUG = False  # Production এ False করতে ভুলবেন না
+# ALLOWED_HOSTS = ['yourdomain.com', 'localhost', '127.0.0.1']
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -57,6 +62,7 @@ INSTALLED_APPS = [
     'carts',
     'order',
     'Coupon',
+    'payment',
   
 ]
 
@@ -181,3 +187,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 
 #castomize admin pannel:
+# Add this at the end
+ADMIN_EMAIL = 'admin@yourdomain.com'  # Replace with your admin email
+
+# Session settings
+SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
+SESSION_SAVE_EVERY_REQUEST = True

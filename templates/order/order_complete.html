@@ -1,0 +1,109 @@
+
+
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="section-content padding-y bg">
+  <div class="container text-center">
+    <div class="alert alert-success mt-4 shadow-sm" role="alert">
+      <h2 class="mb-2"><i class="fa fa-check-circle text-success"></i> Order Placed Successfully!</h2>
+      <p class="lead">Thank you {{ order.user.first_name }}! Your order has been received and is being processed.</p>
+      <hr>
+      <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+      <p><strong>Payment Method:</strong> {{ payment.payment_method|title }}</p>
+      <p><strong>Payment Status:</strong> {{ payment.status|title }}</p>
+      <p><strong>Transaction ID:</strong> {{ payment.transaction_id|default:"N/A" }}</p>
+    </div>
+     
+    <div class="card mt-5 shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Order Details</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped">
+          <thead class="thead-light">
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price (Tk)</th>
+              <th>Subtotal (Tk)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order_products %}
+            <tr>
+              <td>
+                {{ item.product.product_name }}
+                {% if item.variations.all %}
+                  <br>
+                  <small class="text-muted">
+                    {% for var in item.variations.all %}
+                      {{ var.variation_category|capfirst }}: {{ var.variation_value|capfirst }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </small>
+                {% endif %}
+              </td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.product_price|floatformat:2 }}</td>
+              <td>{{ item.get_total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="row justify-content-end mt-4">
+          <div class="col-md-6">
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Subtotal:</span> <strong>{{ order.order_total|floatformat:2 }} Tk</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span>VAT (1%):</span> <strong>{{ order.tax|floatformat:2 }} Tk</strong>
+              </li>
+              {% if order.discount %}
+              <li class="list-group-item d-flex justify-content-between text-success">
+                <span>Discount:</span> <strong>-{{ order.discount|floatformat:2 }} Tk</strong>
+              </li>
+              {% endif %}
+              {% if order.delivery_charge %}
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Delivery Charge:</span> <strong>{{ order.delivery_charge|floatformat:2 }} Tk</strong>
+              </li>
+              {% endif %}
+              <li class="list-group-item d-flex justify-content-between bg-light">
+                <span><strong>Total Paid:</strong></span>
+                <strong class="text-primary">{{ order.grand_total|floatformat:2 }} Tk</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-5 text-center">
+          <a href="{% url 'store' %}" class="btn btn-outline-primary btn-lg">
+            <i class="fa fa-shopping-cart"></i> Continue Shopping
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5 mb-4">
+      <p class="text-muted">
+        A confirmation email has been sent to <strong>{{ order.email }}</strong>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .alert-success {
+    border-radius: 12px;
+  }
+  .card {
+    border-radius: 12px;
+  }
+  .list-group-item {
+    font-size: 16px;
+  }
+</style>
+{% endblock %}

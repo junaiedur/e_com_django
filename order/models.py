@@ -5,7 +5,6 @@ from carts.models import Coupon, DeliveryMethod
 from django.core.validators import MinValueValidator
 from decimal import Decimal
 from django.conf import settings
-from django.shortcuts import redirect, get_object_or_404
 # Create your models here.
 
 
@@ -49,6 +48,7 @@ class Payment(models.Model):
 
      # For EMI
     emi_month = models.IntegerField(blank=True, null=True)
+    emi_interest = models.DecimalField(max_digits=5, decimal_places=2, default=12.0)
     
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -83,18 +83,18 @@ class Payment(models.Model):
 
 
 class Order(models.Model):
-    NEW = 'New'
-    ACCEPTED = 'Accepted'
-    COMPLETED = 'Completed'
-    CANCELLED = 'Cancelled'
-    REFUNDED = 'Refunded'
+    # NEW = 'New'
+    # ACCEPTED = 'Accepted'
+    # COMPLETED = 'Completed'
+    # CANCELLED = 'Cancelled'
+    # REFUNDED = 'Refunded'
 
     STATUS_CHOICES = [
-        (NEW, 'New'),
-        (ACCEPTED, 'Accepted'),
-        (COMPLETED, 'Completed'),
-        (CANCELLED, 'Cancelled'),
-        (REFUNDED, 'Refunded'),
+        ('New', 'New'),
+        ('Accepted', 'Accepted'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+        ('Refunded', 'Refunded'),
     ]
 
     user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
@@ -113,16 +113,14 @@ class Order(models.Model):
     
     order_total = models.DecimalField(max_digits=12, decimal_places=2)
     tax = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     delivery_charge = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    grand_total = models.DecimalField(max_digits=12, decimal_places=2)
+    grand_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     
     # Status fields
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='New')
     ip = models.CharField(max_length=20, blank=True)
     is_ordered = models.BooleanField(default=False)
     
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='New')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
@@ -141,15 +139,15 @@ class Order(models.Model):
     def full_address(self):
         return f'{self.address_line_1}, {self.address_line_2}' if self.address_line_2 else self.address_line_1
 
-    def calculate_totals(self):
-        from django.db.models import Sum
-        order_products_total = OrderProduct.objects.filter(order=self).aggregate(
-             total=Sum(models.F('product_price') * models.F('quantity'))
-        )['total'] or 0
-        self.order_total = order_products_total
-        self.tax = (self.order_total * Decimal('0.01'))  # 1% VAT
-        self.grand_total = self.order_total + self.tax + self.delivery_charge - self.discount
-        self.save()
+    # def calculate_totals(self):
+    #     from django.db.models import Sum, F
+    #     order_products_total = OrderProduct.objects.filter(order=self).aggregate(
+    #          total=Sum(models.F('product_price') * models.F('quantity'))
+    #     )['total'] or 0
+    #     self.order_total = order_products_total
+    #     self.tax = (self.order_total * Decimal('0.01'))  # 1% VAT
+    #     self.grand_total = self.order_total + self.tax + self.delivery_charge - self.discount
+    #     self.save()
 
 
 
@@ -175,6 +173,6 @@ class OrderProduct(models.Model):
     class Meta:
         unique_together = ('order', 'product')
         verbose_name = 'Order Product'
-        verbose_name_plural = 'Order Products'
+        # verbose_name_plural = 'Order Products'
 
 #ai product ta ami error asle delete kore dio and oupo r 2 ta line ami comment kora teke uncomment kore rakho
