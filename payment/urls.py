@@ -5,6 +5,8 @@ app_name = 'payment'
 
 urlpatterns = [
     # bKash URLs
-    path('initiate-bkash/', views.initiate_bkash_payment, name='initiate_bkash_payment'),
-    path('bkash/callback/', views.bkash_payment_callback, name='bkash_payment_callback'),
+    path('bkash/initiate/<int:order_id>/', views.initiate_bkash_payment, name='initiate_bkash'),
+    path('bkash/callback/', views.bkash_callback, name='bkash_callback'),
+    path('success/', views.payment_success, name='payment_success'),
+    path('failed/', views.payment_failed, name='payment_failed'),
 ]

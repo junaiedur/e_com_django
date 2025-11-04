@@ -30,9 +30,7 @@
                       {% if form.payment_method.value|stringformat:"s" == value|stringformat:"s" %}checked{% endif %} required>
                         <label class="form-check-label" for="payment_{{ value }}">
                           <strong>{{ name }}</strong>
-                        </label>
-
-                          
+                        </label>     
                     </div>
                   {% endfor %}
                   {% if form.payment_method.errors %}
@@ -93,208 +91,41 @@
   </section>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      function togglePaymentFields() {
-        const selectedMethodRadio = document.querySelector('input[name="payment_method"]:checked');
-        if (!selectedMethodRadio) {
-          return;
-        }
-        const selectedMethod = selectedMethodRadio.value;
-        document.querySelectorAll('.payment-fields').forEach(field => {
-          field.style.display = 'none';
-        
-        });
-        if (['bkash', 'nagad', 'rocket', 'upay'].includes(selectedMethod)) {
-          document.getElementById('mobile_payment_fields').style.display = 'block';
-        } else if (selectedMethod === 'card') {
-          document.getElementById('card_payment_fields').style.display = 'block';
-        } else if (selectedMethod === 'emi') {
-          document.getElementById('card_payment_fields').style.display = 'block';
-          document.getElementById('emi_fields').style.display = 'block';
-        }
-      }
-      document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
-        radio.addEventListener('change', togglePaymentFields);
-      });
-      togglePaymentFields()
-    });
-  </script>
-{% endblock %}
-
-
-
-<!-- ei part ta gemini te niyechi bkash payment implimentation r time a -->
-
-<!-- {% extends 'base.html' %}
-{% load static %}
-{% block content %}
-  <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
-  <section class="section-content padding-y bg">
-    <div class="container">
-      <div class="row justify-content-center">
-        <aside class="col-md-8">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title mb-4">Complete Your Payment</h4>
-              <p><strong>Order Total:</strong> {{ order.grand_total | floatformat:2 }} TK</p>
-              <hr>
-              {% include 'footer/alarts.html' %}
-              
-              <form action="{% url 'payments' %}" method="POST" id="payment_form">
-                {% csrf_token %}
-                <div class="form-group">
-                  <label class="font-weight-bold">Select Payment Method:</label><br>
-                  {% for value, name in form.payment_method.field.choices %}
-                    <div class="form-check m-3">
-                      <input class="form-check-input" type="radio" name="payment_method" id="payment_{{ value }}" value="{{ value }}"
-                      {% if form.payment_method.value|stringformat:"s" == value|stringformat:"s" %}checked{% endif %} required>
-                        <label class="form-check-label" for="payment_{{ value }}">
-                          <strong>{{ name }}</strong>
-                        </label>
-                    </div>
-                  {% endfor %}
-                  {% if form.payment_method.errors %}
-                    <div class="invalid-feedback d-block">
-                      {{ form.payment_method.errors.as_text }}
-                    </div>
-                  {% endif %}
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-block mt-4" id="manual_pay_button" style="display:none;">
-                  Confirm Order (Cash On Delivery)
-                </button>
-              </form>
-
-              <button class="btn btn-danger btn-block mt-4" id="bKash_button" style="display:none;">
-                Pay {{ order.grand_total | floatformat:2 }} TK with bKash
-              </button>
-              <p id="bkash-loading" style="display:none;" class="text-center">Initializing bKash payment...</p>
-              
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </section>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const bKashButton = document.getElementById('bKash_button');
-      const manualPayButton = document.getElementById('manual_pay_button');
-      const bKashLoading = document.getElementById('bkash-loading');
-      
-      const paymentForm = document.getElementById('payment_form');
-
-      // CSRF টোকেন জাভাস্ক্রিপ্টে ব্যবহারের জন্য
-      function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';');
-              for (let i = 0; i < cookies.length; i++) {
-                  const cookie = cookies[i].trim();
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                      break;
-                  }
-              }
+      const bkashRadio = document.getElementById('payment_bkash');
+      const paymentForm = document.querySelector('form');
+      if (bkashRadio) {
+        paymentForm.addEventListener('submit', function(e) {
+          if (bkashRadio.checked) {
+            e.preventDefault();
+            initiateBkashPayment();
           }
-          return cookieValue;
+        });
       }
-      const csrftoken = getCookie('csrftoken');
-
-      // কোন পেমেন্ট মেথড সিলেক্টেড তার উপর ভিত্তি করে বাটন দেখানো
-      function togglePaymentButton() {
-        const selectedMethodRadio = document.querySelector('input[name="payment_method"]:checked');
-        if (!selectedMethodRadio) {
-          bKashButton.style.display = 'none';
-          manualPayButton.style.display = 'none';
-          return;
-        }
-
-        const selectedMethod = selectedMethodRadio.value;
-
-        if (selectedMethod === 'bkash') {
-          bKashButton.style.display = 'block';
-          manualPayButton.style.display = 'none';
-        } else if (selectedMethod === 'cod') {
-          bKashButton.style.display = 'none';
-          manualPayButton.style.display = 'block';
-        } else {
-          // অন্যান্য ম্যানুয়াল পেমেন্টের জন্য (nagad, rocket ইত্যাদি)
-          // আপাতত হাইড রাখছি, কারণ সেগুলোর জন্য আপনি API ইন্টিগ্রেট করেননি
-          bKashButton.style.display = 'none';
-          manualPayButton.style.display = 'none';
-          // যদি ম্যানুয়াল ইনপুটের জন্য হয়, তবে manualPayButton দেখাতে পারেন
-        }
-      }
-
-      // পেমেন্ট মেথড চেঞ্জ হলে বাটন টগল করুন
-      document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
-        radio.addEventListener('change', togglePaymentButton);
-      });
-      
-      // পেজ লোডেও একবার কল করুন
-      togglePaymentButton();
-
-      // bKash বাটনে ক্লিক করলে
-      bKashButton.addEventListener('click', function() {
-        bKashButton.disabled = true;
-        bKashLoading.style.display = 'block';
-
-        // ধাপ ১: আমাদের সার্ভার থেকে bKash paymentID আনা
-        fetch("{% url 'payment:initiate_bkash_payment' %}", {
+      function initiateBkashPayment() {
+        const orderId = {{ order.id }};
+        fetch(`/payments/bkash/initiate/${orderId}/`, {
           method: 'POST',
-          headers: {
-            'X-CSRFToken': csrftoken,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({}) // খালি বডি পাঠালেই চলবে, কারণ অর্ডার আইডি সেশনে আছে
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+            }
+
         })
         .then(response => response.json())
         .then(data => {
-          bKashLoading.style.display = 'none';
-          
-          if (data.status === 'success') {
-            // ধাপ ২: bKash iFrame শুরু করা
-            bKash.init({
-              paymentMode: 'checkout',
-              paymentRequest: {
-                amount: '{{ order.grand_total }}',
-                intent: 'sale',
-                paymentID: data.paymentID // আমাদের সার্ভার থেকে পাওয়া paymentID
-              },
-              onSuccess: function (data) {
-                // এই onSuccess কলব্যাকটি bKash iFrame সফলভাবে পেমেন্ট এক্সিকিউট করার পর কল হয়
-                // কিন্তু আসল ভেরিফিকেশন আমাদের সার্ভারের কলব্যাক URL এ হয়
-                // আমরা ইউজারকে শুধু ধন্যবাদ পেজে পাঠাবো
-                // কলব্যাক URL নিজে থেকেই ইউজারকে রিডাইরেক্ট করবে
-                window.location.href = "{% url 'payment:bkash_payment_callback' %}?paymentID=" + data.paymentID + "&status=success";
-              },
-              onError: function () {
-                bKash.execute().onError();
-                bKashButton.disabled = false;
-                alert('bKash payment failed.');
-              },
-              onClose: function () {
-                bKashButton.disabled = false;
-                alert('You have closed the bKash payment window.');
-              }
-            });
-            
-            // iFrame ট্রিগার করুন
-            bKash.checkout.onClick(); 
+          if (data.success) {
+            window.location.href = data.bkash_url;
           } else {
-            bKashButton.disabled = false;
-            alert('Error: ' + data.message);
+            alert('bKash payment initiation failed: ' + data.error);
           }
         })
         .catch(error => {
-          bKashLoading.style.display = 'none';
-          bKashButton.disabled = false;
-          alert('An error occurred. Please try again.');
           console.error('Error:', error);
-        });
-      });
+          alert('Payment initiation failed');
 
+        });
+      }
     });
+    
   </script>
-{% endblock %} -->
+{% endblock %}

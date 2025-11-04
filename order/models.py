@@ -52,10 +52,24 @@ class Payment(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
 
-     # Additional fields
+    # Additional fields b
     payment_details = models.JSONField(blank=True, null=True)  # For storing additional payment info
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+    # bKash specific fields by deepseek
+    bkash_payment_id = models.CharField(max_length=100, blank=True, null=True)
+    bkash_transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    bkash_merchant_invoice = models.CharField(max_length=100, blank=True, null=True)
+    
+    # Payment status tracking by deepseek
+    bkash_create_time = models.DateTimeField(null=True, blank=True)
+    bkash_update_time = models.DateTimeField(null=True, blank=True)
+
+
+
+
 
     def __str__(self):
         return f"{self.payment_id} - {self.get_payment_method_display()}"

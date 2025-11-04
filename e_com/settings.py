@@ -19,20 +19,20 @@ import environ
 env = environ.Env(
     DEBUG=(bool, False)
 )
-environ.Env.read_env() # .env ফাইল রিড করবে
+# environ.Env.read_env() # .env ফাইল রিড করবে
 
-env = environ()
-# bKash Configuration
-BKASH_APP_KEY = env('BKASH_APP_KEY')
-BKASH_APP_SECRET = env('BKASH_APP_SECRET')
-BKASH_USERNAME = env('BKASH_USERNAME')
-BKASH_PASSWORD = env('BKASH_PASSWORD')
-BKASH_SANDBOX = env.bool('BKASH_SANDBOX', default=True)
+# bKash Payment Configuration
+BKASH_CONFIG = {
+    'BASE_URL': 'https://tokenized.sandbox.bka.sh/v1.2.0-beta',  # Sandbox URL
+    # 'BASE_URL': 'https://tokenized.pay.bka.sh/v1.2.0-beta',  # Production URL
+    'APP_KEY': 'your_bkash_app_key_here',
+    'APP_SECRET': 'your_bkash_app_secret_here',
+    'USERNAME': 'your_bkash_username_here',
+    'PASSWORD': 'your_bkash_password_here',
+}
 
-if BKASH_SANDBOX:
-    BKASH_BASE_URL = "https://tokenized.sandbox.bka.sh/v1.2.0-beta/tokenized"
-else:
-    BKASH_BASE_URL = "https://tokenized.pay.bka.sh/v1.2.0-beta/tokenized"
+# Callback URL for bKash
+BKASH_CALLBACK_URL = 'http://yourdomain.com/payments/bkash/callback/'
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -208,9 +208,3 @@ SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
 SESSION_SAVE_EVERY_REQUEST = True
 
 
-#bkash:
-BKASH_APP_KEY="your_sandbox_app_key"
-BKASH_APP_SECRET="your_sandbox_app_secret"
-BKASH_USERNAME="your_sandbox_username"
-BKASH_PASSWORD="your_sandbox_password"
-BKASH_SANDBOX=True
