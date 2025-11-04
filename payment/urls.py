@@ -1,16 +1,10 @@
-
-from django.urls import path
-# payment/urls.py
 from django.urls import path
 from . import views
 
-# This is optional, but good practice for namespacing
 app_name = 'payment'
 
-# The list MUST be named 'urlpatterns' and it must be a list (using [])
 urlpatterns = [
-    # Add your URL patterns here.
-    # If you have none yet, you can leave it empty for now,
-    # but it's better to have a placeholder.
-    # Example: path('checkout/', views.checkout, name='checkout'),
+    # bKash URLs
+    path('initiate-bkash/', views.initiate_bkash_payment, name='initiate_bkash_payment'),
+    path('bkash/callback/', views.bkash_payment_callback, name='bkash_payment_callback'),
 ]

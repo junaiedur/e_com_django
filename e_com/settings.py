@@ -21,6 +21,19 @@ env = environ.Env(
 )
 environ.Env.read_env() # .env ফাইল রিড করবে
 
+env = environ()
+# bKash Configuration
+BKASH_APP_KEY = env('BKASH_APP_KEY')
+BKASH_APP_SECRET = env('BKASH_APP_SECRET')
+BKASH_USERNAME = env('BKASH_USERNAME')
+BKASH_PASSWORD = env('BKASH_PASSWORD')
+BKASH_SANDBOX = env.bool('BKASH_SANDBOX', default=True)
+
+if BKASH_SANDBOX:
+    BKASH_BASE_URL = "https://tokenized.sandbox.bka.sh/v1.2.0-beta/tokenized"
+else:
+    BKASH_BASE_URL = "https://tokenized.pay.bka.sh/v1.2.0-beta/tokenized"
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -193,3 +206,11 @@ ADMIN_EMAIL = 'admin@yourdomain.com'  # Replace with your admin email
 # Session settings
 SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
 SESSION_SAVE_EVERY_REQUEST = True
+
+
+#bkash:
+BKASH_APP_KEY="your_sandbox_app_key"
+BKASH_APP_SECRET="your_sandbox_app_secret"
+BKASH_USERNAME="your_sandbox_username"
+BKASH_PASSWORD="your_sandbox_password"
+BKASH_SANDBOX=True
