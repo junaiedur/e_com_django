@@ -1,0 +1,122 @@
+<!-- {% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <style>
+    @media print {
+        .no-print { display: none !important; }
+        .card { border: none; box-shadow: none; }
+    }
+    .table th, .table td { vertical-align: middle; }
+    .invoice-header { display:flex; justify-content: space-between; align-items: center; }
+  </style>
+  <div class="container my-4">
+    <div class="card">
+        <div class="card-body p-4">
+            <div class="invoice-header mb-4">
+                <div>
+                    <h3 class="mb-0">Invoice</h3>
+                    <small class="text-muted">#{{ order.order_number }}</small>
+                </div>
+                <div class="text-right">
+                    <h5 class="mb-0">Total: {{ order.grand_total|floatformat:2 }} TK</h5>
+                    <small class="text-muted">Date: {{ order.created_at|date:"d M Y, h:i A" }}</small>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-uppercase text-muted">Billed To</h6>
+                    <p class="mb-1"><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
+                    <p class="mb-1">{{ order.address_line_1 }}{% if order.address_line_2 %}, {{ order.address_line_2 }}{% endif %}</p>
+                    <p class="mb-1">{{ order.city }}, {{ order.state }}, {{ order.country }}</p>
+                    <p class="mb-1">Phone: {{ order.phone }}</p>
+                    <p class="mb-0">Email: {{ order.email }}</p>
+                </div>
+                <div class="col-md-6 text-md-right">
+                    <h6 class="text-uppercase text-muted">Payment</h6>
+                    <p class="mb-1"><strong>Method:</strong> {{ payment.payment_method|upper }}</p>
+                    {% if payment.payment_method in 'bkash,nagad,rocket,upay' %}
+                      <p class="mb-1"><strong>Mobile:</strong> {{ payment.mobile_number }}</p>
+                      <p class="mb-0"><strong>Trx ID:</strong> {{ payment.transaction_id }}</p>
+                    {% elif payment.payment_method == 'card' or payment.payment_method =='emi' %}
+                      <p class="mb-1"><strong>Card:</strong> **** **** **** {{ payment.card_number }}</p>
+                      <p class="mb-0"><strong>Card Holder:</strong> {{ payment.card_holder_name }}</p>
+                      {% if payment.payment_method == 'emi' %}
+                        <p class="mb-0"><strong>EMI:</strong> {{ payment.emi_month }} months</p>
+                      {% endif %}
+                    
+                    {% elif payment.payment_method == 'cod' %}
+                        <p class="mb-0">Cash on Delivery</p>
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-bordered mb-3">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Product</th>
+                            <th class="text-center" style="width:100px;">Qty</th>
+                            <th class="text-right" style="width:140px;">Unit Price</th>
+                            <th class="text-right" style="width:160px;">Line Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                          <tr>
+                            <td>
+                                <div><strong>{{ item.product.product_name }}</strong></div>
+                                {% if item.variations %}
+                                  <small class="text-muted">
+                                    {% for v in item.variations %}
+                                      {{ v.variation_category|capfirst }}: {{ v.variation_value|capfirst }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                  </small>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ item.quantity }}</td>
+                            <td class="text-right">{{ item.product_price|floatformat:2 }} TK</td>
+                            <td class="text-right">{{ item.line_total|floatformat:2 }} TK</td>
+                          </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-right">Subtotal</th>
+                            <th class="text-right">{{ subtotal|floatformat:2 }} TK</th> 
+                        </tr>
+                        <tr>
+                            <th colspan="3" class="text-right">VAT (1%)</th>
+                            <th class="text-right">{{ order.tax|floatformat:2 }} TK</th>
+                        </tr>
+                        {% if order.delivery_charge %}
+                          <tr>
+                            <th colspan="3" class="text-right">Delivery</th>
+                            <th class="text-right">{{ order.delivery_charge|floatformat:2 }} TK</th>
+                          </tr>
+                        {% endif %}
+                        {% if order.discount %}
+                          <tr>
+                            <th colspan="3" class="text-right">Discount</th>
+                            <th class="text-right">-{{ order.discount|floatformat:2 }} TK</th>
+                          </tr>
+                        {% endif %}
+                        <tr>
+                            <th colspan="3" class="text-right">Grand Total</th>
+                            <th class="text-right">{{ order.grand_total|floatformat:2 }} TK</th>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div>
+            <p class="text-muted">Status: <strong>{{ order.status }}</strong></p>
+            {% if order.order_note %}<p class="mb-0"><strong>Note:</strong> {{ order.order_note }}</p>{% endif %}
+            <div class="mt-4 d-flex justify-content-between no-print">
+                <a href="{% url 'store' %}" class="btn btn-outline-secondary">Back to shop</a>
+                <button onclick="window.print()" class="btn btn-primary">Print / Save PDF</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+{% endblock %} -->

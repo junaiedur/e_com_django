@@ -39,7 +39,7 @@ def register(request):
             user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
             user.phone_number = phone_number
             user.save()
-#user activation
+            #user activation
             current_site = get_current_site(request)
             mail_subject = 'Activate your account.'
             message = render_to_string('account/account_variafication_email.html', {

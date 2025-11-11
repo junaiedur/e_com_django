@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+USE_WEASY = True
 from pathlib import Path
 import os
 
@@ -52,8 +52,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# সঠিক settings
-# DEBUG = False  # Production এ False করতে ভুলবেন না
+# DEBUG = False  
 # ALLOWED_HOSTS = ['yourdomain.com', 'localhost', '127.0.0.1']
 
 
@@ -206,5 +205,4 @@ ADMIN_EMAIL = 'admin@yourdomain.com'  # Replace with your admin email
 # Session settings
 SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
 SESSION_SAVE_EVERY_REQUEST = True
-
 

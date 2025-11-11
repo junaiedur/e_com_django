@@ -81,7 +81,9 @@
                     <small class="form-text text-danger">{{ form.emi_month.errors.as_text }}</small>
                   </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block mt-4">Pay {{ order.grand_total | floatformat:2 }} TK</button>
+                <button type="submit" class="btn btn-primary btn-block mt-4">Payment {{ order.grand_total | floatformat:2 }} TK</button>
+                <br> OR
+                <button type="submit" class="btn btn-primary btn-block mt-4">Download Invoice </button>
               </form>
             </div>
           </div>

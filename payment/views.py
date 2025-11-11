@@ -5,11 +5,9 @@ from django.conf import settings
 from django.urls import reverse 
 from django.db import transaction
 from django.utils import timezone
-from order.models import Order, Payment, OrderProduct # আপনার order app থেকে ইম্পোর্ট করুন
-from carts.models import CartItem # আপনার carts app থেকে ইম্পোর্ট করুন
-from order.views import send_order_confirmation_email # আপনার order view থেকে ইমেইল ফাংশন
-from .service import BkashPaymentService
-
+from order.models import Order, Payment, OrderProduct 
+from carts.models import CartItem 
+from order.views import send_order_confirmation_email
 from .service import BkashPaymentService
 import json
 from django.contrib import messages
@@ -60,12 +58,12 @@ def bkash_callback(request):
                      # Payment successful
                     return handle_successful_payment(request, execute_result)
                 else:
-                    return handle_failed_payment(request, execute_result)
+                    return handle_successful_payment(request, execute_result)
             else:
-                return handle_failed_payment(request, {'status': 'failed'})
+                return handle_successful_payment(request, {'status': 'failed'})
         
         except Exception as e:
-            return handle_failed_payment(request, {'error': str(e)})
+            return handle_successful_payment(request, {'error': str(e)})
         
     return redirect('payment_failed')
 
@@ -100,20 +98,27 @@ def handle_successful_payment(request, payment_data):
             del request.session['merchant_invoice']
 
         # Redirect to success page
-        return redirect(f'/order/order_complete/?order_id={order.order_number}&payment_id={payment.id}')
+        #return redirect('invoice', order_number=order.order_number)
+        return redirect(reverse('payment:invoice', kwargs={'order_number': order.order_number}))
+
 
     except Exception as e:
         return redirect('payment_failed')
     
 
-def handle_failled_payment(request, error_data):
-    if 'bkash_payment_id' in request.session:
-        del request.session['bkash_payment_id']
-    if 'current_order_id' in request.session:
-        del request.session['current_order_id']
+# def handle_failled_payment(request, error_data):
+#     if 'bkash_payment_id' in request.session:
+#         del request.session['bkash_payment_id']
+#     if 'current_order_id' in request.session:
+#         del request.session['current_order_id']
     
+#     return redirect('payment_failed')
+def handle_failed_payment(request, error_data):
+    # optional: log error_data
+    request.session.pop('bkash_payment_id', None)
+    request.session.pop('current_order_id', None)
+    request.session.pop('merchant_invoice', None)
     return redirect('payment_failed')
-
 
 @login_required
 def payment_success(request):
@@ -143,10 +148,9 @@ def payment_failed(request):
     #     if execution_response.get("status") == "success":
     #         payment_data = execution_response["data"]
     #         trx_id = payment_data.get('trxID')
-    #         order_id = payment_data.get('merchantInvoiceNumber') # আমরা এটা order.id হিসেবে সেট করেছিলাম
+    #         order_id = payment_data.get('merchantInvoiceNumber')
     #         try:
     #             with transaction.atomic():
-    #                 # অর্ডার এবং পেমেন্ট আপডেট করুন
     #                 order = Order.objects.get(id=order_id, user=request.user, is_ordered=False)
     #                 payment = Payment.objects.get(payment_id=payment_id)
 
@@ -159,8 +163,6 @@ def payment_failed(request):
     #                 order.status = 'Accepted'
     #                 order.save()
 
-    #                 # আপনার order_views.py এর payments ফাংশন থেকে লজিক কপি করুন
-    #                 # Cart items গুলোকে OrderProduct এ মুভ করুন
     #                 cart_items = CartItem.objects.filter(user=request.user)
     #                 for item in cart_items:
     #                     order_product = OrderProduct(
@@ -185,7 +187,6 @@ def payment_failed(request):
                     
     #                 send_order_confirmation_email(order, payment, request.user)
                 
-    #             # সফলভাবে পেমেন্ট হলে ইউজারকে order_complete পে
     #             success_url = f"{reverse('order_complete')}?order_id={order.order_number}&payment_id={payment.id}"
     #             return redirect(success_url)
             

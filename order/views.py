@@ -670,6 +670,7 @@
 
 
 
+from io import BytesIO
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -923,3 +924,118 @@ def order_detail(request, order_number):
         'order_products': order_products,
     }
     return render(request, 'payment/order_detail.html', context)
+
+
+@login_required(login_url='login')
+def invoice_view(request, order_number):
+    order = get_object_or_404(Order, order_number=order_number, user=request.user)
+    payment = order.payment
+    order_products = OrderProduct.objects.filter(order=order).select_related('product').prefetch_related('variations')
+
+    items = []
+    subtotal = Decimal('0.00')
+    for op in order_products:
+        line_total = op.product_price * op.quantity
+        subtotal += line_total
+        items.append({
+            "product": op.product,
+            "quantity": op.quantity,
+            "product_price": op.product_price,
+            "line_total": line_total,
+            "variations": list(op.variations.all()),
+        })
+    context = {
+        "order": order,
+        "payment": payment,
+        "items": items,
+        "subtotal": subtotal,
+    }
+    return render(request, "order/invoice.html", context)
+
+
+def _render_pdf_from_html(request, template_name, context, filename):
+    html = render_to_string(template_name, context)
+    resp = HttpResponse(content_type='application/pdf')
+    resp['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    if _USE_WEASY:
+        # base_url দিয়ে static/media resolve হবে
+        HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf(resp)
+    else:
+        result = BytesIO()
+        pisa.CreatePDF(src=html, dest=result)
+        resp.write(result.getvalue())
+    return resp
+
+
+# --- A) Checkout পেজ থেকে Proforma/Cart Invoice ---
+@login_required(login_url='login')
+def download_cart_invoice(request):
+    from carts.models import CartItem, Coupon, DeliveryMethod
+
+    cart_items = CartItem.objects.filter(user=request.user)
+    if not cart_items.exists():
+        messages = __import__('django.contrib.messages').contrib.messages
+        messages.warning(request, "Your cart is empty!")
+        return redirect('store')
+    
+    # same math as place_order()
+    total = sum(item.product.price * item.quantity for item in cart_items)
+    vat = total * Decimal('0.01')
+
+    discount_amount = Decimal('0.00')
+    coupon = None
+    cid = request.session.get('coupon_id')
+    if cid:
+        try:
+            coupon = Coupon.objects.get(id=cid)
+            if coupon.is_valid(total):
+                discount_amount = coupon.get_discount_amount(total)
+        except Coupon.DoesNotExist:
+            discount_amount = Decimal('0.00')
+    delivery_charge = Decimal('0.00')
+    delivery_method_id = request.session.get('delivery_method_id')
+    if delivery_method_id:
+        try:
+            dm = DeliveryMethod.objects.get(id=delivery_method_id)
+            delivery_charge = dm.price
+        except DeliveryMethod.DoesNotExist:
+            delivery_charge = Decimal('0.00')
+
+    total_price = total + vat + delivery_charge - discount_amount
+
+    ctx = {
+        'order': None,
+        'cart_items': cart_items,
+        'user': request.user,
+        'now': timezone.now(),
+        'total': total,
+        'vat': vat,
+        'delivery_charge': delivery_charge,
+        'discount_amount': discount_amount,
+        'total_price': total_price,
+    }
+    filename = f"Proforma_{timezone.now().strftime('%Y%m%d_%H%M')}.pdf"
+    return _render_pdf_from_html(request, 'order/invoice.html', ctx, filename)
+
+
+@login_required(login_url='login')
+def download_invoice(request, order_number):
+    from .models import Order, OrderProduct
+
+    order = get_object_or_404(Order, order_number=order_number,user=request.user, is_ordered=True)
+    order_products = OrderProduct.objects.filter(order=order)
+
+    ctx = {
+        'order': order,
+        'order_products': order_products,
+        'now': timezone.now(),
+        'total': order.order_total,
+        'vat': order.tax,
+        'delivery_charge': order.delivery_charge,
+        'discount_amount': order.discount,
+        'total_price': order.grand_total,
+    }
+
+    filename = f"Invoice_{order.order_number}.pdf"
+    return _render_pdf_from_html(request, 'order/invoice.html', ctx, filename)
