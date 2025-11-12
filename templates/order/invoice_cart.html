@@ -1,0 +1,23 @@
+{% comment %} ...উপরের অংশ অপরিবর্তিত... {% endcomment %}
+<tbody>
+  {% for item in cart_items %}
+    <tr>
+      <td><strong>{{ item.product.product_name }}</strong></td>
+      <td>
+        {% if item.variations.all %}
+          <small class="muted">
+            {% for v in item.variations.all %}
+              {{ v.variation_category }}: {{ v.variation_value }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </small>
+        {% else %}
+          <small class="muted">--</small>
+        {% endif %}
+      </td>
+      <td class="right">{{ item.quantity }}</td>
+      <td class="right">{{ item.product.price|floatformat:2 }} Tk</td>
+      <td class="right">{{ item.sub_total|floatformat:2 }} Tk</td>
+    </tr>
+  {% endfor %}
+</tbody>
+{% comment %} ...নিচের অংশ অপরিবর্তিত... {% endcomment %}

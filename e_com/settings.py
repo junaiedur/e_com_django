@@ -9,17 +9,18 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-USE_WEASY = True
 from pathlib import Path
 import os
 
 # ai line ta ami gimini teke copy koira marci
 import environ
+env = environ.Env(DEBUG=(bool, False))
 # django-environ সেটআপ
 env = environ.Env(
     DEBUG=(bool, False)
 )
-# environ.Env.read_env() # .env ফাইল রিড করবে
+USE_WEASY = True
+# environ.Env.read_env() # read in .env 
 
 # bKash Payment Configuration
 BKASH_CONFIG = {
@@ -75,6 +76,8 @@ INSTALLED_APPS = [
     'order',
     'Coupon',
     'payment',
+    'ckeditor',
+    'ckeditor_uploader',
   
 ]
 
@@ -174,8 +177,17 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
-# MEDIA_URL = '/images/'
+MEDIA_ROOT = BASE_DIR / 'media'# MEDIA_URL = '/images/'
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'height': 300,
+        'width': '100%',
+        'extraPlugins': ','.join([
+            'uploadimage',  # Enable image uploads
+        ]),
+    }
+}
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -185,7 +197,6 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR:"danger",
 }
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

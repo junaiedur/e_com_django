@@ -671,9 +671,12 @@
 
 
 from io import BytesIO
+from unittest import result
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from order.invoice import USE_WEASY
 from .models import Order, OrderProduct, Payment
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
@@ -793,8 +796,6 @@ def payments(request):
 
     if request.method == 'POST':
         form = PaymentForm(request.POST)
-        print(" POST Data:", request.POST)  # Debugging line
-
         if form.is_valid():
             try:
                 with transaction.atomic():
@@ -855,7 +856,8 @@ def payments(request):
                     messages.success(request, "Payment completed successfully!")
 
                     #  Redirect to order_complete with parameters
-                    return redirect(f'/order_complete/?order_id={order.order_number}&payment_id={payment.id}')
+                    return redirect(f"{reverse('order_complete')}?order_id={order.order_number}&payment_id={payment.id}")
+
 
             except Exception as e:
                 messages.error(request, f"Payment error: {str(e)}")
@@ -927,6 +929,106 @@ def order_detail(request, order_number):
 
 
 @login_required(login_url='login')
+def invoice_cart_pdf(request):
+    if request.method != 'POST':
+        messages.error(request, "Invalid request method.")
+        return redirect('checkout')
+    
+    user = request.user
+    cart_items = CartItem.objects.filter(user=user)
+
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty!")
+        return redirect('store')
+    billing = {
+        'first_name': request.POST.get('first_name', ''),
+        'last_name':  request.POST.get('last_name', ''),
+        'email':      request.POST.get('email', ''),
+        'phone':      request.POST.get('phone', ''),
+        'address_line_1': request.POST.get('address_line_1', ''),
+        'address_line_2': request.POST.get('address_line_2', ''),
+        'city':       request.POST.get('city', ''),
+        'state':      request.POST.get('state', ''),
+        'country':    request.POST.get('country', ''),
+        'order_note': request.POST.get('order_note', ''),
+    }
+    total = sum(item.product.price * item.quantity for item in cart_items)
+    vat = total * Decimal('0.01')
+
+    discount_amount = Decimal('0')
+    coupon_code = None
+    coupon_id = request.session.get('coupon_id')
+    if coupon_id:
+        try:
+            coupon = Coupon.objects.get(id=coupon_id)
+            if coupon.is_valid(total):
+                discount_amount = coupon.get_discount_amount(total)
+                coupon_code = coupon.code
+        except Coupon.DoesNotExist:
+            pass
+    
+    # Delivery charge calculation
+    delivery_charge = Decimal('0.00')
+    delivery_method_id = request.session.get('delivery_method_id')
+    if delivery_method_id:
+        try:
+            delivery_method = DeliveryMethod.objects.get(id=delivery_method_id)
+            delivery_charge = delivery_method.price
+        except DeliveryMethod.DoesNotExist:
+            delivery_charge = Decimal('0.00')
+
+    grand_total = total + vat + delivery_charge - discount_amount
+    context = {
+        'user': user,
+        'billing': billing,
+        'cart_items': cart_items,
+        'total': total,
+        'vat': vat,
+        'delivery_charge': delivery_charge,
+        'discount_amount': discount_amount,
+        'coupon_code': coupon_code,
+        'grand_total': grand_total,
+        'generated_at': timezone.now(),
+    }
+    html = render_to_string('order/invoice_cart.html', context)
+    filename = f'invoice_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Try WeasyPrint first if allowed
+    USE_WEASY = getattr(settings, "USE_WEASY", False)
+    if USE_WEASY:
+        try:
+            from weasyprint import HTML
+            HTML(string=html, base_url=request.build_absolute_uri("/")).write_pdf(response)
+            return response
+        except Exception as e:
+            # Fallback silently to xhtml2pdf
+            pass
+    try:
+        from xhtml2pdf import pisa
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse("PDF generation error.", status=500)
+        return response
+    except Exception:
+        return HttpResponse("PDF backend not available. Install WeasyPrint or xhtml2pdf.", status=500)
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+##############
+
 def invoice_view(request, order_number):
     order = get_object_or_404(Order, order_number=order_number, user=request.user)
     payment = order.payment
@@ -958,24 +1060,34 @@ def _render_pdf_from_html(request, template_name, context, filename):
     resp = HttpResponse(content_type='application/pdf')
     resp['Content-Disposition'] = f'attachment; filename="{filename}"'
 
-    if _USE_WEASY:
-        # base_url দিয়ে static/media resolve হবে
-        HTML(string=html, base_url=request.build_absolute_uri('/')).write_pdf(resp)
-    else:
+    
+    if USE_WEASY:
+        try:
+            from weasyprint import HTML
+        except ImportError:
+             return HttpResponse(
+                "PDF generation requires the 'WeasyPrint' package. Install it with: pip install WeasyPrint",
+                content_type='text/plain',
+                status=500
+             )
+        from io import BytesIO
         result = BytesIO()
-        pisa.CreatePDF(src=html, dest=result)
+        
+        pisa_status = pisa.CreatePDF(src=html, dest=result)        
+        if pisa_status.err:
+            return HttpResponse(html, content_type='text/html')
         resp.write(result.getvalue())
-    return resp
+        return resp
+
+
 
 
 # --- A) Checkout পেজ থেকে Proforma/Cart Invoice ---
 @login_required(login_url='login')
 def download_cart_invoice(request):
-    from carts.models import CartItem, Coupon, DeliveryMethod
 
     cart_items = CartItem.objects.filter(user=request.user)
     if not cart_items.exists():
-        messages = __import__('django.contrib.messages').contrib.messages
         messages.warning(request, "Your cart is empty!")
         return redirect('store')
     
@@ -1018,12 +1130,9 @@ def download_cart_invoice(request):
     filename = f"Proforma_{timezone.now().strftime('%Y%m%d_%H%M')}.pdf"
     return _render_pdf_from_html(request, 'order/invoice.html', ctx, filename)
 
-
 @login_required(login_url='login')
 def download_invoice(request, order_number):
-    from .models import Order, OrderProduct
-
-    order = get_object_or_404(Order, order_number=order_number,user=request.user, is_ordered=True)
+    order = get_object_or_404(Order, order_number=order_number, user=request.user, is_ordered=True)
     order_products = OrderProduct.objects.filter(order=order)
 
     ctx = {
@@ -1039,3 +1148,5 @@ def download_invoice(request, order_number):
 
     filename = f"Invoice_{order.order_number}.pdf"
     return _render_pdf_from_html(request, 'order/invoice.html', ctx, filename)
+    return _render_pdf_from_html(request, 'order/invoice.html', ctx, filename)
+##################

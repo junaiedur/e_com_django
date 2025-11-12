@@ -1,125 +1,99 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <title>Proforma Invoice</title>
+    <style>
+        body{font-family: sans-serif; font-size: 12px; color:#111;}
+        .header {display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;}
+        .muted {color:#666;}
+        h1 {font-size: 20px; margin:0 0 6px;}
+        table {width:100%; border-collapse: collapse; margin-top: 10px;}
+        th, td {border:1px solid #ddd; padding:8px; vertical-align: top;}
+        th {background:#f5f5f5; text-align:left;}
+        .right {text-align:right;}
+        .total-row th, .total-row td {border: none; padding: 6px 8px;}
+        .totals {width: 40%; margin-left:auto; border:1px solid #ddd;}
+        .totals td, .totals th {border:1px solid #ddd;}
+        small {font-size: 11px;}
+    </style>
+    </head>
+    <body>
+        <div class="header">
+            <div>
+                <h1>Invoice</h1>
+                <div class="muted">Generated at: {{ generated_at|date:"Y-m-d H:i" }}</div>
+            </div>
+            <div>
+                <strong>Bill To</strong><br>
+                {{ billing.first_name }} {{ billing.last_name }}<br>
+                {{ billing.address_line_1 }}{% if billing.address_line_2 %}, {{ billing.address_line_2 }}{% endif %}<br>
+                {{ billing.city }}, {{ billing.state }}, {{ billing.country }}<br>
+                Phone: {{ billing.phone }} • Email: {{ billing.email }}
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Details</th>
+                    <th class="right">Qty</th>
+                    <th class="right">Unit Price</th>
+                    <th class="right">Line Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                  <tr>
+                    <td><strong>{{ item.product.product_name }}</strong></td>
+                    <td>
+                        {% if item.variation.all %}
+                          <small class="muted">
+                            {% for v in item.variation.all %}
+                              {{ v.variation_category }}: {{ v.variation_value }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                          </small>
+                        {% else %}
+                          <small class="muted">--</small>
+                        {% endif %}
+                    </td>
+                    <td class="right">{{ item.quantity }}</td>
+                    <td class="right">{{ item.product.price|floatformat:2 }} Tk</td>
+                    <td class="right">{{ item.sub_total|floatformat:2 }} Tk</td>
+                  </tr>
+                {% endfor %}
+            </tbody>
 
+        </table>
+        <table class="totals" style="margin-top: 12px;">
+            <tr>
+                <th>Subtotal</th>
+                <td class="right">{{ total|floatformat:2 }} Tk</td>
+            </tr>
+            <tr>
+                <th>VAT (1%)</th>
+                <td class="right">{{ vat|floatformat:2 }} Tk</td>
+            </tr>
+            <tr>
+                <th>Delivery Charge</th>
+                <td class="right">{{ delivery_charge|floatformat:2 }} Tk</td>
+            </tr>
+            {% if discount_amount and discount_amount > 0 %}
+              <tr>
+                <th>Discount{% if coupon_code %} ({{ coupon_code }}){% endif %}</th>
+                <td class="right">-{{ discount_amount|floatformat:2 }} Tk</td>
+              </tr>
+            {% endif %}
+            <tr>
+                <th>Total</th>
+                <td class="right"><strong>{{ grand_total|floatformat:2 }} Tk</strong></td>
+            </tr>
+        </table>
+        {% if billing.order_note %}
+          <p><strong>Order Note:</strong> {{ billing.order_note }}</p>
+        {% endif %}
+        <p class="muted"><small>This is a proforma invoice generated from your cart. Final invoice will be issued upon order confirmation.</small></p>
 
-<!-- templates/order/invoice.html -->
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Invoice</title>
-  <style>
-    body { font-family: sans-serif; font-size: 12px; }
-    .header { display: flex; justify-content: space-between; align-items: center; }
-    .title { font-size: 20px; font-weight: 700; }
-    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-    th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
-    tfoot td { font-weight: 700; }
-    .muted { color: #666; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div class="title">
-      {% if order %}Invoice{% else %}Proforma Invoice (Cart){% endif %}
-    </div>
-    <div>
-      <div><strong>Date:</strong> {{ now|date:"Y-m-d H:i" }}</div>
-      {% if order %}
-        <div><strong>Order #</strong> {{ order.order_number }}</div>
-      {% endif %}
-    </div>
-  </div>
-
-  <hr>
-
-  <h4>Billing / Shipping</h4>
-  {% if order %}
-    <div><strong>{{ order.full_name }}</strong></div>
-    <div>{{ order.full_address }}</div>
-    <div>{{ order.city }}, {{ order.state }}, {{ order.country }}</div>
-    <div>Phone: {{ order.phone }} | Email: {{ order.email }}</div>
-  {% else %}
-    <div><strong>{{ user.first_name }} {{ user.last_name }}</strong></div>
-    <div class="muted">Checkout details will be used.</div>
-  {% endif %}
-
-  <h4 style="margin-top:12px;">Items</h4>
-  <table>
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th style="width:80px; text-align:center;">Qty</th>
-        <th style="width:110px; text-align:right;">Price (Tk)</th>
-        <th style="width:120px; text-align:right;">Total (Tk)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% if order %}
-        {% for op in order_products %}
-          <tr>
-            <td>
-              {{ op.product.product_name }}
-              {% if op.variations.all %}
-                <div class="muted" style="font-size:11px;">
-                  {% for v in op.variations.all %}
-                    {{ v.variation_category|capfirst }}: {{ v.variation_value|capfirst }}{% if not forloop.last %}, {% endif %}
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </td>
-            <td style="text-align:center;">{{ op.quantity }}</td>
-            <td style="text-align:right;">{{ op.product_price|floatformat:2 }}</td>
-            <td style="text-align:right;">{{ op.get_total|floatformat:2 }}</td>
-          </tr>
-        {% endfor %}
-      {% else %}
-        {% for item in cart_items %}
-          <tr>
-            <td>
-              {{ item.product.product_name }}
-              {% if item.variations.all %}
-                <div class="muted" style="font-size:11px;">
-                  {% for v in item.variations.all %}
-                    {{ v.variation_category|capfirst }}: {{ v.variation_value|capfirst }}{% if not forloop.last %}, {% endif %}
-                  {% endfor %}
-                </div>
-              {% endif %}
-            </td>
-            <td style="text-align:center;">{{ item.quantity }}</td>
-            <td style="text-align:right;">{{ item.product.price|floatformat:2 }}</td>
-            <td style="text-align:right;">{{ item.sub_total|floatformat:2 }}</td>
-          </tr>
-        {% endfor %}
-      {% endif %}
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="3" style="text-align:right;">Subtotal:</td>
-        <td style="text-align:right;">{{ total|floatformat:2 }}</td>
-      </tr>
-      <tr>
-        <td colspan="3" style="text-align:right;">VAT (1%):</td>
-        <td style="text-align:right;">{{ vat|floatformat:2 }}</td>
-      </tr>
-      <tr>
-        <td colspan="3" style="text-align:right;">Delivery:</td>
-        <td style="text-align:right;">{{ delivery_charge|floatformat:2 }}</td>
-      </tr>
-      {% if discount_amount %}
-        <tr>
-          <td colspan="3" style="text-align:right;">Discount:</td>
-          <td style="text-align:right;">-{{ discount_amount|floatformat:2 }}</td>
-        </tr>
-      {% endif %}
-      
-      <tr>
-        <td colspan="3" style="text-align:right;">Grand Total:</td>
-        <td style="text-align:right;"><strong>{{ total_price|floatformat:2 }}</strong></td>
-      </tr>
-    </tfoot>
-  </table>
-
-  {% if not order %}
-    <p class="muted" style="margin-top:8px;">* This is a proforma invoice generated from your cart (before order confirmation).</p>
-  {% endif %}
-</body>
+    </body>
+    
 </html>

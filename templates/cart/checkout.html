@@ -9,7 +9,8 @@
           <div class="card">
             <div class="card-body">
               <h4 class="card-title mb-4">Billing Address</h4>
-              <form action="{% url 'place_order' %}" method="POST">
+              <!-- <form action="{% url 'place_order' %}" method="POST"> -->
+              <form id="checkout-form" action="{% url 'place_order' %}" method="POST">
                 {% csrf_token %}
                 <div class="form-row">
                   <div class="col form-group">
@@ -148,7 +149,7 @@
                 </tr>
               </table>
               <a href="{% url 'store' %}" class="btn btn-secondary btn-block">Continue Shopping</a>
-              <a href="{% url 'download_cart_invoice' %}" class="btn btn-primary btn-block mt-4">Download Invoice</a>
+              <button type="submit" form="checkout-form" formaction="{% url 'invoice_cart_pdf' %}" formmethod="post" class="btn btn-primary btn-block mt-4">Download Invoice </button>
             </div>
           </div>
         </aside>
