@@ -217,3 +217,22 @@ ADMIN_EMAIL = 'admin@yourdomain.com'  # Replace with your admin email
 SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
 SESSION_SAVE_EVERY_REQUEST = True
 
+
+# --- settings.py ---
+COMPANY_INFO = {
+    "name": "Your Company Ltd.",
+    "tagline": "Quality • Trust • On-time",
+    "address": "House 12, Road 4, Dhanmondi, Dhaka 1209",
+    "phone": "+8801XXXXXXXXX",
+    "email": "support@yourcompany.com",
+    "website": "https://yourcompany.com",
+    "tin": "1234567890",
+    "vat": "9876543210",
+    # লোগো: স্ট্যাটিক/মিডিয়া URL – WeasyPrint ব্যবহার করলে অ্যাবসোলিউট URL সবচেয়ে ভালো
+    "logo_url": "https://yourcdn.com/static/img/logo.png",
+    # ফুটার নোটস
+    "return_policy": "ডেলিভারির ৭ দিনের মধ্যে আন-ইউজড পণ্য রিটার্ন করা যাবে।",
+    "warranty": "ইলেকট্রনিক্স পণ্যে ১ বছর অফিসিয়াল ওয়ারেন্টি।",
+    "note": "ইনভয়েস ছাড়া কোনো সার্ভিস বা রিটার্ন প্রযোজ্য হবে না।",
+}
+# (যদি আগেই থাকে) USE_WEASY = True  # WeasyPrint থাকলে সুন্দর পেজ নাম্বার/টাইপোগ্রাফি

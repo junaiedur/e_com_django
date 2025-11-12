@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <title>{% if order %}Tax Invoice{% else %}Proforma Invoice{% endif %} — {{ company.name|default:"Your Company" }}</title>
+  <style>
+    /* ---- Page + Typography ---- */
+    @page { margin: 24mm 16mm; }
+    body{ font-family: DejaVu Sans, Arial, sans-serif; font-size:12px; color:#111; }
+    h1{ font-size:22px; margin:0 0 6px; }
+    h2{ font-size:14px; margin:0 0 6px; }
+    .muted{ color:#666; }
+    .right{ text-align:right; }
+    .center{ text-align:center; }
+
+    /* ---- Header ---- */
+    .header{ display:flex; gap:16px; align-items:flex-start; justify-content:space-between; margin-bottom:14px; }
+    .brand{ display:flex; gap:12px; }
+    .brand img{ height:48px; width:auto; }
+    .brand .meta{ line-height:1.5; }
+
+    /* ---- Blocks ---- */
+    .block{ padding:10px; border:1px solid #e6e6e6; border-radius:6px; }
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+
+    /* ---- Tables ---- */
+    table{ width:100%; border-collapse:collapse; margin-top:10px; }
+    th,td{ border:1px solid #ddd; padding:8px; vertical-align:top; }
+    th{ background:#f7f7f7; text-align:left; }
+
+    .totals{ width:50%; margin-left:auto; border:1px solid #ddd; }
+    .totals td,.totals th{ border:1px solid #ddd; }
+
+    /* ---- Footer ---- */
+    .footer{ margin-top:18px; font-size:11px; color:#555; }
+
+    /* ---- Page number (WeasyPrint supports counters) ---- */
+    @page { @bottom-center { content: "Page " counter(page) " of " counter(pages); font-size:10px; color:#777; } }
+  </style>
+</head>
+<body>
+  <!-- ===== Header with Logo + Company Info + Invoice Meta ===== -->
+  <div class="header">
+    <div class="brand">
+      {% if company.logo_url %}
+        <img src="{{ company.logo_url }}" alt="{{ company.name }} logo" />
+      {% endif %}
+      <div class="meta">
+        <strong>{{ company.name|default:"Your Company" }}</strong><br/>
+        {% if company.tagline %}<span class="muted">{{ company.tagline }}</span><br/>{% endif %}
+        {% if company.address %}{{ company.address }}<br/>{% endif %}
+        {% if company.phone %}ফোন: {{ company.phone }}{% if company.email %} • ইমেল: {{ company.email }}{% endif %}<br/>{% endif %}
+        {% if company.tin or company.vat %}
+          {% if company.tin %}TIN: {{ company.tin }}{% endif %}{% if company.vat %} • VAT: {{ company.vat }}{% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="right">
+      <h1>{% if order %}Tax Invoice{% else %}Proforma Invoice{% endif %}</h1>
+      <div class="muted">Generated: {{ generated_at|default:now|date:"Y-m-d H:i" }}</div>
+      {% if order %}
+        <div>
+          <strong>Invoice No:</strong> {{ order.order_number }}<br/>
+          <strong>Order Date:</strong> {{ order.created_at|date:"Y-m-d H:i" }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ===== Bill To / Ship To ===== -->
+  <div class="grid">
+    <div class="block">
+      <h2>Bill To</h2>
+      {% if billing %}
+        {{ billing.first_name }} {{ billing.last_name }}<br>
+        {{ billing.address_line_1 }}{% if billing.address_line_2 %}, {{ billing.address_line_2 }}{% endif %}<br>
+        {{ billing.city }}, {{ billing.state }}, {{ billing.country }}<br>
+        মোবাইল: {{ billing.phone }}{% if billing.email %} • ইমেল: {{ billing.email }}{% endif %}
+      {% else %}
+        {{ order.first_name }} {{ order.last_name }}<br>
+        {{ order.address_line_1 }}{% if order.address_line_2 %}, {{ order.address_line_2 }}{% endif %}<br>
+        {{ order.city }}, {{ order.state }}, {{ order.country }}<br>
+        মোবাইল: {{ order.phone }}{% if order.email %} • ইমেল: {{ order.email }}{% endif %}
+      {% endif %}
+    </div>
+
+    <div class="block">
+      <h2>Ship To</h2>
+      {% if shipping %}
+        {{ shipping.name }}<br>
+        {{ shipping.address_line_1 }}{% if shipping.address_line_2 %}, {{ shipping.address_line_2 }}{% endif %}<br>
+        {{ shipping.city }}, {{ shipping.state }}, {{ shipping.country }}<br>
+        মোবাইল: {{ shipping.phone }}
+      {% else %}
+        {% if billing %}
+          {{ billing.first_name }} {{ billing.last_name }}<br>
+          {{ billing.address_line_1 }}{% if billing.address_line_2 %}, {{ billing.address_line_2 }}{% endif %}<br>
+          {{ billing.city }}, {{ billing.state }}, {{ billing.country }}<br>
+          মোবাইল: {{ billing.phone }}
+        {% else %}
+          {{ order.first_name }} {{ order.last_name }}<br>
+          {{ order.address_line_1 }}{% if order.address_line_2 %}, {{ order.address_line_2 }}{% endif %}<br>
+          {{ order.city }}, {{ order.state }}, {{ order.country }}<br>
+          মোবাইল: {{ order.phone }}
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ===== Items Table (Cart or Order) ===== -->
+  <table>
+    <thead>
+      <tr>
+        <th>পণ্য</th>
+        <th>ডিটেইলস</th>
+        <th class="right">পরিমাণ</th>
+        <th class="right">ইউনিট প্রাইস</th>
+        <th class="right">লাইন টোটাল</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if order %}
+        {% for item in order_products %}
+          <tr>
+            <td><strong>{{ item.product.product_name }}</strong></td>
+            <td>
+              {% if item.variations.all %}
+                <small class="muted">
+                  {% for v in item.variations.all %}
+                    {{ v.variation_category }}: {{ v.variation_value }}{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                </small>
+              {% else %}
+                <small class="muted">--</small>
+              {% endif %}
+            </td>
+            <td class="right">{{ item.quantity }}</td>
+            <td class="right">{{ item.product_price|floatformat:2 }} Tk</td>
+            <td class="right">{{ item.get_total|default:item.product_price|floatformat:2 }} Tk</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        {% for item in cart_items %}
+          <tr>
+            <td><strong>{{ item.product.product_name }}</strong></td>
+            <td>
+              {% if item.variations.all %}
+                <small class="muted">
+                  {% for v in item.variations.all %}
+                    {{ v.variation_category }}: {{ v.variation_value }}{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                </small>
+              {% else %}
+                <small class="muted">--</small>
+              {% endif %}
+            </td>
+            <td class="right">{{ item.quantity }}</td>
+            <td class="right">{{ item.product.price|floatformat:2 }} Tk</td>
+            <td class="right">{{ item.sub_total|floatformat:2 }} Tk</td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+
+  {% if order and payment %}
+    <p><strong>Payment:</strong> {{ payment.payment_method|title }} • <strong>Status:</strong> {{ payment.status|title }}{% if payment.transaction_id %} • <strong>Txn ID:</strong> {{ payment.transaction_id }}{% endif %}</p>
+  {% elif billing and billing.order_note %}
+    <p><strong>Order Note:</strong> {{ billing.order_note }}</p>
+  {% endif %}
+
+  <!-- ===== Totals ===== -->
+  <table class="totals" style="margin-top:12px;">
+    <tr>
+      <th>Subtotal</th>
+      <td class="right">{{ total|default:order.order_total|floatformat:2 }} Tk</td>
+    </tr>
+    <tr>
+      <th>VAT (1%)</th>
+      <td class="right">{{ vat|default:order.tax|floatformat:2 }} Tk</td>
+    </tr>
+    <tr>
+      <th>Delivery Charge</th>
+      <td class="right">{{ delivery_charge|default:order.delivery_charge|floatformat:2 }} Tk</td>
+    </tr>
+    {% if discount_amount|default:order.discount %}
+      <tr>
+        <th>Discount{% if coupon_code %} ({{ coupon_code }}){% endif %}</th>
+        <td class="right">-{{ discount_amount|default:order.discount|floatformat:2 }} Tk</td>
+      </tr>
+    {% endif %}
+    <tr>
+      <th>Total</th>
+      <td class="right"><strong>{{ total_price|default:order.grand_total|floatformat:2 }} Tk</strong></td>
+    </tr>
+  </table>
+
+  <!-- ===== Thank you + Return/Policy ===== -->
+  <div class="footer">
+    <p><strong>ধন্যবাদ!</strong> {{ company.name|default:"আমাদের" }} থেকে কেনাকাটা করার জন্য।</p>
+    {% if company.return_policy or company.warranty or company.note %}
+      <p>
+        {% if company.return_policy %}<strong>রিটার্ন পলিসি:</strong> {{ company.return_policy }}<br/>{% endif %}
+        {% if company.warranty %}<strong>ওয়ারেন্টি:</strong> {{ company.warranty }}<br/>{% endif %}
+        {% if company.note %}<strong>নোট:</strong> {{ company.note }}{% endif %}
+      </p>
+    {% else %}
+      <p class="muted">Products once opened may not be eligible for return unless defective. Warranty as per manufacturer terms.</p>
+    {% endif %}
+    {% if company.website %}<p class="muted">ওয়েবসাইট: {{ company.website }}</p>{% endif %}
+  </div>
+</body>
+</html>

@@ -1,99 +1,151 @@
 <!doctype html>
 <html lang="en">
-    <head>
+  <head>
     <meta charset="utf-8">
-    <title>Proforma Invoice</title>
+    <title>{% if order %}Tax Invoice{% else %}Proforma Invoice{% endif %}</title>
     <style>
-        body{font-family: sans-serif; font-size: 12px; color:#111;}
-        .header {display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;}
-        .muted {color:#666;}
-        h1 {font-size: 20px; margin:0 0 6px;}
-        table {width:100%; border-collapse: collapse; margin-top: 10px;}
-        th, td {border:1px solid #ddd; padding:8px; vertical-align: top;}
-        th {background:#f5f5f5; text-align:left;}
-        .right {text-align:right;}
-        .total-row th, .total-row td {border: none; padding: 6px 8px;}
-        .totals {width: 40%; margin-left:auto; border:1px solid #ddd;}
-        .totals td, .totals th {border:1px solid #ddd;}
-        small {font-size: 11px;}
+
+      body{font-family: sans-serif; font-size:12px; color:#111;}
+      .header{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;}
+      .muted{color:#666;}
+      h1{font-size:20px; margin:0 0 6px;}
+      table{width:100%; border-collapse:collapse; margin-top:10px;}
+      th,td{border:1px solid #ddd; padding:8px; vertical-align:top;}
+      th{background:#f5f5f5; text-align:left;}
+      .right{text-align:right;}
+      .totals{width:40%; margin-left:auto; border:1px solid #ddd;}
+      .totals td,.totals th{border:1px solid #ddd;}
+      small{font-size:11px;}
+      .meta{font-size:12px; line-height:1.4;}
     </style>
-    </head>
-    <body>
-        <div class="header">
-            <div>
-                <h1>Invoice</h1>
-                <div class="muted">Generated at: {{ generated_at|date:"Y-m-d H:i" }}</div>
-            </div>
-            <div>
-                <strong>Bill To</strong><br>
-                {{ billing.first_name }} {{ billing.last_name }}<br>
-                {{ billing.address_line_1 }}{% if billing.address_line_2 %}, {{ billing.address_line_2 }}{% endif %}<br>
-                {{ billing.city }}, {{ billing.state }}, {{ billing.country }}<br>
-                Phone: {{ billing.phone }} • Email: {{ billing.email }}
-            </div>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Details</th>
-                    <th class="right">Qty</th>
-                    <th class="right">Unit Price</th>
-                    <th class="right">Line Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in cart_items %}
-                  <tr>
-                    <td><strong>{{ item.product.product_name }}</strong></td>
-                    <td>
-                        {% if item.variation.all %}
-                          <small class="muted">
-                            {% for v in item.variation.all %}
-                              {{ v.variation_category }}: {{ v.variation_value }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                          </small>
-                        {% else %}
-                          <small class="muted">--</small>
-                        {% endif %}
-                    </td>
-                    <td class="right">{{ item.quantity }}</td>
-                    <td class="right">{{ item.product.price|floatformat:2 }} Tk</td>
-                    <td class="right">{{ item.sub_total|floatformat:2 }} Tk</td>
-                  </tr>
-                {% endfor %}
-            </tbody>
-
-        </table>
-        <table class="totals" style="margin-top: 12px;">
-            <tr>
-                <th>Subtotal</th>
-                <td class="right">{{ total|floatformat:2 }} Tk</td>
-            </tr>
-            <tr>
-                <th>VAT (1%)</th>
-                <td class="right">{{ vat|floatformat:2 }} Tk</td>
-            </tr>
-            <tr>
-                <th>Delivery Charge</th>
-                <td class="right">{{ delivery_charge|floatformat:2 }} Tk</td>
-            </tr>
-            {% if discount_amount and discount_amount > 0 %}
-              <tr>
-                <th>Discount{% if coupon_code %} ({{ coupon_code }}){% endif %}</th>
-                <td class="right">-{{ discount_amount|floatformat:2 }} Tk</td>
-              </tr>
-            {% endif %}
-            <tr>
-                <th>Total</th>
-                <td class="right"><strong>{{ grand_total|floatformat:2 }} Tk</strong></td>
-            </tr>
-        </table>
-        {% if billing.order_note %}
-          <p><strong>Order Note:</strong> {{ billing.order_note }}</p>
+  </head>
+  <body>
+    <div class="header">
+      <div>
+        <h1>{% if order %}Tax Invoice{% else %}Proforma Invoice{% endif %}</h1>
+        <div class="muted">Generated at: {{ generated_at|default:now|date:"Y-m-d H:i" }}</div>
+        {% if order %}
+          <div class="meta">
+            <strong>Invoice No:</strong> {{ order.order_number }}<br>
+            <strong>Order Date:</strong> {{ order.created_at|date:"Y-m-d H:i" }}
+          </div>
         {% endif %}
-        <p class="muted"><small>This is a proforma invoice generated from your cart. Final invoice will be issued upon order confirmation.</small></p>
+      </div>
+      <div>
+        <strong>Bill To</strong><br>
+        {% if billing %}
+          {{ billing.first_name }} {{ billing.last_name }}<br>
+          {{ billing.address_line_1 }}{% if billing.address_line_2 %}, {{ billing.address_line_2 }}{% endif %}<br>
+          {{ billing.city }}, {{ billing.state }}, {{ billing.country }}<br>
+          Phone: {{ billing.phone }} • Email: {{ billing.email }}
+        {% else %}
+          {{ order.first_name }} {{ order.last_name }}<br>
+          {{ order.address_line_1 }}{% if order.address_line_2 %}, {{ order.address_line_2 }}{% endif %}<br>
+          {{ order.city }}, {{ order.state }}, {{ order.country }}<br>
+          Phone: {{ order.phone }} • Email: {{ order.email }}
+        {% endif %}
+      </div>
+    </div>
+    {% if order %}
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Details</th>
+            <th class="right">Qty</th>
+            <th class="right">Unit Price</th>
+            <th class="right">Line Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order_products %}
+            <tr>
+              <td><strong>{{ item.product.product_name }}</strong></td>
+              <td>
+                {% if item.variations.all %}
+                  <small class="muted">
+                    {% for v in item.variations.all %}
+                      {{ v.variation_category }}: {{ v.variation_value }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </small>
+                {% else %}
+                  <small class="muted">No variations</small>
+                {% endif %}
+              </td>
+              <td class="right">{{ item.quantity }}</td>
+              <td class="right">{{ item.product_price|floatformat:2 }} Tk</td>
+              <td class="right">{{ item.get_total|default:item.product_price|mul:item.quantity|floatformat:2 }} Tk</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p class="meta">
+        <strong>Payment Method:</strong> {{ payment.payment_method|title }} |
+        <strong>Status:</strong> {{ payment.status|title }}
+        {% if payment.transaction_id %}| <strong>Txn ID:</strong> {{ payment.transaction_id }}{% endif %}
+      </p>
+    {% else %}
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Details</th>
+            <th class="right">Qty</th>
+            <th class="right">Unit Price</th>
+            <th class="right">Line Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart_items %}
+            <tr>
+              <td><strong>{{ item.product.product_name }}</strong></td>
+              <td>
+                {% if item.variations.all %}
+                  <small class="muted">
+                    {% for v in item.variations.all %}
+                      {{ v.variation_category }}: {{ v.variation_value }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </small>
+                {% else %}
+                  <small class="muted">No variations</small>
+                {% endif %}
+              </td>
+              <td class="right">{{ item.quantity }}</td>
+              <td class="right">{{ item.product.price|floatformat:2 }} Tk</td>
+              <td class="right">{{ item.sub_total|floatformat:2 }} Tk</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if billing.order_note %}
+        <p><strong>Order Note:</strong> {{ billing.order_note }}</p>
+      {% endif %}
+      <p class="muted"><small>This is a proforma invoice generated from your cart. Final invoice will be issued upon order confirmation.</small></p>
 
-    </body>
-    
+    {% endif %}
+    <table class="totals" style="margin-top:12px;">
+      <tr>
+        <th>Subtotal</th>
+        <td class="right">{{ total|default:order.order_total|floatformat:2 }} Tk</td>
+      </tr>
+      <tr>
+        <th>VAT (1%)</th>
+        <td class="right">{{ vat|default:order.tax|floatformat:2 }} Tk</td>
+      </tr>
+      <tr>
+        <th>Delivery Charge</th>
+        <td class="right">{{ delivery_charge|default:order.delivery_charge|floatformat:2 }} Tk</td>
+      </tr>
+      {% if discount_amount|default:order.discount %}
+        <tr>
+          <th>Discount{% if coupon_code %} ({{ coupon_code }}){% endif %}</th>
+          <td class="right">-{{ discount_amount|default:order.discount|floatformat:2 }} Tk</td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>Total</th>
+        <td class="right"><strong>{{ total_price|default:order.grand_total|floatformat:2 }} Tk</strong></td>
+      </tr>
+    </table>
+  </body>
 </html>

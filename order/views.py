@@ -1060,24 +1060,41 @@ def _render_pdf_from_html(request, template_name, context, filename):
     resp = HttpResponse(content_type='application/pdf')
     resp['Content-Disposition'] = f'attachment; filename="{filename}"'
 
-    
+    from django.conf import settings
+    USE_WEASY = getattr(settings, "USE_WEASY", False)
+
     if USE_WEASY:
         try:
             from weasyprint import HTML
-        except ImportError:
-             return HttpResponse(
-                "PDF generation requires the 'WeasyPrint' package. Install it with: pip install WeasyPrint",
-                content_type='text/plain',
-                status=500
-             )
-        from io import BytesIO
-        result = BytesIO()
-        
-        pisa_status = pisa.CreatePDF(src=html, dest=result)        
+            HTML(string=html, base_url=request.build_absolute_uri("/")).write_pdf(resp)
+            return resp
+        except Exception:
+            pass
+    try:
+        from xhtml2pdf import pisa
+        pisa_status = pisa.CreatePDF(html, dest=resp)
         if pisa_status.err:
-            return HttpResponse(html, content_type='text/html')
-        resp.write(result.getvalue())
+            return HttpResponse("PDF generation error.", status=500)
         return resp
+    except Exception:
+        return HttpResponse("PDF backend not available. Install WeasyPrint or xhtml2pdf.", status=500)
+    # if USE_WEASY:
+    #     try:
+    #         from weasyprint import HTML
+    #     except ImportError:
+    #          return HttpResponse(
+    #             "PDF generation requires the 'WeasyPrint' package. Install it with: pip install WeasyPrint",
+    #             content_type='text/plain',
+    #             status=500
+    #          )
+    #     from io import BytesIO
+    #     result = BytesIO()
+        
+    #     pisa_status = pisa.CreatePDF(src=html, dest=result)        
+    #     if pisa_status.err:
+    #         return HttpResponse(html, content_type='text/html')
+    #     resp.write(result.getvalue())
+    #     return resp
 
 
 
@@ -1121,6 +1138,9 @@ def download_cart_invoice(request):
         'cart_items': cart_items,
         'user': request.user,
         'now': timezone.now(),
+        #start company:
+        'company_name': getattr(settings, 'COMPANY_INFO', {}),
+        #end company:
         'total': total,
         'vat': vat,
         'delivery_charge': delivery_charge,
@@ -1138,7 +1158,11 @@ def download_invoice(request, order_number):
     ctx = {
         'order': order,
         'order_products': order_products,
+        'payment': order.payment, 
         'now': timezone.now(),
+        #start company:
+        'company_name': getattr(settings, 'COMPANY_INFO', {}),
+        #end company:
         'total': order.order_total,
         'vat': order.tax,
         'delivery_charge': order.delivery_charge,
@@ -1147,6 +1171,5 @@ def download_invoice(request, order_number):
     }
 
     filename = f"Invoice_{order.order_number}.pdf"
-    return _render_pdf_from_html(request, 'order/invoice.html', ctx, filename)
     return _render_pdf_from_html(request, 'order/invoice.html', ctx, filename)
 ##################
