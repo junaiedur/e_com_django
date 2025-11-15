@@ -65,29 +65,48 @@
                 <!-- ============================ COMPONENT 1 END .// ================================= -->
                 <br>
         
-                <div class="row">
-                    <div class="col-md-9">
-                        <header class="section-heading">
-                            <h3>Customer Reviews </h3> 
-                        </header>
-                        <article class="box mb-3">
-                            <div class="icontext w-100">
-                                <img src="./images/avatars/avatar1.jpg" class="img-xs icon rounded-circle">
-                                <div class="text">
-                                    <span class="date text-muted float-md-right">24.04.2020 </span>
-                                    <h6 class="mb-1">Mike John </h6>
-                                </div>
-                            </div>  <!-- icontext.// -->
-                            <div class="mt-3">
-                                <p>
-                                    Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip
-                                </p>
-                            </div>
-                        </article>
-                    </div> <!-- col.// -->
-                </div> <!-- row.// -->
+                <h4>Customer Reviews</h4>
+                {% if user.is_authenticated and orderproduct %}
+                  <form action="{% url 'submit_review' single_product.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="subject" placeholder="Subject" class="form-control"><br>
+                    <textarea name="review" class="form-control" placeholder="Write your review"></textarea><br>
+
+                    <label>Rating:</label>
+                    <select name="rating" class="form-control" style="width:150px">
+                        <option value="" disabled selected>Select Rating</option>
+                        <option value="1">1 ★</option>
+                        <option value="2">2 ★★</option>
+                        <option value="3">3 ★★★</option>
+                        <option value="4">4 ★★★★</option>
+                        <option value="5">5 ★★★★★</option>
+                    </select> <br>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                  </form>
+                {% elif not user.is_authenticated %}
+                  <p>
+                    Please <a href="{% url 'login' %}">login</a> to write a review.
+                  </p>
+                {% elif not orderproduct %}
+                  <p class="text-muted">
+                    Only customers who have purchased this product can write a review.
+                  </p>
+                {% endif %}
+                <hr>
+
+                <h4>Write a Review</h4>
+                {% if reviews %}
+                  {% for review in reviews %}
+                    <strong>{{ review.subject }} ({{ review.rating }}★)</strong>
+                    <p>{{ review.review }}</p>
+                    <small>
+                        {{ review.user.first_name }} - {{ review.created_at|date:"d M, Y H:i" }}
+                    </small>
+                    <hr>
+                  {% endfor %}
+                {% else %}
+                  <p class="text-muted">No reviews yet.Be the first to review!</p>
+                {% endif %}
             </div> <!-- container .//  -->
         </section>
      <!-- ========================= SECTION CONTENT END// ========================= -->

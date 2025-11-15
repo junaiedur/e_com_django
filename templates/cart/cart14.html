@@ -1,59 +1,4 @@
-{% extends 'base.html' %}
-
-{% load static %}
-{% block title %}Your Cart | Kinbo Shop{% endblock %}
-{% block footer %}{% endblock %}
-<!-- start --> 
-{% block content %}
-  <style>
-    .cart-card{
-        border-radius: 15px;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-        background: #fff;
-    }
-    .cart-product-img{
-        width: 110px;
-        height: 110px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-    @media(max-width: 576px){
-        .cart-product-img {
-            width: 90px;
-            height: 90px;
-        }
-    }
-    .summary-box{
-        border-radius: 15px;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-        background: #fff;
-        padding: 20px;
-    }
-    .qty-btn{
-        width: 35px;
-        height: 35px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 20px;
-        line-height: 20px;
-        text-align: center;
-        background: white;
-    }
-    @media(max-width: 576px){
-        .cart-flex{
-            flex-direction: column !important;
-            text-align: center;
-        }
-        .cart-actions{
-            justify-content: center !important;
-            margin-top: 10px;
-        }
-        .cart-info{
-            text-align: center !important;
-        }
-    }
-  </style>
-  <section class="section-content padding-y bg">
+<section class="section-content padding-y bg">
     <div class="container">
         {% if not cart_items %}
           <h2 class="text-center">Your Shopping Is Empty</h2>
@@ -226,6 +171,3 @@
         {% endif %}
     </div>
   </section>
-{% endblock %}
-
-<!-- end -->
