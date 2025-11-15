@@ -1,0 +1,414 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Search Results | Kinbo Shop{% endblock %}
+
+{% block content %}
+
+<!-- 
+  ================================
+  SEARCH PAGE MAIN WRAPPER
+  - Max width: 1320px (matches your site)
+  - Horizontal padding: px-4 for mobile breathing room
+  - Vertical padding: py-6 for spacing from nav
+  ================================
+-->
+<div class="max-w-[1320px] mx-auto px-4 py-6" style="padding-left: 0px;padding-right: 0px;">
+
+  <!-- 
+    Flex container:
+    - On mobile: column → sidebar on top, products below
+    - On md+ (tablet & desktop): row → sidebar left, products right
+  -->
+  <div class="flex flex-col md:flex-row gap-6">
+
+    <!-- 
+      ===========================
+      SIDEBAR (LEFT)
+      Contains:
+      - Sorting Dropdowns
+      - Category Accordions with subcategories
+      ===========================
+    -->
+    <aside class="w-full md:w-64 bg-orange-50 p-4 rounded-lg shadow">
+
+      <!-- =======================
+           SORTING SECTION (UI ONLY)
+           - Two <select> elements:
+             1. Sort by Price
+             2. Sort by Newest/Rating
+           - No actual sorting logic (backend later)
+      ======================== -->
+      <h2 class="text-lg font-bold text-orange-600 mb-3">
+        Sort By
+      </h2>
+
+      <div class="space-y-4 text-sm font-medium text-orange-700">
+
+        <!-- Sort by Price -->
+        <div>
+          <label class="block mb-1">
+            Price
+          </label>
+          <select
+            class="w-full bg-white px-3 py-2 rounded outline-none border border-gray-200 
+                   focus:border-orange-400 focus:ring-1 focus:ring-orange-300 text-gray-700 text-sm">
+            <option value="">Select</option>
+            <option value="price_low_high">Low to High</option>
+            <option value="price_high_low">High to Low</option>
+          </select>
+        </div>
+
+        <!-- Sort by Newest / Rating -->
+        <div>
+          <label class="block mb-1">
+            Newest / Rating
+          </label>
+          <select
+            class="w-full bg-white px-3 py-2 rounded outline-none border border-gray-200 
+                   focus:border-orange-400 focus:ring-1 focus:ring-orange-300 text-gray-700 text-sm">
+            <option value="">Select</option>
+            <option value="newest">Newest First</option>
+            <option value="top_rated">Top Rated</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- 
+        ===========================
+        CATEGORY SECTION
+        - Accordion style:
+          Each main category is a clickable header.
+          Clicking toggles visibility of its subcategory list.
+        - Subcategories are exactly taken from your category.html
+        - No orange borders on these options
+        ===========================
+      -->
+      <!-- CATEGORY BLOCK (HIDDEN ON MOBILE, VISIBLE ON TABLET/DESKTOP) -->
+<div class="hidden md:block">
+  
+  <h2 class="text-lg font-bold text-orange-600 mt-6 mb-3">
+    Categories
+  </h2>
+
+  <div class="space-y-3 text-sm font-medium text-orange-700">
+
+
+        <!-- ===== MEN ===== -->
+        <div class="bg-white rounded-md shadow-sm">
+          <!-- Accordion header -->
+          <button
+            type="button"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-orange-100 transition"
+            data-accordion-trigger="men">
+
+            <span>Men</span>
+
+            <!-- Simple chevron icon using CSS borders -->
+            <span class="transform transition-transform accordion-icon">
+              ▾
+            </span>
+          </button>
+
+          <!-- Accordion content: MEN subcategories -->
+          <div
+            class="px-3 pb-2 pt-1 space-y-1 text-gray-700 text-xs hidden"
+            data-accordion-panel="men">
+
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              T-Shirts &amp; Polos
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Shirts
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Jeans
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Trousers &amp; Chinos
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Hoodies &amp; Sweatshirts
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Jackets
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Sportswear
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Accessories
+            </a>
+          </div>
+        </div>
+
+        <!-- ===== WOMEN ===== -->
+        <div class="bg-white rounded-md shadow-sm">
+          <button
+            type="button"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-orange-100 transition"
+            data-accordion-trigger="women">
+
+            <span>Women</span>
+            <span class="transform transition-transform accordion-icon">▾</span>
+          </button>
+
+          <div
+            class="px-3 pb-2 pt-1 space-y-1 text-gray-700 text-xs hidden"
+            data-accordion-panel="women">
+
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Tops &amp; Tees
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Dresses
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Kurtis
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Jeans
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Ethnic Wear
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Activewear
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Sweaters
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Accessories
+            </a>
+          </div>
+        </div>
+
+        <!-- ===== FOOTWEAR ===== -->
+        <div class="bg-white rounded-md shadow-sm">
+          <button
+            type="button"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-orange-100 transition"
+            data-accordion-trigger="footwear">
+
+            <span>Footwear</span>
+            <span class="transform transition-transform accordion-icon">▾</span>
+          </button>
+
+          <div
+            class="px-3 pb-2 pt-1 space-y-1 text-gray-700 text-xs hidden"
+            data-accordion-panel="footwear">
+
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Sneakers
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Running Shoes
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Sandals
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Boots
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Loafers
+            </a>
+          </div>
+        </div>
+
+        <!-- ===== DESIGNER BRANDS ===== -->
+        <div class="bg-white rounded-md shadow-sm">
+          <button
+            type="button"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-orange-100 transition"
+            data-accordion-trigger="designer">
+
+            <span>Designer Brands</span>
+            <span class="transform transition-transform accordion-icon">▾</span>
+          </button>
+
+          <div
+            class="px-3 pb-2 pt-1 space-y-1 text-gray-700 text-xs hidden"
+            data-accordion-panel="designer">
+
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Zara
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              H&amp;M
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Levi’s
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Nike
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Adidas
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Puma
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Calvin Klein
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Mango
+            </a>
+          </div>
+        </div>
+
+        <!-- ===== KIDS ===== -->
+        <div class="bg-white rounded-md shadow-sm">
+          <button
+            type="button"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-orange-100 transition"
+            data-accordion-trigger="kids">
+
+            <span>Kids</span>
+            <span class="transform transition-transform accordion-icon">▾</span>
+          </button>
+
+          <div
+            class="px-3 pb-2 pt-1 space-y-1 text-gray-700 text-xs hidden"
+            data-accordion-panel="kids">
+
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Boys Clothing
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Girls Clothing
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Baby Clothing
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Kids Shoes
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Accessories
+            </a>
+          </div>
+        </div>
+
+        <!-- ===== ACCESSORIES ===== -->
+        <div class="bg-white rounded-md shadow-sm">
+          <button
+            type="button"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-orange-100 transition"
+            data-accordion-trigger="accessories">
+
+            <span>Accessories</span>
+            <span class="transform transition-transform accordion-icon">▾</span>
+          </button>
+
+          <div
+            class="px-3 pb-2 pt-1 space-y-1 text-gray-700 text-xs hidden"
+            data-accordion-panel="accessories">
+
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Watches
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Sunglasses
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Belts
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Jewelry
+            </a>
+            <a href="#" class="block py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">
+              Bags
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+
+
+    <!-- 
+      ===========================
+      MAIN CONTENT (RIGHT)
+      - Title
+      - Product Grid (card.html)
+      - Infinite scroll placeholder
+      ===========================
+    -->
+    <main class="flex-1">
+
+      <!-- Page Title (no breadcrumb, no result count as requested) -->
+      <h1 class="text-2xl font-bold text-orange-600 mb-4" style="padding-left: 16px;padding-right: 16px;">
+        Search Results
+      </h1>
+
+      <!-- 
+        Product Grid:
+        - Uses your existing card.html
+        - That file already handles responsiveness (2/3/4 columns)
+      -->
+      <div class="mt-4">
+        {% include 'card.html' %}
+      </div>
+
+      <!-- 
+        Infinite Scroll Placeholder:
+        - Visual feedback that more items would load
+        - No JS logic yet (backend can hook later)
+      -->
+      <div class="mt-10 flex justify-center">
+        <div class="flex flex-col items-center space-y-2 text-orange-600">
+
+          <!-- Simple spinner -->
+          <div class="animate-spin h-8 w-8 border-4 border-orange-300 border-t-orange-600 rounded-full"></div>
+
+          <p class="text-sm font-medium">
+            Loading more results...
+          </p>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+</div>
+
+<!-- 
+  ===========================
+  ACCORDION JS
+  - Very small vanilla JS
+  - Handles open/close of sidebar categories on click
+  - No external libraries needed
+  ===========================
+-->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Select all accordion triggers (the category headers)
+  const triggers = document.querySelectorAll("[data-accordion-trigger]");
+
+  triggers.forEach(function (trigger) {
+    trigger.addEventListener("click", function () {
+      const key = this.getAttribute("data-accordion-trigger");
+      const panel = document.querySelector('[data-accordion-panel="' + key + '"]');
+      const icon = this.querySelector(".accordion-icon");
+
+      if (!panel) return;
+
+      // Toggle visibility of the clicked panel
+      const isHidden = panel.classList.contains("hidden");
+      if (isHidden) {
+        panel.classList.remove("hidden");
+        icon.classList.add("rotate-180");  // rotate arrow
+      } else {
+        panel.classList.add("hidden");
+        icon.classList.remove("rotate-180");
+      }
+    });
+  });
+});
+</script>
+
+{% endblock content %}

@@ -1,0 +1,289 @@
+{% load static %}
+
+<!-- 🟠 Sticky Navigation Bar with Desktop Dropdown + Mobile Sidebar -->
+<nav class="sticky top-0 z-50 bg-orange-500 h-[60px] w-full text-white shadow-md">
+
+  <!-- Constrained canvas -->
+  <div class="max-w-[1320px] mx-auto px-5 h-full flex items-center justify-between">
+    <!-- Logo -->
+    <a href="{% url 'home' %}" class="shrink-0">
+      <img src="{% static 'images/logo.png' %}" alt="Kinbo Logo" class="h-8 w-auto">
+    </a>
+
+    <!-- Desktop Search (centered) -->
+    <form action="{% url 'search' %}" method="GET"
+          class="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl px-4">
+      <div class="relative w-full flex items-center">
+        <img src="{% static 'images/search.png' %}" alt="Search"
+             class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2">
+        <input type="text" name="q" placeholder="Search for any product or brand"
+               class="w-full rounded-l-full py-2 pl-10 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none">
+      </div>
+      <button type="submit"
+              class="bg-orange-600 hover:bg-orange-700 text-white px-4 rounded-r-full text-sm flex items-center justify-center">
+        <img src="{% static 'images/searchbutton.png' %}" alt="Search" class="h-5 w-5">
+      </button>
+    </form>
+
+    <!-- Desktop Right -->
+    <div class="hidden lg:flex items-center gap-6">
+      <!-- Cart -->
+      <a href="{% url 'cart' %}" class="hover:opacity-90" title="Cart">
+        <img src="{% static 'images/cart.png' %}" alt="Cart" class="h-5 w-5">
+      </a>
+
+      {% if user.is_authenticated %}
+      <!-- Authenticated: Avatar + Username with dropdown -->
+      <div class="relative">
+        <button id="profile-btn"
+                class="flex items-center gap-2 focus:outline-none group"
+                aria-haspopup="menu" aria-expanded="false">
+          <img src="{% static 'images/user.png' %}" alt="" class="h-8 w-8 rounded-full ring-2 ring-white/20 group-hover:ring-white/40 transition">
+          <span class="text-sm font-semibold">{{ user.first_name }}</span>
+          <svg class="h-4 w-4 opacity-80 group-hover:opacity-100 transition" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+
+        <!-- Profile Dropdown -->
+        <div id="profile-dropdown"
+             class="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-md shadow-lg py-2 opacity-0 scale-95 transform origin-top-right transition-all duration-200 pointer-events-none z-50"
+             role="menu" aria-label="User menu">
+          <!-- NOTE: Using static HTML links for now so it works without backend routes. Replace with later. -->
+          <a href="{% url 'dashboard' %}" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Profile Settings</a>
+          <a href="/wishlist.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Your Wishlist</a>
+          <a href="/order.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Order History</a>
+          <a href="/returns.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Product Return</a>
+          <div class="my-1 h-px bg-gray-100"></div>
+          <!-- update Logout url-->
+          <a href="{% url 'logout' %}" class="block px-4 py-2 hover:bg-orange-50 text-red-600 font-medium" role="menuitem">Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <!-- Guest: Sign in -->
+      <a href="{% url 'login' %}" class="text-sm hover:underline flex items-center gap-2">
+        <img src="{% static 'images/signin.png' %}" alt="Sign In" class="h-5 w-5">
+        <span>Sign In</span>
+      </a>
+      {% endif %}
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <div class="lg:hidden flex items-center">
+      <button id="menu-toggle" class="focus:outline-none relative z-[61]" aria-label="Open menu" aria-expanded="false">
+        <svg id="hamburger-icon" class="w-7 h-7 transition-all duration-200" fill="none" stroke="currentColor"
+             stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg id="close-icon" class="w-7 h-7 hidden transition-all duration-200" fill="none" stroke="currentColor"
+             stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile/Tablet Overlay -->
+<div id="backdrop" class="fixed inset-0 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden z-[60]"></div>
+
+<!-- Mobile/Tablet Right Sidebar -->
+<aside id="mobile-menu"
+       class="fixed top-0 right-0 h-full w-80 max-w-[85%] bg-orange-500 text-white shadow-[-10px_0_20px_rgba(0,0,0,0.25)] translate-x-full transition-transform duration-300 ease-out z-[62] lg:hidden overflow-y-auto will-change-transform">
+
+  <div class="flex flex-col h-full">
+    <!-- Header (optional logo inside drawer) -->
+    <div class="px-5 pt-4 pb-3 border-b border-orange-600/40 flex items-center gap-3">
+      <img src="{% static 'images/logo.png' %}" class="h-6 w-auto" alt="Kinbo">
+      <span class="text-sm opacity-80">Menu</span>
+    </div>
+
+    <!-- Mobile Search -->
+    <div class="px-5 py-4">
+      <form action="{% url 'search' %}" method="GET" class="flex">
+        <div class="relative w-full flex items-center">
+          <img src="{% static 'images/search.png' %}" alt="Search"
+               class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2">
+          <input type="text" name="q" placeholder="Search"
+                 class="w-full rounded-l-full py-2 pl-10 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none">
+        </div>
+        <button type="submit"
+                class="bg-orange-600 hover:bg-orange-700 text-white px-4 rounded-r-full text-sm flex items-center justify-center">
+          <img src="{% static 'images/searchbutton.png' %}" alt="Search" class="h-5 w-5">
+        </button>
+      </form>
+    </div>
+
+    <!-- Menu Content (CENTERED) -->
+<div class="px-2 flex-1">
+  {% if user.is_authenticated %}
+  <!-- Profile (tap name or image -> profile page) -->
+  <a href="{% url 'dashboard' %}"
+     class="w-full flex items-center justify-center gap-3 px-3 py-3 rounded-md hover:bg-orange-600/40 transition text-center">
+    <img src="{% static 'images/user.png' %}" alt="" class="h-7 w-7 rounded-full bg-white/10 p-[2px]">
+    <div class="flex flex-col items-center">
+      <span class="text-sm opacity-80">Signed in as</span>
+      <span class="text-base font-semibold">{{ user.first_name }}</span>
+    </div>
+  </a>
+
+  <!-- Cart -->
+  <a href="{% url 'cart' %}"
+     class="mt-2 w-full flex items-center justify-center gap-3 px-3 py-3 rounded-md hover:bg-orange-600/40 transition text-center">
+    <img src="{% static 'images/cart.png' %}" alt="Cart" class="h-6 w-6">
+    <span class="text-base font-medium">Your Cart</span>
+  </a>
+
+  <!-- Wishlist -->
+  <a href="#"
+     class="mt-2 w-full flex items-center justify-center gap-3 px-3 py-3 rounded-md hover:bg-orange-600/40 transition text-center">
+    <img src="{% static 'images/wishlist.png' %}" alt="Wishlist" class="h-6 w-6">
+    <span class="text-base font-medium">Your Wishlist</span>
+  </a>
+
+  <!-- Order History -->
+  <a href="{% url 'order_history' %}"
+     class="mt-2 w-full flex items-center justify-center gap-3 px-3 py-3 rounded-md hover:bg-orange-600/40 transition text-center">
+    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18"/>
+    </svg>
+    <span class="text-base font-medium">Order History</span>
+  </a>
+
+  <!-- Product Return -->
+  <a href="/returns.html"
+     class="mt-2 w-full flex items-center justify-center gap-3 px-3 py-3 rounded-md hover:bg-orange-600/40 transition text-center">
+    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 14l-4-4 4-4M5 10h11a4 4 0 010 8h-1"/>
+    </svg>
+    <span class="text-base font-medium">Product Return</span>
+  </a>
+
+  {% else %}
+  <!-- Guest: Sign In -->
+  <a href="{% url 'login' %}"
+     class="w-full flex items-center justify-center gap-3 px-3 py-3 rounded-md bg-white text-orange-600 font-semibold hover:bg-orange-50 transition text-center">
+    <img src="{% static 'images/signinmobile.png' %}" alt="Sign In" class="h-6 w-6">
+    <span>Sign In</span>
+  </a>
+  {% endif %}
+</div>
+
+
+    <!-- Mobile View: Sticky bottom logout Button shows only logged in mode -->
+    {% if user.is_authenticated %}
+    <div class="mt-4 sticky bottom-0 bg-orange-600/20 backdrop-blur px-5 py-4 border-t border-orange-600/30">
+      <a href="{% url 'logout' %}" class="block w-full text-center bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-md transition">
+        Logout
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</aside>
+
+<!-- 🔧 Toggle & Animation Script -->
+<script>
+  (function () {
+    const toggleBtn = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-icon');
+    const backdrop = document.getElementById('backdrop');
+
+    // Profile dropdown bits (desktop)
+    const profileBtn = document.getElementById('profile-btn');
+    const profileDropdown = document.getElementById('profile-dropdown');
+
+    // Helpers
+    const openMenu = () => {
+      menu.classList.remove('translate-x-full');
+      menu.classList.add('translate-x-0');
+      backdrop.classList.remove('pointer-events-none', 'opacity-0');
+      backdrop.classList.add('opacity-100');
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      hamburgerIcon.classList.add('hidden');
+      closeIcon.classList.remove('hidden');
+      // prevent body scroll while drawer is open
+      document.documentElement.classList.add('overflow-hidden', 'lg:overflow-auto');
+    };
+
+    const closeMenu = () => {
+      menu.classList.add('translate-x-full');
+      menu.classList.remove('translate-x-0');
+      backdrop.classList.add('opacity-0');
+      backdrop.classList.remove('opacity-100');
+      // delay pointer-events change to allow fade animation
+      setTimeout(() => backdrop.classList.add('pointer-events-none'), 200);
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      hamburgerIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      document.documentElement.classList.remove('overflow-hidden');
+    };
+
+    const toggleDropdown = () => {
+      if (!profileDropdown) return;
+      const open = profileDropdown.classList.contains('opacity-100');
+      profileDropdown.classList.toggle('opacity-100');
+      profileDropdown.classList.toggle('scale-100');
+      profileDropdown.classList.toggle('opacity-0');
+      profileDropdown.classList.toggle('scale-95');
+      profileDropdown.classList.toggle('pointer-events-none');
+      if (profileBtn) profileBtn.setAttribute('aria-expanded', String(!open));
+    };
+
+    // Mobile hamburger handlers
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        const isClosed = menu.classList.contains('translate-x-full');
+        isClosed ? openMenu() : closeMenu();
+      });
+    }
+    if (backdrop) {
+      backdrop.addEventListener('click', closeMenu);
+    }
+
+    // ESC to close menu or dropdown
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMenu();
+        if (profileDropdown && profileDropdown.classList.contains('opacity-100')) {
+          toggleDropdown();
+        }
+      }
+    });
+
+    // Desktop profile dropdown
+    if (profileBtn && profileDropdown) {
+      profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleDropdown();
+      });
+    }
+
+    // Close on outside click
+    document.addEventListener('click', (event) => {
+      // close drawer if click outside
+      if (!menu.contains(event.target) && !toggleBtn.contains(event.target)) {
+        closeMenu();
+      }
+      // close profile dropdown if click outside
+      if (profileDropdown && !profileDropdown.contains(event.target) && !profileBtn.contains(event.target)) {
+        if (profileDropdown.classList.contains('opacity-100')) toggleDropdown();
+      }
+    });
+
+    // Close dropdown on resize to mobile and vice versa
+    window.addEventListener('resize', () => {
+      const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+      if (!isDesktop) {
+        // ensure dropdown closed on mobile
+        if (profileDropdown && profileDropdown.classList.contains('opacity-100')) toggleDropdown();
+      } else {
+        // ensure drawer closed on desktop
+        closeMenu();
+      }
+    });
+  })();
+</script>

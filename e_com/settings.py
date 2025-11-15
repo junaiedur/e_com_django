@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
-# ai line ta ami gimini teke copy koira marci
+# ai line ta ami gimini theke copy koira marci
 import environ
 env = environ.Env(DEBUG=(bool, False))
 # django-environ সেটআপ
@@ -124,7 +124,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'e_com_projects',
         'USER': 'root',
-        'PASSWORD': 'SaaDik@410',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
     }

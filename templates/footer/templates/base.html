@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Kinbo Shop{% endblock %}</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="{% static 'dist/styles.css' %}">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#FFFAF0] text-gray-800">
+
+  <!-- 🧭 Navigation -->
+  {% block nav %}
+    {% include 'nav.html' %}
+  {% endblock %}
+
+  <!-- 🟠 Categories -->
+  {% block category %}
+    {% include 'category.html' %}
+  {% endblock %}
+
+  <!-- 📄 Page Content -->
+  <main class="pt-4">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- ⚙️ Footer -->
+  {% block footer %}
+    {% include 'footer.html' %}
+  {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+{% extends 'base.html' %}
+{% block title %}Product Overview | Kinbo Shop{% endblock %}
+{% load static %}
+
+{% block content %}
+<!-- =========================
+🧩 MAIN PAGE WRAPPER
+Encapsulates the entire product detail layout
+========================= -->
+<div class="max-w-[1320px] mx-auto px-4 py-10">
+
+  <!-- =========================
+  🖼️ PRODUCT MAIN WRAPPER
+  Holds the image gallery (left) and product information (right)
+  ========================= -->
+  <div class="flex flex-col lg:flex-row gap-10">
+
+    <!-- =========================
+    📸 LEFT SECTION: PRODUCT IMAGE GALLERY
+    ========================= -->
+    <section class="w-full lg:w-1/2" id="product-gallery" aria-label="Product image gallery">
+
+      <!-- 🔳 MAIN IMAGE STAGE / MOBILE CAROUSEL -->
+      <div class="relative border rounded-2xl overflow-hidden select-none" id="mainImageStage">
+
+        <!-- ◀️ PREVIOUS BUTTON (Mobile/Tablet) -->
+        <button id="prevBtn"
+          class="absolute left-2 top-1/2 -translate-y-1/2 z-10 md:flex lg:hidden hidden items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/80 backdrop-blur border hover:bg-white transition"
+          aria-label="Previous image">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               class="w-6 h-6 sm:w-7 sm:h-7 text-gray-700"
+               viewBox="0 0 24 24" fill="none">
+            <path d="M15 6l-6 6 6 6"
+                  stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- ▶️ NEXT BUTTON (Mobile/Tablet) -->
+        <button id="nextBtn"
+          class="absolute right-2 top-1/2 -translate-y-1/2 z-10 md:flex lg:hidden hidden items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/80 backdrop-blur border hover:bg-white transition"
+          aria-label="Next image">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               class="w-6 h-6 sm:w-7 sm:h-7 text-gray-700"
+               viewBox="0 0 24 24" fill="none">
+            <path d="M9 6l6 6-6 6"
+                  stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- 🖼️ MAIN PRODUCT IMAGE -->
+        <img
+          id="mainImage"
+          src="{% static 'images/product1.jpg' %}"
+          alt="UrbanThreads Classic Cotton T-Shirt in black, front view"
+          class="w-full h-[500px] object-cover touch-pan-y"
+          draggable="false"
+        />
+
+        <!-- 🔘 MOBILE DOT NAVIGATION -->
+        <div id="dotNav" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 lg:hidden">
+          <button class="dot w-2.5 h-2.5 rounded-full bg-white/50" aria-label="Go to image 1" aria-selected="true"></button>
+          <button class="dot w-2.5 h-2.5 rounded-full bg-white/50" aria-label="Go to image 2"></button>
+          <button class="dot w-2.5 h-2.5 rounded-full bg-white/50" aria-label="Go to image 3"></button>
+        </div>
+      </div>
+
+      <!-- 🖼️ DESKTOP THUMBNAILS -->
+      <div class="hidden lg:flex justify-center gap-4 mt-4" id="thumbRow">
+        <img src="{% static 'images/product1.jpg' %}" alt="Thumbnail: front view" class="thumb w-24 h-24 border rounded-xl object-cover cursor-pointer ring-offset-2 hover:opacity-80 transition" data-index="0">
+        <img src="{% static 'images/product2.jpg' %}" alt="Thumbnail: angled view" class="thumb w-24 h-24 border rounded-xl object-cover cursor-pointer ring-offset-2 hover:opacity-80 transition" data-index="1">
+        <img src="{% static 'images/product3.jpg' %}" alt="Thumbnail: back view" class="thumb w-24 h-24 border rounded-xl object-cover cursor-pointer ring-offset-2 hover:opacity-80 transition" data-index="2">
+      </div>
+    </section>
+
+    <!-- =========================
+    🧾 RIGHT SECTION: PRODUCT INFORMATION
+    ========================= -->
+    <section class="w-full lg:w-1/2 flex flex-col justify-start space-y-6" aria-label="Product information">
+
+      <!-- 🏷️ TITLE & BRAND -->
+      <header id="product-header">
+        <h1 class="text-3xl font-bold text-gray-900">Men's Classic Cotton T-Shirt</h1>
+        <p class="text-gray-500 mt-1">by
+          <a href="#" class="text-orange-500 hover:underline">UrbanThreads</a>
+        </p>
+      </header>
+
+      <!-- ⭐ RATING & REVIEWS LINK -->
+      <div class="flex items-center gap-2" id="rating-block">
+        <div class="flex text-orange-500 text-lg" aria-label="Product rating 4.5 out of 5">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span class="text-gray-300">★</span>
+        </div>
+        <span class="text-gray-600 text-sm">
+          4.5 out of 5
+          <!-- ✅ Link to reviews section -->
+          (<a href="#product_review" class="underline hover:text-orange-500 scroll-smooth">132 reviews</a>)
+        </span>
+      </div>
+
+      <!-- 💲 PRICE -->
+      <div id="price-block" class="text-2xl font-bold text-gray-900">
+        $24.99
+
+      </div>
+
+      <!-- 📏 SIZES -->
+      <div id="size-block">
+        <p class="font-semibold mb-2">Size:</p>
+        <div class="flex flex-wrap gap-3">
+          <button class="size-btn border px-4 py-2 rounded-md hover:border-orange-500 transition">S</button>
+          <button class="size-btn border px-4 py-2 rounded-md hover:border-orange-500 transition">M</button>
+          <button class="size-btn border px-4 py-2 rounded-md hover:border-orange-500 transition">L</button>
+          <button class="size-btn border px-4 py-2 rounded-md hover:border-orange-500 transition">XL</button>
+          <button class="size-btn border px-4 py-2 rounded-md hover:border-orange-500 transition">XXL</button>
+        </div>
+      </div>
+
+      <!-- 🎨 COLORS -->
+      <div id="color-block">
+        <p class="font-semibold mb-2">Color:</p>
+        <div class="flex gap-3">
+          <button class="color-btn w-8 h-8 rounded-full border-2 border-gray-300 bg-black ring-offset-2"></button>
+          <button class="color-btn w-8 h-8 rounded-full border-2 border-gray-300 bg-blue-600 ring-offset-2"></button>
+          <button class="color-btn w-8 h-8 rounded-full border-2 border-gray-300 bg-red-600 ring-offset-2"></button>
+        </div>
+      </div>
+
+      <!-- 🔢 QUANTITY -->
+      <div id="quantity-block">
+        <p class="font-semibold mb-2">Quantity:</p>
+        <div class="flex items-center w-36 border rounded-md overflow-hidden">
+          <button id="decreaseQty" class="w-12 py-2 text-xl border-r hover:bg-gray-50">−</button>
+          <input id="quantity" type="text" value="1" readonly class="w-12 text-center focus:outline-none">
+          <button id="increaseQty" class="w-12 py-2 text-xl border-l hover:bg-gray-50">+</button>
+        </div>
+      </div>
+
+      <!-- 🛒 ACTION BUTTONS -->
+      <div id="actions-block" class="flex flex-col sm:flex-row sm:items-center gap-4">
+        <button class="w-full sm:w-auto bg-orange-500 text-white font-semibold px-8 py-3 rounded-md hover:bg-orange-600 transition">
+          Buy Now
+        </button>
+        <button class="w-full sm:w-auto border border-orange-500 text-orange-500 font-semibold px-8 py-3 rounded-md hover:bg-orange-50 transition">
+          Add to Cart
+        </button>
+
+        <!-- 💖 WISHLIST BUTTONS -->
+        <button class="hidden md:inline-flex items-center gap-2 border border-gray-300 px-6 py-3 rounded-md hover:border-orange-500 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="none">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Add to Wishlist
+        </button>
+        <button class="md:hidden border border-gray-300 px-6 py-3 rounded-md hover:border-orange-500 transition">
+          Add to Wishlist
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================
+  📄 DETAILS / DESCRIPTION / DELIVERY
+  ========================= -->
+  <section class="mt-14 space-y-8">
+
+    <!-- 📋 PRODUCT DETAILS -->
+    <div id="details">
+      <h2 class="text-2xl font-semibold mb-3">Product Details</h2>
+      <ul class="list-disc list-inside text-gray-700 space-y-1">
+        <li>Material: 100% Cotton</li>
+        <li>Fit: Regular Fit</li>
+        <li>Pattern: Solid</li>
+        <li>Care: Machine wash cold, do not bleach, tumble dry low, warm iron if needed</li>
+        <li>SKU: UT-TSH1234</li>
+      </ul>
+    </div>
+
+    <!-- 🧾 DESCRIPTION -->
+    <div id="description">
+      <h2 class="text-2xl font-semibold mb-3">Description</h2>
+      <p class="text-gray-700 leading-relaxed">
+        Elevate your everyday essentials with the UrbanThreads Classic Cotton T-Shirt — a dependable staple made from premium,
+        breathable cotton that keeps you comfortable from sunrise to sundown. The smooth, soft-touch jersey drapes naturally on
+        the body for a clean silhouette, while the reinforced neckline maintains shape wash after wash.
+      </p>
+    </div>
+
+    <!-- 🚚 DELIVERY INFO -->
+    <div id="delivery-info">
+      <h2 class="text-2xl font-semibold mb-3">Delivery & Return</h2>
+      <ul class="text-gray-700 space-y-1">
+        <li>✅ Cash on Delivery available</li>
+        <li>🔄 Easy 7-day return policy</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<!-- =========================
+⚙️ INTERACTIVE SCRIPT
+========================= -->
+<script>
+(function(){
+  const images=[
+    {src:"{% static 'images/product1.jpg' %}",alt:"Front view"},
+    {src:"{% static 'images/product2.jpg' %}",alt:"Angled view"},
+    {src:"{% static 'images/product3.jpg' %}",alt:"Back view"}
+  ];
+  const mainImage=document.getElementById('mainImage');
+  const mainStage=document.getElementById('mainImageStage');
+  const thumbnails=document.querySelectorAll('.thumb');
+  const dots=document.querySelectorAll('#dotNav .dot');
+  const prevBtn=document.getElementById('prevBtn');
+  const nextBtn=document.getElementById('nextBtn');
+  let current=0;
+
+  function updateImage(i){
+    current=(i+images.length)%images.length;
+    mainImage.src=images[current].src;
+    mainImage.alt=images[current].alt;
+    thumbnails.forEach(t=>t.classList.remove('ring','ring-orange-500'));
+    const active=[...thumbnails].find(t=>+t.dataset.index===current);
+    if(active)active.classList.add('ring','ring-orange-500');
+    dots.forEach((d,idx)=>{
+      d.classList.toggle('bg-white',idx===current);
+      d.classList.toggle('bg-white/50',idx!==current);
+    });
+  }
+
+  updateImage(0);
+  thumbnails.forEach(t=>t.addEventListener('click',()=>updateImage(+t.dataset.index)));
+  dots.forEach((d,i)=>d.addEventListener('click',()=>updateImage(i)));
+  const showPrev=()=>updateImage(current-1);
+  const showNext=()=>updateImage(current+1);
+  prevBtn.addEventListener('click',showPrev);
+  nextBtn.addEventListener('click',showNext);
+  prevBtn.classList.remove('hidden');
+  nextBtn.classList.remove('hidden');
+
+  let startX=0,deltaX=0,swiping=false;
+  mainStage.addEventListener('touchstart',e=>{swiping=true;startX=e.touches[0].clientX;},{passive:true});
+  mainStage.addEventListener('touchmove',e=>{if(swiping)deltaX=e.touches[0].clientX-startX;},{passive:true});
+  mainStage.addEventListener('touchend',()=>{if(deltaX>50)showPrev();else if(deltaX<-50)showNext();swiping=false;},{passive:true});
+
+  const qty=document.getElementById('quantity');
+  document.getElementById('increaseQty').addEventListener('click',()=>qty.value=+qty.value+1);
+  document.getElementById('decreaseQty').addEventListener('click',()=>qty.value=Math.max(1,qty.value-1));
+
+  const sizes=document.querySelectorAll('.size-btn');
+  sizes.forEach(btn=>btn.addEventListener('click',()=>{sizes.forEach(b=>b.classList.remove('border-orange-500','bg-orange-50'));btn.classList.add('border-orange-500','bg-orange-50');}));
+
+  const colors=document.querySelectorAll('.color-btn');
+  colors.forEach(btn=>btn.addEventListener('click',()=>{colors.forEach(b=>b.classList.remove('ring','ring-orange-500'));btn.classList.add('ring','ring-orange-500');}));
+
+  if(sizes[1])sizes[1].classList.add('border-orange-500','bg-orange-50');
+  if(colors[0])colors[0].classList.add('ring','ring-orange-500');
+})();
+</script>
+
+<!-- ✅ GLOBAL SMOOTH SCROLL STYLE -->
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+
+{% include 'product_review.html' %}
+<br><br><br>
+<div class="max-w-[1320px] mx-auto px-4 py-8">
+
+    <!-- Section Title -->
+  <h2 h2 class="text-2xl font-bold text-orange-600 mb-6" h2="" style="margin-bottom: 0px;">Recommended Products</h2>
+  </div>
+{% include 'card.html' %}
+
+{% endblock %}

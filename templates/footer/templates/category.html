@@ -1,0 +1,198 @@
+{% load static %}
+
+<!-- =====================================================
+     MOBILE/TABLET VERSION (lg:hidden)
+     Shows: Best Deals + Flash Sale as full-width buttons
+===================================================== -->
+<div class="lg:hidden w-full bg-orange-50 py-2">
+  <div class="max-w-[1320px] mx-auto px-4 grid grid-cols-2 gap-3" style="padding-left: 16px;padding-right: 16px;">
+
+    <!-- Best Deals Button -->
+    <a href="#"
+       class="flex items-center justify-center bg-white text-orange-600 font-semibold text-sm py-3 rounded-lg shadow hover:bg-orange-100 transition">
+      <img src="{% static 'images/bestdeals.png' %}" class="h-4 w-4 mr-2" />
+      Best Deals
+    </a>
+
+    <!-- Flash Sale Button -->
+    <a href="#"
+       class="flex items-center justify-center bg-white text-orange-600 font-semibold text-sm py-3 rounded-lg shadow hover:bg-orange-100 transition">
+      <img src="{% static 'images/flashsale.png' %}" class="h-4 w-4 mr-2" />
+      Flash Sale
+    </a>
+
+  </div>
+</div>
+
+
+
+<!-- =====================================================
+     DESKTOP CATEGORY BAR (visible only on lg+)
+===================================================== -->
+<div class="sticky top-[60px] z-40 bg-orange-50 h-12 bottomnav-animate hidden lg:block">
+  <div class="max-w-[1320px] mx-auto h-full flex items-center justify-between" style="padding-left: 16px;padding-right: 16px;">
+
+    <!-- LEFT: Categories with Dropdowns (desktop only) -->
+    <div class="flex space-x-6 text-orange-600 text-xs font-semibold select-none">
+
+      <!-- ================= MEN ================= -->
+      <div class="relative group cursor-pointer">
+        <span class="hover:text-orange-800 transition">Men</span>
+
+        <div
+          class="dropdown-menu absolute left-0 top-full bg-white shadow-lg rounded-md mt-2 p-3 w-48
+                 opacity-0 invisible transition-all duration-200
+                 group-hover:opacity-100 group-hover:visible
+                 hover:opacity-100 hover:visible">
+
+          <ul class="space-y-2 text-gray-700 text-xs">
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">T-Shirts & Polos</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Shirts</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Jeans</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Trousers & Chinos</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Hoodies & Sweatshirts</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Jackets</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Sportswear</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Accessories</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ================= WOMEN ================= -->
+      <div class="relative group cursor-pointer">
+        <span class="hover:text-orange-800 transition">Women</span>
+
+        <div
+          class="dropdown-menu absolute left-0 top-full bg-white shadow-lg rounded-md mt-2 p-3 w-48
+                 opacity-0 invisible transition-all duration-200
+                 group-hover:opacity-100 group-hover:visible
+                 hover:opacity-100 hover:visible">
+
+          <ul class="space-y-2 text-gray-700 text-xs">
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Tops & Tees</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Dresses</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Kurtis</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Jeans</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Ethnic Wear</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Activewear</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Sweaters</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Accessories</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ================= FOOTWEAR ================= -->
+      <div class="relative group cursor-pointer">
+        <span class="hover:text-orange-800 transition">Footwear</span>
+
+        <div
+          class="dropdown-menu absolute left-0 top-full bg-white shadow-lg rounded-md mt-2 p-3 w-48
+                 opacity-0 invisible transition-all duration-200
+                 group-hover:opacity-100 group-hover:visible
+                 hover:opacity-100 hover:visible">
+
+          <ul class="space-y-2 text-gray-700 text-xs">
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Sneakers</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Running Shoes</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Sandals</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Boots</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Loafers</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ================= DESIGNER BRANDS ================= -->
+      <div class="relative group cursor-pointer">
+        <span class="hover:text-orange-800 transition">Designer Brands</span>
+
+        <div
+          class="dropdown-menu absolute left-0 top-full bg-white shadow-lg rounded-md mt-2 p-3 w-48
+                 opacity-0 invisible transition-all duration-200
+                 group-hover:opacity-100 group-hover:visible
+                 hover:opacity-100 hover:visible">
+
+          <ul class="space-y-2 text-gray-700 text-xs">
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Zara</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">H&M</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Levi’s</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Nike</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Adidas</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Puma</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Calvin Klein</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Mango</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ================= KIDS ================= -->
+      <div class="relative group cursor-pointer">
+        <span class="hover:text-orange-800 transition">Kids</span>
+
+        <div
+          class="dropdown-menu absolute left-0 top-full bg-white shadow-lg rounded-md mt-2 p-3 w-48
+                 opacity-0 invisible transition-all duration-200
+                 group-hover:opacity-100 group-hover:visible
+                 hover:opacity-100 hover:visible">
+
+          <ul class="space-y-2 text-gray-700 text-xs">
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Boys Clothing</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Girls Clothing</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Baby Clothing</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Kids Shoes</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Accessories</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ================= ACCESSORIES ================= -->
+      <div class="relative group cursor-pointer">
+        <span class="hover:text-orange-800 transition">Accessories</span>
+
+        <div
+          class="dropdown-menu absolute left-0 top-full bg-white shadow-lg rounded-md mt-2 p-3 w-48
+                 opacity-0 invisible transition-all duration-200
+                 group-hover:opacity-100 group-hover:visible
+                 hover:opacity-100 hover:visible">
+
+          <ul class="space-y-2 text-gray-700 text-xs">
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Watches</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Sunglasses</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Belts</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Jewelry</a></li>
+            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600 transition">Bags</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT: Best Deals & Flash Sale (always visible) -->
+    <div class="flex space-x-6 items-center text-orange-600 text-xs font-semibold select-none">
+
+      <a href="#" class="flex items-center hover:text-orange-800 transition">
+        <img src="{% static 'images/bestdeals.png' %}" class="h-4 w-4 mr-1" />
+        Best Deals
+      </a>
+
+      <a href="#" class="flex items-center hover:text-orange-800 transition">
+        <img src="{% static 'images/flashsale.png' %}" class="h-4 w-4 mr-1" />
+        Flash Sale
+      </a>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+<style>
+@keyframes slideUpFadeIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.bottomnav-animate {
+  animation: slideUpFadeIn 0.5s ease-out forwards;
+}
+</style>

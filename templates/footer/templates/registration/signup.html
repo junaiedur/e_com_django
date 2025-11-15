@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up | Kinbo Shop{% endblock %}
+
+{% block nav %}{% endblock %}
+{% block category %}{% endblock %}
+
+{% block content %}
+<!-- Full-screen background with floating bubbles -->
+<div class="relative min-h-screen flex items-center justify-center bg-orange-50 overflow-hidden">
+
+  <!-- Floating Bubbles -->
+  <div class="absolute inset-0 z-0">
+    <div class="absolute w-32 h-32 bg-orange-200 rounded-full top-10 left-1/4 opacity-40 animate-bubble"></div>
+    <div class="absolute w-20 h-20 bg-orange-300 rounded-full top-1/3 right-20 opacity-30 animate-bubble-slow"></div>
+    <div class="absolute w-40 h-40 bg-orange-100 rounded-full bottom-20 left-1/3 opacity-20 animate-bubble-slower"></div>
+    <div class="absolute w-24 h-24 bg-orange-200 rounded-full bottom-10 right-1/4 opacity-25 animate-bubble"></div>
+  </div>
+
+  <!-- Signup Card -->
+  <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-8 relative z-10 transform transition-all duration-700 animate-fade-in">
+    <h2 class="text-3xl font-bold text-orange-600 text-center mb-6">Create Your Account</h2>
+
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+
+      <!-- First Name -->
+      <input type="text" name="first_name" placeholder="First Name" required
+             class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 outline-none text-gray-800">
+
+      <!-- Last Name -->
+      <input type="text" name="last_name" placeholder="Last Name" required
+             class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 outline-none text-gray-800">
+
+      <!-- Email -->
+      <input type="email" name="email" placeholder="Email" required
+             class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 outline-none text-gray-800">
+
+      <!-- Phone -->
+      <input type="tel" name="phone" placeholder="Phone Number" required
+             class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 outline-none text-gray-800">
+
+      <!-- Password -->
+      <input type="password" name="password" placeholder="Password" required
+             class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 outline-none text-gray-800">
+
+      <!-- Confirm Password with Eye -->
+      <div class="relative">
+        <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required
+               class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 outline-none text-gray-800 pr-10">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit"
+              class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 rounded transform transition duration-300 hover:scale-105">
+        Sign Up
+      </button>
+
+      <!-- Login Link -->
+      <p class="text-center text-sm text-gray-600 mt-2">
+        Already have an account? 
+        <a href="{% url 'login' %}" class="text-orange-600 font-semibold inline-block transition-transform hover:scale-110 hover:underline hover:text-orange-700">
+          Login
+        </a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<!-- Password Toggle Script -->
+<script>
+  const toggle = document.getElementById('togglePassword');
+  const confirmPass = document.getElementById('confirm_password');
+  toggle.addEventListener('click', () => {
+    confirmPass.type = confirmPass.type === 'password' ? 'text' : 'password';
+  });
+</script>
+
+<!-- Animations -->
+<style>
+@keyframes bubble {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.7; }
+  50% { transform: translateY(-20px) translateX(10px); opacity: 0.5; }
+}
+@keyframes bubble-slow {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.6; }
+  50% { transform: translateY(-15px) translateX(-10px); opacity: 0.4; }
+}
+@keyframes bubble-slower {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.5; }
+  50% { transform: translateY(-10px) translateX(5px); opacity: 0.3; }
+}
+.animate-bubble { animation: bubble 6s ease-in-out infinite; }
+.animate-bubble-slow { animation: bubble-slow 8s ease-in-out infinite; }
+.animate-bubble-slower { animation: bubble-slower 10s ease-in-out infinite; }
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.8s ease forwards; }
+</style>
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
