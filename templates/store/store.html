@@ -34,12 +34,12 @@
                             <div class="card-body">
                                 <ul class="list-menu">
                                     <li><a href="{% url 'store' %}"> All Products </a></li>
-
-                                    {% for category in links %} 
-                                    <li>
+                                    {% for category in links %}
+                                      <li>
                                         <a href="{{ category.get_url }}">{{ category.category_name }}</a>
-                                    </li>
+                                      </li>
                                     {% endfor %}
+                                                                    
                                 </ul>
                             </div> <!-- card-body.// -->
                         </div>
@@ -51,24 +51,39 @@
                                 <h6 class="title"> Sizes </h6>
                             </a>
                         </header>
+                        <!-- dynaami in size -->
+                        <div class="filter-content collapse show" id="collapse_4" style="">
+                            <div class="filter-content collapse show" id="collapse_3" style="width: fit-content;">
+                                <div class="card-body">
+                                    {% for size in available_sizes %}
+                                      <input type="radio" name="size" value="{{ size }}" {% if selected_size == size %}checked{% endif %}>
+                                      <span class="btn btn-light">{{ size }}</span>
+                                    {% empty %}
+                                      <p class="text-muted">No sizes found</p>
+                                    {% endfor %}
+                                    
+                                </div> <!-- card-body.// -->
+                            </div>
+                        </div>
+                    </article> <!-- filter-group .// -->
+                    <article class="filter-group">
+                        <header class="card-header">
+                            <a href="#" data-toggle="collapse" data-target="#collapse_4" aria-expanded="true" class="">
+                                <i class="icon-control fa fa-chevron-down"></i>
+                                <h6 class="title"> Colours </h6>
+                            </a>
+                        </header>
+                        <!-- dynaami in size -->
                         <div class="filter-content collapse show" id="collapse_4" style="">
                             <div class="card-body">
-                                <label class="checkbox-btn">
-                                    <input type="checkbox">
-                                    <span class="btn btn-light"> XS </span>
-                                </label>
-                                <label class="checkbox-btn">
-                                    <input type="checkbox">
-			                        <span class="btn btn-light"> SM </span>
-                                </label>
-                                <label class="checkbox-btn">
-			                        <input type="checkbox">
-			                        <span class="btn btn-light"> LG </span>
-			                    </label>
-                                <label class="checkbox-btn">
-			                        <input type="checkbox">
-			                        <span class="btn btn-light"> XXL </span>
-			                    </label>
+                                {% for color in available_colors %}
+                                  <label class="checkbox-btn">
+                                    <input type="radio" name="color" value="{{ color }}" {% if selected_color == color %}checked{% endif %}>
+                                    <span class="btn btn-light">{{ color }}</span>
+                                  </label>
+                                {% empty %}
+                                  <p class="text-muted">No colors found</p>
+                                {% endfor %}
                             </div> <!-- card-body.// -->
                         </div>
                     </article> <!-- filter-group .// -->
@@ -84,31 +99,15 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label>Min</label>
-                                        <!-- <input class="form-control" placeholder="$0" type="number"> -->
-                                        <select class="mr-2 form-control">
-                                            <option value="0">$0</option>
-                                            <option value="50">$50</option>
-						                    <option value="100">$100</option>
-						                    <option value="150">$150</option>
-						                    <option value="200">$200</option>
-						                    <option value="500">$500</option>
-						                    <option value="1000">$1000</option>
-                                        </select>
+                                        <input class="form-control" placeholder="Min" type="number" name="min_price" min="{{ price_min }}" max="{{ price_max }}" value="{{ selected_min_price|default:price_min }}">
                                     </div>
                                     <div class="form-group text-right col-md-6">
                                         <label>Max</label>
-                                        <select class="mr-2 form-control">
-                                            <option value="50">$50</option>
-                                            <option value="100">$100</option>
-                                            <option value="150">$150</option>
-                                            <option value="200">$200</option>
-                                            <option value="500">$500</option>
-                                            <option value="1000">$1000</option>
-                                            <option value="2000">$2000+</option>
-                                        </select>
+                                        <input class="form-control" placeholder="Max" type="number" name="max_price" min="{{ price_min }}" max="{{ price_max }}" value="{{ selected_max_price|default:price_max }}">
                                     </div>
                                 </div>  <!-- form-row.// -->
-                                <button class="btn btn-block btn-primary">Apply</button>
+                                <button type="submit" class="btn btn-block btn-primary">Apply</button>
+
                             </div> <!-- card-body.// -->
                         </div>
                     </article>  <!-- filter-group .// -->

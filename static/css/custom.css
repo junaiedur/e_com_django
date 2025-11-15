@@ -1,0 +1,67 @@
+/* Custom Styles for Mart */
+
+/* Hero Section */
+.hero-banner-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.hero-content {
+    max-width: 500px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+/* Product Cards */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.product-image {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+.product-title {
+    transition: color 0.3s ease;
+}
+
+.product-title:hover {
+    color: #0d6efd !important;
+}
+
+/* Features Section */
+.feature-item {
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-content {
+        position: static !important;
+        transform: none !important;
+        text-align: center;
+        padding: 2rem 1rem !important;
+        background: rgba(0,0,0,0.7);
+        border-radius: 0 0 12px 12px;
+    }
+    
+    .hero-title {
+        font-size: 2rem !important;
+    }
+}

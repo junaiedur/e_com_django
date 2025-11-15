@@ -69,6 +69,7 @@ INSTALLED_APPS = [
 
     # config app:
     'accounts',
+    'reviews',
     'category',
     'core',
     'store',
