@@ -370,7 +370,6 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     }
     return render(request, 'cart/checkout.html',context)
 
-
 def select_delivery_method(request):
     if request.method == 'POST':
         delivery_method_id = request.POST.get('delivery_method_id')
