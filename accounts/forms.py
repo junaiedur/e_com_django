@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth.models import User
 from . models import Account
 from django.core.exceptions import ValidationError
 # customize:
@@ -25,7 +24,7 @@ class RegistationForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Password dosen't Match"
             )
-
+        return cleaned_data # aito 11-15-25 a upload dici kono error asle ad dio
     def __init__(self, *args, **kwargs):
         super(RegistationForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs['placeholder'] = 'Enter Your First Name'
