@@ -1,0 +1,259 @@
+{% load static %}
+{% block review %}
+<section id="reviews" class="max-w-[1320px] mx-auto mt-16 px-4 text-gray-800">
+  <!-- Section Header -->
+  <h2 class="text-2xl font-semibold mb-2">Customer Reviews</h2>
+  <p class="text-sm text-gray-500 mb-8">Showing 5 of 132 reviews • Average rating: 4.5★</p>
+
+  <!-- Rating Breakdown -->
+  <div class="mb-10">
+    <h3 class="font-medium mb-4">Rating breakdown</h3>
+    <div class="flex items-center mb-2">
+      <span class="w-12 text-sm text-gray-600">5★</span>
+      <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-orange-400" style="width: 73%;"></div>
+      </div>
+      <span class="w-16 text-right text-sm text-gray-600 ml-2">97</span>
+    </div>
+    <div class="flex items-center mb-2">
+      <span class="w-12 text-sm text-gray-600">4★</span>
+      <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-orange-400" style="width: 11%;"></div>
+      </div>
+      <span class="w-16 text-right text-sm text-gray-600 ml-2">15</span>
+    </div>
+    <div class="flex items-center mb-2">
+      <span class="w-12 text-sm text-gray-600">3★</span>
+      <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-orange-400" style="width: 9%;"></div>
+      </div>
+      <span class="w-16 text-right text-sm text-gray-600 ml-2">12</span>
+    </div>
+    <div class="flex items-center mb-2">
+      <span class="w-12 text-sm text-gray-600">2★</span>
+      <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-orange-400" style="width: 4%;"></div>
+      </div>
+      <span class="w-16 text-right text-sm text-gray-600 ml-2">5</span>
+    </div>
+    <div class="flex items-center">
+      <span class="w-12 text-sm text-gray-600">1★</span>
+      <div class="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-orange-400" style="width: 2%;"></div>
+      </div>
+      <span class="w-16 text-right text-sm text-gray-600 ml-2">3</span>
+    </div>
+  </div>
+
+  <!-- Reviews -->
+  <div class="space-y-10">
+    <!-- REVIEW TEMPLATE -->
+    <article class="flex flex-col sm:flex-row sm:space-x-6">
+      <!-- Profile -->
+      <img src="{% static 'images/profile.jpg' %}" alt="Profile photo" class="w-16 h-16 rounded-full object-cover mb-4 sm:mb-0">
+
+      <!-- Content -->
+      <div class="flex-1">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold text-gray-800">Rahim Uddin</span>
+            <span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">Verified Purchase</span>
+          </div>
+          <span class="text-sm text-gray-500">Nov 3, 2025</span>
+        </div>
+
+        <!-- Stars -->
+        <div class="flex space-x-1 mt-1" aria-label="5 out of 5 stars">
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-orange-400">★</span>
+        </div>
+
+        <!-- Review Text + Read More -->
+        <div class="mt-3 relative">
+          <p class="text-gray-700 review-text overflow-hidden transition-all duration-500 ease-in-out">
+            Absolutely loved the fabric quality and the stitching. The shirt fits perfectly and feels comfortable in Dhaka’s warm weather.
+            The fabric feels premium, doesn’t lose color after wash, and the sleeves hold shape nicely even after multiple wears.
+            Highly recommend it for anyone who wants a casual yet elegant look that lasts. I have already bought a second one for my brother.
+          </p>
+          <button class="text-sm text-orange-600 font-medium absolute right-0 bottom-0 bg-white pl-1 read-more-btn hidden">
+            Read more
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4 More Reviews -->
+    <article class="flex flex-col sm:flex-row sm:space-x-6">
+      <img src="{% static 'images/profile.jpg' %}" alt="Profile photo" class="w-16 h-16 rounded-full object-cover mb-4 sm:mb-0">
+      <div class="flex-1">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold text-gray-800">Nasrin Akter</span>
+            <span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">Verified Purchase</span>
+          </div>
+          <span class="text-sm text-gray-500">Oct 28, 2025</span>
+        </div>
+        <div class="flex space-x-1 mt-1" aria-label="4 out of 5 stars">
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-gray-300">★</span>
+        </div>
+        <div class="mt-3 relative">
+          <p class="text-gray-700 review-text overflow-hidden transition-all duration-500 ease-in-out">
+            Very comfortable and soft. The color looks exactly like the picture, but the delivery took a bit longer than expected.
+            The packaging was neat though, and I appreciate that the seller provided clear washing instructions.
+          </p>
+          <button class="text-sm text-orange-600 font-medium absolute right-0 bottom-0 bg-white pl-1 read-more-btn hidden">
+            Read more
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <article class="flex flex-col sm:flex-row sm:space-x-6">
+      <img src="{% static 'images/profile.jpg' %}" alt="Profile photo" class="w-16 h-16 rounded-full object-cover mb-4 sm:mb-0">
+      <div class="flex-1">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold text-gray-800">Sabbir Rahman</span>
+            <span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">Verified Purchase</span>
+          </div>
+          <span class="text-sm text-gray-500">Oct 22, 2025</span>
+        </div>
+        <div class="flex space-x-1 mt-1" aria-label="5 out of 5 stars">
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-orange-400">★</span>
+        </div>
+        <div class="mt-3 relative">
+          <p class="text-gray-700 review-text overflow-hidden transition-all duration-500 ease-in-out">
+            Perfect fit! Loved the lightweight fabric. I wore it to my cousin’s wedding and received a lot of compliments.
+            The color contrast and finishing give it a premium look. Will definitely buy again.
+          </p>
+          <button class="text-sm text-orange-600 font-medium absolute right-0 bottom-0 bg-white pl-1 read-more-btn hidden">
+            Read more
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <article class="flex flex-col sm:flex-row sm:space-x-6">
+      <img src="{% static 'images/profile.jpg' %}" alt="Profile photo" class="w-16 h-16 rounded-full object-cover mb-4 sm:mb-0">
+      <div class="flex-1">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold text-gray-800">Jannat Ferdous</span>
+            <span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">Verified Purchase</span>
+          </div>
+          <span class="text-sm text-gray-500">Oct 10, 2025</span>
+        </div>
+        <div class="flex space-x-1 mt-1" aria-label="4 out of 5 stars">
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-gray-300">★</span>
+        </div>
+        <div class="mt-3 relative">
+          <p class="text-gray-700 review-text overflow-hidden transition-all duration-500 ease-in-out">
+            Great for daily use. The stitching could be slightly better, but overall good value for money.
+            The collar design is elegant and fabric is soft on skin. Would definitely purchase again if new colors are added.
+          </p>
+          <button class="text-sm text-orange-600 font-medium absolute right-0 bottom-0 bg-white pl-1 read-more-btn hidden">
+            Read more
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <article class="flex flex-col sm:flex-row sm:space-x-6">
+      <img src="{% static 'images/profile.jpg' %}" alt="Profile photo" class="w-16 h-16 rounded-full object-cover mb-4 sm:mb-0">
+      <div class="flex-1">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="font-semibold text-gray-800">Tanvir Hasan</span>
+            <span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">Verified Purchase</span>
+          </div>
+          <span class="text-sm text-gray-500">Sept 30, 2025</span>
+        </div>
+        <div class="flex space-x-1 mt-1" aria-label="3 out of 5 stars">
+          <span class="text-orange-400">★</span><span class="text-orange-400">★</span>
+          <span class="text-orange-400">★</span><span class="text-gray-300">★</span>
+          <span class="text-gray-300">★</span>
+        </div>
+        <div class="mt-3 relative">
+          <p class="text-gray-700 review-text overflow-hidden transition-all duration-500 ease-in-out">
+            The fabric feels nice but the color looked slightly different from the pictures.
+            Still okay for casual use. Would suggest including more product images online for accurate color representation.
+          </p>
+          <button class="text-sm text-orange-600 font-medium absolute right-0 bottom-0 bg-white pl-1 read-more-btn hidden">
+            Read more
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- Show All -->
+  <div class="mt-10 text-center">
+    <button class="bg-orange-500 hover:bg-orange-600 text-white font-medium px-8 py-3 rounded transition">
+      Show all 132 reviews
+    </button>
+  </div>
+</section>
+
+<!-- Read More Logic -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const reviews = document.querySelectorAll('.review-text');
+
+    reviews.forEach(text => {
+      const btn = text.parentElement.querySelector('.read-more-btn');
+      const style = window.getComputedStyle(text);
+      const lineHeight = parseFloat(style.lineHeight);
+
+      // Determine max lines based on screen size
+      const maxLines = window.innerWidth >= 1024 ? 2 : 3;
+      const maxHeight = lineHeight * maxLines;
+
+      // Show button only if text exceeds the threshold
+      if (text.scrollHeight > maxHeight + 2) {
+        btn.classList.remove('hidden');
+        text.style.maxHeight = maxHeight + 'px';
+      }
+
+      btn.addEventListener('click', () => {
+        const isCollapsed = !text.style.maxHeight || text.style.maxHeight === maxHeight + 'px';
+        if (isCollapsed) {
+          text.style.maxHeight = text.scrollHeight + 'px';
+          btn.textContent = 'Show less';
+        } else {
+          text.style.maxHeight = maxHeight + 'px';
+          btn.textContent = 'Read more';
+        }
+      });
+
+      // Smooth transition
+      text.style.transition = 'max-height 0.5s ease-in-out';
+    });
+
+    // Re-evaluate on resize (responsive logic)
+    window.addEventListener('resize', () => {
+      reviews.forEach(text => {
+        const btn = text.parentElement.querySelector('.read-more-btn');
+        const style = window.getComputedStyle(text);
+        const lineHeight = parseFloat(style.lineHeight);
+        const maxLines = window.innerWidth >= 1024 ? 2 : 3;
+        const maxHeight = lineHeight * maxLines;
+
+        if (text.scrollHeight > maxHeight + 2) {
+          btn.classList.remove('hidden');
+          if (btn.textContent === 'Read more') text.style.maxHeight = maxHeight + 'px';
+        } else {
+          btn.classList.add('hidden');
+          text.style.maxHeight = 'none';
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

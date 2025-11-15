@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}Home | Kinbo Shop{% endblock %}
+{% load static %}
+{% block content %}
+<!-- =======================
+     HERO BANNER
+======================= -->
+<div class="w-full bg-orange-50 py-6">
+    <div class="max-w-[1320px] mx-auto px-4" style="padding-left: 16px;padding-right: 16px;">
+        <img src="{% static 'images/homebanner.jpg' %}"
+             alt="Main Banner"
+             class="w-full h-56 sm:h-72 md:h-96 object-cover rounded-xl shadow" />
+
+    </div>
+</div>
+
+
+
+<!-- =======================
+     SUB BANNERS (3 Columns)
+======================= -->
+<div class="max-w-[1320px] mx-auto px-4 mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+    <img src="{% static 'images/subbanner1.jpg' %}"
+         class="w-full h-40 object-cover rounded-lg shadow" />
+
+    <img src="{% static 'images/subbanner2.jpg' %}"
+         class="w-full h-40 object-cover rounded-lg shadow" />
+
+    <img src="{% static 'images/subbanner3.jpg' %}"
+         class="w-full h-40 object-cover rounded-lg shadow" />
+
+</div>
+
+
+
+<!-- =======================
+     FEATURED PRODUCTS
+======================= -->
+<div class="max-w-[1320px] mx-auto px-4 mt-12" style="padding-left: 0px;padding-right: 0px;">
+    <div class="flex items-center justify-between" style="padding-left: 16px;padding-right: 16px;">
+        <h2 class="text-xl font-bold text-orange-600">Featured Products</h2>
+        <a href="#" class="text-orange-600 hover:text-orange-800 text-sm">View All →</a>
+    </div>
+
+    <div class="mt-6">
+        {% include 'card.html' %}
+    </div>
+</div>
+
+
+
+<!-- =======================
+     FLASH SALE
+======================= -->
+<div class="max-w-[1320px] mx-auto px-4 mt-16" style="padding-left: 0px;padding-right: 0px;">
+
+    <div class="flex items-center justify-between" style="padding-left: 16px;padding-right: 16px;">
+        <h2 class="text-xl font-bold text-orange-600">Flash Sale</h2>
+
+        <!-- NO linking -->
+        <a href="#" class="text-red-600 hover:text-red-800 text-sm font-semibold">View More →</a>
+    </div>
+
+    <div class="mt-6">
+        {% include 'discount_card.html' %}
+    </div>
+</div>
+
+
+
+<!-- =======================
+     BEST DEALS SECTION
+======================= -->
+<div class="max-w-[1320px] mx-auto px-4 mt-16" style="padding-left: 0px;padding-right: 0px;">
+
+    <div class="flex items-center justify-between" style="padding-left: 16px;padding-right: 16px;">
+        <h2 class="text-xl font-bold text-orange-600">Best Deals</h2>
+
+        <!-- NO linking -->
+        <a href="#" class="text-orange-500 hover:text-orange-700 text-sm font-semibold">View More →</a>
+    </div>
+
+    <div class="mt-6">
+        {% include 'discount_card.html' %}
+    </div>
+</div>
+
+
+
+<!-- =======================
+     TRENDING NOW
+======================= -->
+<div class="max-w-[1320px] mx-auto px-4 mt-16" style="padding-left: 0px;padding-right: 0px;">
+    <div class="flex items-center justify-between" style="padding-left: 16px;padding-right: 16px;">
+        <h2 class="text-xl font-bold text-orange-600">Trending Now</h2>
+        <a href="#" class="text-orange-600 hover:text-orange-800 text-sm">View All →</a>
+    </div>
+
+    <div class="mt-6">
+        {% include 'card.html' %}
+    </div>
+</div>
+
+
+
+<!-- =======================
+    POPULAR CATEGORIES GRID (CLICKABLE)
+======================= -->
+<div class="max-w-[1320px] mx-auto px-4 mt-20">
+    <h2 class="text-xl font-bold text-orange-600 mb-6">Popular Categories</h2>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+
+        <a href="#" class="block">
+            <div class="bg-orange-50 h-24 rounded-lg shadow flex items-center justify-center 
+                        text-orange-600 font-semibold hover:bg-orange-100 transition">
+                Men’s Fashion
+            </div>
+        </a>
+
+        <a href="#" class="block">
+            <div class="bg-orange-50 h-24 rounded-lg shadow flex items-center justify-center 
+                        text-orange-600 font-semibold hover:bg-orange-100 transition">
+                Women’s Fashion
+            </div>
+        </a>
+
+        <a href="#" class="block">
+            <div class="bg-orange-50 h-24 rounded-lg shadow flex items-center justify-center 
+                        text-orange-600 font-semibold hover:bg-orange-100 transition">
+                Footwear
+            </div>
+        </a>
+
+        <a href="#" class="block">
+            <div class="bg-orange-50 h-24 rounded-lg shadow flex items-center justify-center 
+                        text-orange-600 font-semibold hover:bg-orange-100 transition">
+                Kids Wear
+            </div>
+        </a>
+
+        <a href="#" class="block">
+            <div class="bg-orange-50 h-24 rounded-lg shadow flex items-center justify-center 
+                        text-orange-600 font-semibold hover:bg-orange-100 transition">
+                Accessories
+            </div>
+        </a>
+
+        <a href="#" class="block">
+            <div class="bg-orange-50 h-24 rounded-lg shadow flex items-center justify-center 
+                        text-orange-600 font-semibold hover:bg-orange-100 transition">
+                Sportswear
+            </div>
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ============ END CONTENT ============ -->
+
+{% endblock content %}

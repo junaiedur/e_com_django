@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Address Details | Kinbo Shop{% endblock %}
+{% block nav %}{% endblock %}
+{% block category %}{% endblock %}
+
+{% block content %}
+
+<!-- 🌍 MAIN CONTAINER: Full-screen layout with animated bubbles background -->
+<div class="relative min-h-screen flex items-center justify-center bg-orange-50 overflow-hidden">
+
+  <!-- 🫧 BACKGROUND ANIMATED BUBBLES -->
+  <div class="absolute inset-0 z-0">
+    <div class="absolute w-32 h-32 bg-orange-200 rounded-full top-10 left-1/4 opacity-40 animate-bubble"></div>
+    <div class="absolute w-20 h-20 bg-orange-300 rounded-full top-1/3 right-20 opacity-30 animate-bubble-slow"></div>
+    <div class="absolute w-40 h-40 bg-orange-100 rounded-full bottom-20 left-1/3 opacity-20 animate-bubble-slower"></div>
+    <div class="absolute w-24 h-24 bg-orange-200 rounded-full bottom-10 right-1/4 opacity-25 animate-bubble"></div>
+  </div>
+
+  <!-- 📋 ADDRESS FORM CONTAINER -->
+  <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-8 relative z-10 transform transition-all duration-700 animate-fade-in">
+    <h2 class="text-3xl font-bold text-orange-600 text-center mb-6">Address Details</h2>
+
+    <!-- 🧾 ADDRESS FORM START -->
+    <form id="addressForm" novalidate class="space-y-4">
+
+      <!-- 🏙 DISTRICT -->
+      <div>
+        <label for="district" class="block text-sm font-medium text-gray-700 mb-1">District</label>
+        <select id="district" required
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+          <option value="">Select District</option>
+          <option>Dhaka</option>
+          <option>Chattogram</option>
+          <option>Khulna</option>
+          <option>Rajshahi</option>
+          <option>Barishal</option>
+          <option>Sylhet</option>
+          <option>Rangpur</option>
+          <option>Mymensingh</option>
+          <option>Gazipur</option>
+          <option>Narayanganj</option>
+        </select>
+        <p class="hidden text-red-600 text-sm mt-1">Please select your district</p>
+      </div>
+
+      <!-- 🏘 CITY / THANA -->
+      <div>
+        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City / Thana</label>
+        <input type="text" id="city" required placeholder="Enter your city or thana"
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+        <p class="hidden text-red-600 text-sm mt-1">City is required</p>
+      </div>
+
+      <!-- 📍 AREA / LOCALITY -->
+      <div>
+        <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Area / Locality</label>
+        <input type="text" id="area" required placeholder="Enter your area or locality"
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+        <p class="hidden text-red-600 text-sm mt-1">Area is required</p>
+      </div>
+
+      <!-- 🏠 STREET / HOUSE INFO -->
+      <div>
+        <label for="street" class="block text-sm font-medium text-gray-700 mb-1">Street / House / Road No.</label>
+        <input type="text" id="street" required placeholder="e.g., House 32, Road 4, Sector 9"
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+        <p class="hidden text-red-600 text-sm mt-1">Street address is required</p>
+      </div>
+
+      <!-- 🏤 POSTAL CODE -->
+      <div>
+        <label for="postal" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+        <input type="number" id="postal" required placeholder="e.g., 1207"
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+        <p class="hidden text-red-600 text-sm mt-1">Postal code is required</p>
+      </div>
+
+      <!-- 📱 MOBILE NUMBER SECTION -->
+      <div>
+        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+
+        <div class="flex space-x-2">
+          <!-- 🌎 COUNTRY CODE DROPDOWN -->
+          <select id="countryCode" required
+            class="w-1/3 px-2 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+            <option value="+880">🇧🇩 +880 (BD)</option>
+            <option value="+1">🇺🇸 +1 (USA)</option>
+            <option value="+44">🇬🇧 +44 (UK)</option>
+            <option value="+91">🇮🇳 +91 (IN)</option>
+            <option value="+81">🇯🇵 +81 (JP)</option>
+            <option value="+61">🇦🇺 +61 (AUS)</option>
+            <option value="+49">🇩🇪 +49 (DE)</option>
+            <option value="+33">🇫🇷 +33 (FR)</option>
+            <option value="+39">🇮🇹 +39 (IT)</option>
+            <option value="+974">🇶🇦 +974 (QA)</option>
+          </select>
+
+          <!-- 📞 USER PHONE NUMBER INPUT -->
+          <input type="tel" id="phoneNumber" required pattern="[0-9]{6,15}" maxlength="15"
+            placeholder="Enter mobile number"
+            class="w-2/3 px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+        </div>
+
+        <!-- 🔔 Dedicated error line for phone/CC -->
+        <p id="phoneError" class="hidden text-red-600 text-sm mt-1">Valid mobile number required</p>
+      </div>
+
+      <!-- 🏷 ADDRESS LABEL -->
+      <div>
+        <label for="label" class="block text-sm font-medium text-gray-700 mb-1">Address Label</label>
+        <select id="label" required
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+          <option value="">Choose Label</option>
+          <option>Home</option>
+          <option>Office</option>
+          <option>Other</option>
+        </select>
+        <!-- 🆕 Custom label input (hidden by default) -->
+        <input type="text" id="customLabel" placeholder="Enter custom label name"
+          class="hidden mt-2 w-full px-4 py-2 border border-gray-300 rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+        <p class="hidden text-red-600 text-sm mt-1">Please choose an address label</p>
+      </div>
+
+      <!-- ✅ DEFAULT CHECKBOX -->
+      <div class="flex items-center space-x-2">
+        <input type="checkbox" id="default" class="accent-orange-500 w-4 h-4">
+        <label for="default" class="text-sm text-gray-700">Save as default address</label>
+      </div>
+
+      <!-- 🚀 SUBMIT BUTTON -->
+      <button type="submit"
+        class="w-full bg-orange-600 text-white font-semibold py-2 rounded-lg transform transition duration-300 hover:scale-105 hover:bg-orange-700">
+        Submit
+      </button>
+    </form>
+    <!-- 🧾 ADDRESS FORM END -->
+  </div>
+</div>
+
+<!-- 🧠 JAVASCRIPT: Form Validation -->
+<script>
+  const form = document.getElementById('addressForm');
+  const labelSelect = document.getElementById('label');
+  const customLabel = document.getElementById('customLabel');
+  const phoneInput = document.getElementById('phoneNumber');
+  const phoneError = document.getElementById('phoneError');
+
+  // Ensure correct initial state on load (e.g., back navigation)
+  document.addEventListener('DOMContentLoaded', () => {
+    if (labelSelect.value === 'Other') {
+      customLabel.classList.remove('hidden');
+      customLabel.setAttribute('required', 'true');
+    }
+  });
+
+  // 🧩 Show/hide custom label input based on selection
+  labelSelect.addEventListener('change', () => {
+    if (labelSelect.value === 'Other') {
+      customLabel.classList.remove('hidden');
+      customLabel.setAttribute('required', 'true');
+    } else {
+      customLabel.classList.add('hidden');
+      customLabel.removeAttribute('required');
+      customLabel.value = '';
+      customLabel.classList.remove('border-red-500');
+    }
+  });
+
+  // 🧠 Form validation (uses safe error targeting)
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let valid = true;
+
+    // Validate all required fields
+    form.querySelectorAll('input[required], select[required]').forEach((field) => {
+      // ✅ Map error message element safely
+      let errorMsg = null;
+
+      // Phone & Country Code share the same error line
+      if (field.id === 'phoneNumber' || field.id === 'countryCode') {
+        errorMsg = phoneError;
+      } else {
+        // For other fields, find the nearest red <p> inside the same container
+        const container = field.closest('div');
+        if (container) {
+          errorMsg = container.querySelector('p.text-red-600');
+        }
+      }
+
+      // Standard empty check
+      if (!field.value.trim()) {
+        field.classList.add('border-red-500');
+        if (errorMsg) errorMsg.classList.remove('hidden');
+        valid = false;
+      } else {
+        field.classList.remove('border-red-500');
+        if (errorMsg) errorMsg.classList.add('hidden');
+      }
+    });
+
+    // Extra validation for phone input (pattern)
+    const phonePattern = /^[0-9]{6,15}$/;
+    if (!phonePattern.test(phoneInput.value.trim())) {
+      phoneInput.classList.add('border-red-500');
+      phoneError.classList.remove('hidden');
+      valid = false;
+    } else {
+      phoneInput.classList.remove('border-red-500');
+      phoneError.classList.add('hidden');
+    }
+
+    // Validation for custom label (if "Other" selected)
+    if (labelSelect.value === 'Other') {
+      // Keep visible & required
+      customLabel.classList.remove('hidden');
+      customLabel.setAttribute('required', 'true');
+      if (!customLabel.value.trim()) {
+        customLabel.classList.add('border-red-500');
+        valid = false;
+      } else {
+        customLabel.classList.remove('border-red-500');
+      }
+    }
+
+    // ✅ If everything valid
+    if (valid) {
+      const fullNumber = document.getElementById('countryCode').value + phoneInput.value.trim();
+      const labelValue = labelSelect.value === 'Other' ? customLabel.value.trim() : labelSelect.value;
+      alert(`✅ Address submitted successfully!\n📞 Full Mobile: ${fullNumber}\n🏷 Label: ${labelValue}`);
+    }
+  });
+</script>
+
+<!-- 🎨 ANIMATIONS & CUSTOM STYLES -->
+<style>
+  /* 🌬 Bubble Animations */
+  @keyframes bubble {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.7; }
+    50% { transform: translateY(-20px) translateX(10px); opacity: 0.5; }
+  }
+  @keyframes bubble-slow {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.6; }
+    50% { transform: translateY(-15px) translateX(-10px); opacity: 0.4; }
+  }
+  @keyframes bubble-slower {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 0.5; }
+    50% { transform: translateY(-10px) translateX(5px); opacity: 0.3; }
+  }
+  .animate-bubble { animation: bubble 6s ease-in-out infinite; }
+  .animate-bubble-slow { animation: bubble-slow 8s ease-in-out infinite; }
+  .animate-bubble-slower { animation: bubble-slower 10s ease-in-out infinite; }
+
+  /* ✨ Fade-in effect for form */
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in { animation: fadeIn 0.8s ease forwards; }
+</style>
+
+{% endblock %}
+{% block footer %}{% endblock %}

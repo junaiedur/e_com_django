@@ -1,0 +1,518 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout | Kinbo Shop{% endblock %}
+{% block nav %}{% endblock %}
+{% block category %}{% endblock %}
+
+{% block content %}
+
+<!-- 🌍 MAIN CHECKOUT CONTAINER -->
+<div class="min-h-screen bg-orange-50 py-10">
+  <div class="max-w-[1320px] mx-auto px-4">
+    <h1 class="text-3xl font-bold text-orange-600 mb-6 text-center">Checkout</h1>
+
+    <!-- 🧱 MAIN GRID: LEFT = Address | RIGHT = Payment + Summary -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- 🧩 LEFT COLUMN: ADDRESS SECTION -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- 🧭 TOGGLE BUTTONS -->
+        <div class="bg-white rounded-xl shadow p-4 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0">
+          <div class="flex items-center gap-2">
+            <!-- 🔘 USE SAVED ADDRESS BUTTON -->
+            <button id="btnUseSaved" type="button"
+              class="px-4 py-2 rounded-lg font-medium transition-all duration-300 bg-orange-600 text-white focus:outline-none focus:ring focus:ring-orange-200">
+              Use Saved Address
+            </button>
+            <!-- ➕ ADD NEW ADDRESS BUTTON -->
+            <button id="btnAddNew" type="button"
+              class="px-4 py-2 rounded-lg font-medium transition-all duration-300 bg-gray-100 text-gray-800 hover:bg-orange-100 hover:text-orange-700 focus:outline-none focus:ring focus:ring-orange-200">
+              + Add New Address
+            </button>
+          </div>
+          <p class="text-sm text-gray-500">Choose how you want to provide your delivery address</p>
+        </div>
+
+        <!-- 🏠 SAVED ADDRESSES SECTION -->
+        <section id="savedAddressesSection" class="bg-white rounded-xl shadow p-6 space-y-4">
+          <h2 class="text-xl font-semibold text-gray-800 mb-2">Saved Addresses</h2>
+          <!-- 📋 Example saved addresses -->
+          <div id="savedAddressList" class="space-y-3">
+            <label class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50 transition">
+              <input type="radio" name="savedAddress" value="addr_1" data-default="true" checked class="mt-1">
+              <div>
+                <p class="font-semibold text-gray-900">Junaiedur Rahman</p>
+                <p class="text-gray-800 font-medium">Home</p>
+                <p class="text-sm text-gray-700">House 32, Road 4, Sector 9, Uttara — Dhaka 1230</p>
+                <p class="text-xs text-gray-500">Mobile: +880 1711-000000</p>
+              </div>
+            </label>
+            <label class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50 transition">
+              <input type="radio" name="savedAddress" value="addr_2" class="mt-1">
+              <div>
+                <p class="font-semibold text-gray-900">Rahim Uddin</p>
+                <p class="text-gray-800 font-medium">Office</p>
+                <p class="text-sm text-gray-700">5th Floor, Road 20, Banani — Dhaka 1213</p>
+                <p class="text-xs text-gray-500">Mobile: +880 1812-111111</p>
+              </div>
+            </label>
+          </div>
+          <p id="savedAddressError" class="hidden text-red-600 text-sm mt-1">Please select an address.</p>
+        </section>
+
+        <!-- 🧾 NEW ADDRESS FORM -->
+        <section id="newAddressSection" class="hidden bg-white rounded-xl shadow p-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Add New Address</h2>
+          <form id="newAddressForm" novalidate class="space-y-4">
+            <!-- 👤 FIRST & LAST NAME -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                <input id="firstName" type="text" required
+                  class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+                <p class="field-error hidden text-red-600 text-sm mt-1">First name is required.</p>
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                <input id="lastName" type="text" required
+                  class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+                <p class="field-error hidden text-red-600 text-sm mt-1">Last name is required.</p>
+              </div>
+            </div>
+
+            <!-- 🏙 DISTRICT -->
+            <div>
+              <label for="district" class="block text-sm font-medium text-gray-700 mb-1">District</label>
+              <select id="district" required
+                class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+                <option value="">Select District</option>
+                <option>Dhaka</option><option>Chattogram</option><option>Khulna</option>
+                <option>Rajshahi</option><option>Barishal</option><option>Sylhet</option>
+                <option>Rangpur</option><option>Mymensingh</option><option>Gazipur</option><option>Narayanganj</option>
+              </select>
+              <p class="field-error hidden text-red-600 text-sm mt-1">Please select your district</p>
+            </div>
+
+            <!-- 🏘 CITY / THANA -->
+            <div>
+              <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City / Thana</label>
+              <input id="city" type="text" required placeholder="Enter your city or thana"
+                class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+              <p class="field-error hidden text-red-600 text-sm mt-1">City is required</p>
+            </div>
+
+            <!-- 📍 AREA / LOCALITY -->
+            <div>
+              <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Area / Locality</label>
+              <input id="area" type="text" required placeholder="Enter your area or locality"
+                class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+              <p class="field-error hidden text-red-600 text-sm mt-1">Area is required</p>
+            </div>
+
+            <!-- 🏠 STREET / HOUSE INFO -->
+            <div>
+              <label for="street" class="block text-sm font-medium text-gray-700 mb-1">Street / House / Road No.</label>
+              <input id="street" type="text" required placeholder="e.g., House 32, Road 4, Sector 9"
+                class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+              <p class="field-error hidden text-red-600 text-sm mt-1">Street address is required</p>
+            </div>
+
+            <!-- 🏤 POSTAL CODE -->
+            <div>
+              <label for="postal" class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+              <input id="postal" type="number" required placeholder="e.g., 1207"
+                class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+              <p class="field-error hidden text-red-600 text-sm mt-1">Postal code is required</p>
+            </div>
+
+            <!-- 📱 MOBILE NUMBER -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+              <div class="flex gap-2">
+                <select id="countryCode" required
+                  class="w-1/3 px-2 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+                  <option value="+880">🇧🇩 +880 (BD)</option>
+                  <option value="+1">🇺🇸 +1 (USA)</option>
+                  <option value="+44">🇬🇧 +44 (UK)</option>
+                  <option value="+91">🇮🇳 +91 (IN)</option>
+                  <option value="+81">🇯🇵 +81 (JP)</option>
+                  <option value="+61">🇦🇺 +61 (AUS)</option>
+                  <option value="+49">🇩🇪 +49 (DE)</option>
+                  <option value="+33">🇫🇷 +33 (FR)</option>
+                  <option value="+39">🇮🇹 +39 (IT)</option>
+                  <option value="+974">🇶🇦 +974 (QA)</option>
+                </select>
+                <input id="phoneNumber" type="tel" required pattern="[0-9]{6,15}" maxlength="15"
+                  placeholder="Enter mobile number"
+                  class="w-2/3 px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+              </div>
+              <p id="phoneError" class="hidden text-red-600 text-sm mt-1">Valid mobile number required</p>
+            </div>
+
+            <!-- 🏷 ADDRESS LABEL -->
+            <div>
+              <label for="label" class="block text-sm font-medium text-gray-700 mb-1">Address Label</label>
+              <select id="label" required
+                class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+                <option value="">Choose Label</option>
+                <option>Home</option><option>Office</option><option>Other</option>
+              </select>
+              <input id="customLabel" type="text" placeholder="Enter custom label name"
+                class="hidden mt-2 w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800">
+              <p class="field-error hidden text-red-600 text-sm mt-1">Please choose or enter an address label</p>
+            </div>
+
+            <!-- 💾 SAVE NEW ADDRESS BUTTON -->
+            <button id="saveNewAddressBtn" type="button"
+              class="w-full mt-4 bg-orange-600 text-white font-semibold py-2 rounded-lg hover:bg-orange-700 transition">
+              Save New Address
+            </button>
+          </form>
+        </section>
+      </div>
+
+      <!-- 💳 RIGHT COLUMN: ORDER SUMMARY + PAYMENT -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- 🧾 ORDER SUMMARY -->
+        <section class="bg-white rounded-xl shadow p-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between"><span>Item A x 1</span><span>৳ 800</span></div>
+            <div class="flex justify-between"><span>Item B x 2</span><span>৳ 1,200</span></div>
+            <hr>
+            <div class="flex justify-between"><span>Subtotal</span><span>৳ 2,000</span></div>
+            <div class="flex justify-between"><span>Delivery</span><span>৳ 80</span></div>
+            <div class="flex justify-between font-semibold text-gray-900"><span>Total</span><span>৳ 2,080</span></div>
+          </div>
+        </section>
+
+        <!-- 💰 PAYMENT METHODS -->
+        <section class="bg-white rounded-xl shadow p-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Payment Method</h2>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50 transition">
+              <input type="radio" name="paymentMethod" value="bkash" class="mt-0.5"> <span>Bkash</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50 transition">
+              <input type="radio" name="paymentMethod" value="nagad" class="mt-0.5"> <span>Nagad</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50 transition">
+              <input type="radio" name="paymentMethod" value="cod" class="mt-0.5"> <span>Cash on Delivery</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50 transition">
+              <input type="radio" name="paymentMethod" value="card" class="mt-0.5"> <span>Credit / Debit Card</span>
+            </label>
+          </div>
+
+          <!-- 💳 CREDIT CARD FIELDS -->
+          <div id="cardFields" class="hidden mt-4 space-y-3">
+            <div><label for="cardName" class="block text-sm font-medium text-gray-700 mb-1">Name on Card</label><input id="cardName" type="text" class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800"></div>
+            <div><label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">Card Number</label><input id="cardNumber" type="text" inputmode="numeric" maxlength="19" placeholder="xxxx xxxx xxxx xxxx" class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800"></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label for="cardExpiry" class="block text-sm font-medium text-gray-700 mb-1">Expiry (MM/YY)</label><input id="cardExpiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800"></div>
+              <div><label for="cardCvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label><input id="cardCvv" type="password" inputmode="numeric" maxlength="4" placeholder="3–4 digits" class="w-full px-4 py-2 border rounded focus:border-orange-500 focus:ring focus:ring-orange-200 outline-none text-gray-800"></div>
+            </div>
+          </div>
+
+          <!-- ⚠️ PAYMENT ERROR -->
+          <p id="paymentError" class="hidden text-red-600 text-sm mt-3">Please select a payment method.</p>
+
+          <!-- 🚀 PLACE ORDER BUTTON -->
+          <button id="placeOrderBtn" type="button"
+            class="mt-6 w-full bg-orange-600 text-white font-semibold py-2 rounded-lg hover:bg-orange-700 transition">
+            Place Order
+          </button>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🧠 JAVASCRIPT LOGIC -->
+<!-- 🧠 JAVASCRIPT: Checkout Page Logic -->
+<script>
+  // =========================
+  // 🌍 MAIN ELEMENT REFERENCES
+  // =========================
+  const btnUseSaved = document.getElementById('btnUseSaved');
+  const btnAddNew = document.getElementById('btnAddNew');
+  const savedAddressesSection = document.getElementById('savedAddressesSection');
+  const newAddressSection = document.getElementById('newAddressSection');
+  const newAddressForm = document.getElementById('newAddressForm');
+  const saveNewAddressBtn = document.getElementById('saveNewAddressBtn');
+  const savedAddressError = document.getElementById('savedAddressError');
+
+  const paymentError = document.getElementById('paymentError');
+  const cardFields = document.getElementById('cardFields');
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+
+  // Payment method radios
+  const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+
+  // New Address Fields
+  const fields = {
+    firstName: document.getElementById('firstName'),
+    lastName: document.getElementById('lastName'),
+    district: document.getElementById('district'),
+    city: document.getElementById('city'),
+    area: document.getElementById('area'),
+    street: document.getElementById('street'),
+    postal: document.getElementById('postal'),
+    countryCode: document.getElementById('countryCode'),
+    phoneNumber: document.getElementById('phoneNumber'),
+    label: document.getElementById('label'),
+    customLabel: document.getElementById('customLabel'),
+  };
+
+  const phoneError = document.getElementById('phoneError');
+
+  // Credit Card Fields
+  const card = {
+    name: document.getElementById('cardName'),
+    number: document.getElementById('cardNumber'),
+    expiry: document.getElementById('cardExpiry'),
+    cvv: document.getElementById('cardCvv')
+  };
+
+  // =========================
+  // 🟧 TOGGLE BUTTON LOGIC
+  // =========================
+  function activateButton(active, inactive) {
+    // Active button (orange, no hover)
+    active.classList.add('bg-orange-600', 'text-white');
+    active.classList.remove('bg-gray-100', 'text-gray-800', 'hover:bg-orange-100', 'hover:text-orange-700');
+
+    // Inactive button (light with hover)
+    inactive.classList.add('bg-gray-100', 'text-gray-800', 'hover:bg-orange-100', 'hover:text-orange-700');
+    inactive.classList.remove('bg-orange-600', 'text-white');
+  }
+
+  function showSavedAddressMode() {
+    savedAddressesSection.classList.remove('hidden');
+    newAddressSection.classList.add('hidden');
+    activateButton(btnUseSaved, btnAddNew);
+    resetNewAddressForm();
+  }
+
+  function showNewAddressMode() {
+    newAddressSection.classList.remove('hidden');
+    savedAddressesSection.classList.add('hidden');
+    activateButton(btnAddNew, btnUseSaved);
+  }
+
+  btnUseSaved.addEventListener('click', showSavedAddressMode);
+  btnAddNew.addEventListener('click', showNewAddressMode);
+
+  // =========================
+  // 🧹 RESET NEW ADDRESS FORM
+  // =========================
+  function resetNewAddressForm() {
+    for (let key in fields) {
+      const el = fields[key];
+      if (el.tagName === 'SELECT') el.value = '';
+      else el.value = '';
+      el.classList.remove('border-red-500');
+    }
+    document.querySelectorAll('.field-error').forEach(e => e.classList.add('hidden'));
+    phoneError.classList.add('hidden');
+    fields.customLabel.classList.add('hidden');
+  }
+
+  // =========================
+  // 🏷 ADDRESS LABEL LOGIC
+  // =========================
+  fields.label.addEventListener('change', () => {
+    if (fields.label.value === 'Other') {
+      fields.customLabel.classList.remove('hidden');
+      fields.customLabel.setAttribute('required', 'true');
+    } else {
+      fields.customLabel.classList.add('hidden');
+      fields.customLabel.removeAttribute('required');
+      fields.customLabel.value = '';
+    }
+  });
+
+  // =========================
+  // 💳 PAYMENT METHOD LOGIC
+  // =========================
+  paymentRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      // Show credit card fields only for card option
+      if (radio.value === 'card' && radio.checked) {
+        cardFields.classList.remove('hidden');
+      } else if (radio.checked) {
+        cardFields.classList.add('hidden');
+        clearCardErrors();
+      }
+      paymentError.classList.add('hidden');
+    });
+  });
+
+  function clearCardErrors() {
+    Object.values(card).forEach(f => f.classList.remove('border-red-500'));
+  }
+
+  // =========================
+  // ⚠️ VALIDATION HELPERS
+  // =========================
+  function showError(field, msgEl) {
+    field.classList.add('border-red-500');
+    if (msgEl) msgEl.classList.remove('hidden');
+  }
+  function hideError(field, msgEl) {
+    field.classList.remove('border-red-500');
+    if (msgEl) msgEl.classList.add('hidden');
+  }
+  function getErrorEl(field) {
+    const parent = field.closest('div');
+    return parent ? parent.querySelector('.field-error') : null;
+  }
+
+  function validateRequired(field) {
+    const msgEl = getErrorEl(field);
+    if (!field.value.trim()) {
+      showError(field, msgEl);
+      return false;
+    }
+    hideError(field, msgEl);
+    return true;
+  }
+
+  function validatePhone() {
+    const valid = /^[0-9]{6,15}$/.test(fields.phoneNumber.value.trim());
+    if (!valid) {
+      fields.phoneNumber.classList.add('border-red-500');
+      phoneError.classList.remove('hidden');
+    } else {
+      fields.phoneNumber.classList.remove('border-red-500');
+      phoneError.classList.add('hidden');
+    }
+    return valid;
+  }
+
+  function validateCardFields() {
+    let ok = true;
+    if (cardFields.classList.contains('hidden')) return true;
+
+    // Name
+    ok &= validateRequired(card.name);
+    // Number
+    const num = card.number.value.replace(/\s+/g, '');
+    const validNum = /^[0-9]{13,19}$/.test(num);
+    validNum ? hideError(card.number, getErrorEl(card.number)) : showError(card.number, getErrorEl(card.number));
+    ok &= validNum;
+
+    // Expiry
+    const exp = card.expiry.value.trim();
+    const validExp = /^(0[1-9]|1[0-2])\/\d{2}$/.test(exp);
+    if (!validExp) {
+      showError(card.expiry, getErrorEl(card.expiry));
+      ok = false;
+    } else {
+      const [mm, yy] = exp.split('/').map(x => parseInt(x, 10));
+      const now = new Date();
+      const currentYY = now.getFullYear() % 100;
+      const currentMM = now.getMonth() + 1;
+      if (yy < currentYY || (yy === currentYY && mm < currentMM)) {
+        showError(card.expiry, getErrorEl(card.expiry));
+        ok = false;
+      } else {
+        hideError(card.expiry, getErrorEl(card.expiry));
+      }
+    }
+
+    // CVV
+    const validCvv = /^[0-9]{3,4}$/.test(card.cvv.value.trim());
+    validCvv ? hideError(card.cvv, getErrorEl(card.cvv)) : showError(card.cvv, getErrorEl(card.cvv));
+    ok &= validCvv;
+
+    return !!ok;
+  }
+
+  // =========================
+  // 💾 SAVE NEW ADDRESS
+  // =========================
+  saveNewAddressBtn.addEventListener('click', () => {
+    let valid = true;
+
+    // Validate all fields
+    Object.values(fields).forEach(field => {
+      if (field === fields.customLabel && fields.label.value !== 'Other') return;
+      if (!validateRequired(field)) valid = false;
+    });
+    if (!validatePhone()) valid = false;
+
+    // Custom label specific
+    if (fields.label.value === 'Other' && !validateRequired(fields.customLabel)) valid = false;
+
+    if (!valid) return;
+
+    // ✅ If valid, simulate saving
+    alert('✅ New address saved successfully!');
+    showSavedAddressMode();
+  });
+
+  // =========================
+  // 🚀 PLACE ORDER BUTTON
+  // =========================
+  placeOrderBtn.addEventListener('click', () => {
+    let valid = true;
+    const usingSaved = !savedAddressesSection.classList.contains('hidden');
+    const payment = document.querySelector('input[name="paymentMethod"]:checked');
+
+    if (usingSaved) {
+      const selected = document.querySelector('input[name="savedAddress"]:checked');
+      if (!selected) {
+        savedAddressError.classList.remove('hidden');
+        valid = false;
+      } else {
+        savedAddressError.classList.add('hidden');
+      }
+    } else {
+      Object.values(fields).forEach(field => {
+        if (field === fields.customLabel && fields.label.value !== 'Other') return;
+        if (!validateRequired(field)) valid = false;
+      });
+      if (!validatePhone()) valid = false;
+      if (fields.label.value === 'Other' && !validateRequired(fields.customLabel)) valid = false;
+    }
+
+    if (!payment) {
+      paymentError.classList.remove('hidden');
+      valid = false;
+    } else {
+      paymentError.classList.add('hidden');
+    }
+
+    if (payment && payment.value === 'card') {
+      if (!validateCardFields()) valid = false;
+    }
+
+    if (!valid) return;
+
+    alert('✅ Order placed successfully!');
+  });
+
+  // =========================
+  // 🎯 INIT STATE
+  // =========================
+  document.addEventListener('DOMContentLoaded', () => {
+    const defaultAddr = document.querySelector('input[name="savedAddress"][data-default="true"]');
+    if (defaultAddr) defaultAddr.checked = true;
+    showSavedAddressMode();
+  });
+
+  // =========================
+  // 💳 CARD INPUT FORMATTING
+  // =========================
+  card.number.addEventListener('input', () => {
+    const digits = card.number.value.replace(/\D/g, '').slice(0, 19);
+    card.number.value = digits.replace(/(.{4})/g, '$1 ').trim();
+  });
+</script>
+
+
+{% endblock %}
+{% block footer %}{% endblock %}

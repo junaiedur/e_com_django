@@ -1,0 +1,353 @@
+{% load static %}
+
+{% block card %}
+<div class="max-w-[1320px] mx-auto px-4 py-8" >
+    
+    <!-- 4 cards per row on large screens -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+
+        <!-- CARD 1 -->
+        <a href="#" class="block group">
+            <div class="bg-white shadow rounded-xl overflow-hidden transition group-hover:shadow-xl">
+
+                <div class="relative">
+                    <img src="{% static 'images/product1.jpg' %}"
+                         class="w-full h-40 object-cover"
+                         alt="Product">
+
+                    <!-- Wishlist toggle button -->
+                    <button
+                        type="button"
+                        class="absolute top-2 right-2 bg-white p-2 rounded-full shadow hover:scale-105 transition"
+                        data-wishlist-btn
+                        data-active="false"
+                        data-heart-empty="{% static 'images/heart.png' %}"
+                        data-heart-filled="{% static 'images/heartfill.png' %}">
+                        <img src="{% static 'images/heart.png' %}" class="w-5 h-5" alt="Wishlist">
+                    </button>
+                </div>
+
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold leading-tight">Product Name</h3>
+                    <p class="text-sm text-gray-500 mb-1">Brand Name</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">⭐ 4.8/5</p>
+                    <p class="text-xl font-bold text-orange-600 mb-4">$49.99</p>
+
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button
+                            type="button"
+                            class="border border-orange-500 text-orange-600 py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-50 hover:shadow-sm transition md:w-1/2">
+                            Add to Cart
+                        </button>
+                        <button
+                            type="button"
+                            class="bg-orange-500 text-white py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-600 hover:shadow-sm transition md:w-1/2">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- CARD 2 -->
+        <a href="#" class="block group">
+            <div class="bg-white shadow rounded-xl overflow-hidden transition group-hover:shadow-xl">
+                <div class="relative">
+                    <img src="{% static 'images/product1.jpg' %}"
+                         class="w-full h-40 object-cover"
+                         alt="Product">
+                    <button
+                        type="button"
+                        class="absolute top-2 right-2 bg-white p-2 rounded-full shadow hover:scale-105 transition"
+                        data-wishlist-btn
+                        data-active="false"
+                        data-heart-empty="{% static 'images/heart.png' %}"
+                        data-heart-filled="{% static 'images/heartfill.png' %}">
+                        <img src="{% static 'images/heart.png' %}" class="w-5 h-5" alt="Wishlist">
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold leading-tight">Product Name</h3>
+                    <p class="text-sm text-gray-500 mb-1">Brand Name</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">⭐ 4.8/5</p>
+                    <p class="text-xl font-bold text-orange-600 mb-4">$49.99</p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button
+                            type="button"
+                            class="border border-orange-500 text-orange-600 py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-50 hover:shadow-sm transition md:w-1/2">
+                            Add to Cart
+                        </button>
+                        <button
+                            type="button"
+                            class="bg-orange-500 text-white py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-600 hover:shadow-sm transition md:w-1/2">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- CARD 3 -->
+        <a href="#" class="block group">
+            <div class="bg-white shadow rounded-xl overflow-hidden transition group-hover:shadow-xl">
+                <div class="relative">
+                    <img src="{% static 'images/product1.jpg' %}"
+                         class="w-full h-40 object-cover"
+                         alt="Product">
+                    <button
+                        type="button"
+                        class="absolute top-2 right-2 bg-white p-2 rounded-full shadow hover:scale-105 transition"
+                        data-wishlist-btn
+                        data-active="false"
+                        data-heart-empty="{% static 'images/heart.png' %}"
+                        data-heart-filled="{% static 'images/heartfill.png' %}">
+                        <img src="{% static 'images/heart.png' %}" class="w-5 h-5" alt="Wishlist">
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold leading-tight">Product Name</h3>
+                    <p class="text-sm text-gray-500 mb-1">Brand Name</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">⭐ 4.8/5</p>
+                    <p class="text-xl font-bold text-orange-600 mb-4">$49.99</p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button
+                            type="button"
+                            class="border border-orange-500 text-orange-600 py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-50 hover:shadow-sm transition md:w-1/2">
+                            Add to Cart
+                        </button>
+                        <button
+                            type="button"
+                            class="bg-orange-500 text-white py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-600 hover:shadow-sm transition md:w-1/2">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- CARD 4 -->
+        <a href="#" class="block group">
+            <div class="bg-white shadow rounded-xl overflow-hidden transition group-hover:shadow-xl">
+                <div class="relative">
+                    <img src="{% static 'images/product1.jpg' %}"
+                         class="w-full h-40 object-cover"
+                         alt="Product">
+                    <button
+                        type="button"
+                        class="absolute top-2 right-2 bg-white p-2 rounded-full shadow hover:scale-105 transition"
+                        data-wishlist-btn
+                        data-active="false"
+                        data-heart-empty="{% static 'images/heart.png' %}"
+                        data-heart-filled="{% static 'images/heartfill.png' %}">
+                        <img src="{% static 'images/heart.png' %}" class="w-5 h-5" alt="Wishlist">
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold leading-tight">Product Name</h3>
+                    <p class="text-sm text-gray-500 mb-1">Brand Name</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">⭐ 4.8/5</p>
+                    <p class="text-xl font-bold text-orange-600 mb-4">$49.99</p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button
+                            type="button"
+                            class="border border-orange-500 text-orange-600 py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-50 hover:shadow-sm transition md:w-1/2">
+                            Add to Cart
+                        </button>
+                        <button
+                            type="button"
+                            class="bg-orange-500 text-white py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-600 hover:shadow-sm transition md:w-1/2">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- CARD 5 -->
+        <a href="#" class="block group">
+            <div class="bg-white shadow rounded-xl overflow-hidden transition group-hover:shadow-xl">
+                <div class="relative">
+                    <img src="{% static 'images/product1.jpg' %}"
+                         class="w-full h-40 object-cover"
+                         alt="Product">
+                    <button
+                        type="button"
+                        class="absolute top-2 right-2 bg-white p-2 rounded-full shadow hover:scale-105 transition"
+                        data-wishlist-btn
+                        data-active="false"
+                        data-heart-empty="{% static 'images/heart.png' %}"
+                        data-heart-filled="{% static 'images/heartfill.png' %}">
+                        <img src="{% static 'images/heart.png' %}" class="w-5 h-5" alt="Wishlist">
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold leading-tight">Product Name</h3>
+                    <p class="text-sm text-gray-500 mb-1">Brand Name</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">⭐ 4.8/5</p>
+                    <p class="text-xl font-bold text-orange-600 mb-4">$49.99</p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button
+                            type="button"
+                            class="border border-orange-500 text-orange-600 py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-50 hover:shadow-sm transition md:w-1/2">
+                            Add to Cart
+                        </button>
+                        <button
+                            type="button"
+                            class="bg-orange-500 text-white py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-600 hover:shadow-sm transition md:w-1/2">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- CARD 6 -->
+        <a href="#" class="block group">
+            <div class="bg-white shadow rounded-xl overflow-hidden transition group-hover:shadow-xl">
+                <div class="relative">
+                    <img src="{% static 'images/product1.jpg' %}"
+                         class="w-full h-40 object-cover"
+                         alt="Product">
+                    <button
+                        type="button"
+                        class="absolute top-2 right-2 bg-white p-2 rounded-full shadow hover:scale-105 transition"
+                        data-wishlist-btn
+                        data-active="false"
+                        data-heart-empty="{% static 'images/heart.png' %}"
+                        data-heart-filled="{% static 'images/heartfill.png' %}">
+                        <img src="{% static 'images/heart.png' %}" class="w-5 h-5" alt="Wishlist">
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold leading-tight">Product Name</h3>
+                    <p class="text-sm text-gray-500 mb-1">Brand Name</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">⭐ 4.8/5</p>
+                    <p class="text-xl font-bold text-orange-600 mb-4">$49.99</p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button
+                            type="button"
+                            class="border border-orange-500 text-orange-600 py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-50 hover:shadow-sm transition md:w-1/2">
+                            Add to Cart
+                        </button>
+                        <button
+                            type="button"
+                            class="bg-orange-500 text-white py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-600 hover:shadow-sm transition md:w-1/2">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- CARD 7 -->
+        <a href="#" class="block group">
+            <div class="bg-white shadow rounded-xl overflow-hidden transition group-hover:shadow-xl">
+                <div class="relative">
+                    <img src="{% static 'images/product1.jpg' %}"
+                         class="w-full h-40 object-cover"
+                         alt="Product">
+                    <button
+                        type="button"
+                        class="absolute top-2 right-2 bg-white p-2 rounded-full shadow hover:scale-105 transition"
+                        data-wishlist-btn
+                        data-active="false"
+                        data-heart-empty="{% static 'images/heart.png' %}"
+                        data-heart-filled="{% static 'images/heartfill.png' %}">
+                        <img src="{% static 'images/heart.png' %}" class="w-5 h-5" alt="Wishlist">
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold leading-tight">Product Name</h3>
+                    <p class="text-sm text-gray-500 mb-1">Brand Name</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">⭐ 4.8/5</p>
+                    <p class="text-xl font-bold text-orange-600 mb-4">$49.99</p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button
+                            type="button"
+                            class="border border-orange-500 text-orange-600 py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-50 hover:shadow-sm transition md:w-1/2">
+                            Add to Cart
+                        </button>
+                        <button
+                            type="button"
+                            class="bg-orange-500 text-white py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-600 hover:shadow-sm transition md:w-1/2">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- CARD 8 -->
+        <a href="#" class="block group">
+            <div class="bg-white shadow rounded-xl overflow-hidden transition group-hover:shadow-xl">
+                <div class="relative">
+                    <img src="{% static 'images/product1.jpg' %}"
+                         class="w-full h-40 object-cover"
+                         alt="Product">
+                    <button
+                        type="button"
+                        class="absolute top-2 right-2 bg-white p-2 rounded-full shadow hover:scale-105 transition"
+                        data-wishlist-btn
+                        data-active="false"
+                        data-heart-empty="{% static 'images/heart.png' %}"
+                        data-heart-filled="{% static 'images/heartfill.png' %}">
+                        <img src="{% static 'images/heart.png' %}" class="w-5 h-5" alt="Wishlist">
+                    </button>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold leading-tight">Product Name</h3>
+                    <p class="text-sm text-gray-500 mb-1">Brand Name</p>
+                    <p class="text-sm font-medium text-gray-600 mb-1">⭐ 4.8/5</p>
+                    <p class="text-xl font-bold text-orange-600 mb-4">$49.99</p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <button
+                            type="button"
+                            class="border border-orange-500 text-orange-600 py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-50 hover:shadow-sm transition md:w-1/2">
+                            Add to Cart
+                        </button>
+                        <button
+                            type="button"
+                            class="bg-orange-500 text-white py-2 px-3 rounded-md whitespace-nowrap hover:bg-orange-600 hover:shadow-sm transition md:w-1/2">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+    </div>
+</div>
+
+<!-- Wishlist toggle script -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const HEART_EMPTY = "{% static 'images/heart.png' %}";
+    const HEART_FILLED = "{% static 'images/heartfill.png' %}";
+
+    const buttons = document.querySelectorAll('[data-wishlist-btn]');
+
+    buttons.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+
+            // Prevent the card link from triggering
+            e.preventDefault();
+            e.stopPropagation();
+
+            const img = this.querySelector('img');
+            const isActive = this.getAttribute('data-active') === 'true';
+
+            // Toggle
+            if (!isActive) {
+                img.src = HEART_FILLED;
+                this.setAttribute('data-active', 'true');
+            } else {
+                img.src = HEART_EMPTY;
+                this.setAttribute('data-active', 'false');
+            }
+        });
+    });
+});
+</script>
+
+{% endblock card %}
