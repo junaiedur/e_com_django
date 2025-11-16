@@ -4,7 +4,7 @@ from accounts.models import Account
 from django.core.validators import MinValueValidator, MaxValueValidator
 import datetime
 from django.utils import timezone
-
+from category.models import Category
 # Create your models here.
 class Cart(models.Model):
     cart_id = models.CharField(max_length=250, blank=True)
@@ -86,3 +86,4 @@ class UsedCoupon(models.Model):
     
     class Meta:
         unique_together = ('user', 'coupon')
+

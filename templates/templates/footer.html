@@ -1,0 +1,127 @@
+{% load static %}
+
+<footer class="mt-12 text-white">
+
+  <!-- PART 1: Subscribe Section over Background Image -->
+  <div class="relative min-h-[300px]">
+    <!-- Background image -->
+    <img src="{% static 'images/footerbg.png' %}" alt="Footer Background"
+         class="absolute inset-0 w-full h-full object-cover -z-10" />
+
+    <!-- Centered content -->
+    <div class="relative z-10 max-w-[1320px] mx-auto px-[60px] py-16 text-center">
+      <!-- Title -->
+      <h2 class="text-3xl font-semibold mb-4 text-orange-600 animate-pulse">
+        Subscribe to Our Newsletter
+      </h2>
+      <!-- Subtitle -->
+      <p class="mb-6 text-orange-500">
+        Get the latest updates, deals, and more.
+      </p>
+
+      <!-- Email form -->
+      <form action="#" method="POST" class="flex justify-center max-w-xl mx-auto">
+        <input type="email" name="email" placeholder="Enter your email"
+               class="w-full rounded-l-full px-5 py-2 text-gray-800 placeholder-gray-400 focus:outline-none" required>
+        <button type="submit"
+                class="bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-r-full text-white font-semibold">
+          Subscribe
+        </button>
+      </form>
+
+      <!-- Animated dots -->
+      <div class="mt-6 flex justify-center space-x-2">
+        <div class="dot bg-orange-400"></div>
+        <div class="dot bg-orange-300" style="animation-delay: 0.2s;"></div>
+        <div class="dot bg-orange-200" style="animation-delay: 0.4s;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 2: Footer Links and Copyright -->
+  <div class="w-full bg-orange-600">
+    <div class="max-w-[1320px] mx-auto" style="padding-left: 16px;padding-right: 16px;">
+
+      <!-- Footer Columns -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-x-[120px] py-12 text-sm text-white footer-columns-animation">
+
+        <!-- Column 1 -->
+        <div>
+          <h4 class="font-semibold mb-2">About Us</h4>
+          <ul class="space-y-1">
+            <li><a href="#" class="hover:underline">Company Info</a></li>
+            <li><a href="#" class="hover:underline">Contact</a></li>
+            <li><a href="#" class="hover:underline">Careers</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 2 -->
+        <div>
+          <h4 class="font-semibold mb-2">Support</h4>
+          <ul class="space-y-1">
+            <li><a href="#" class="hover:underline">FAQs</a></li>
+            <li><a href="#" class="hover:underline">Return Policy</a></li>
+            <li><a href="#" class="hover:underline">Shipping Info</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3 -->
+        <div>
+          <h4 class="font-semibold mb-2">Quick Links</h4>
+          <ul class="space-y-1">
+            <li><a href="{% url 'home' %}" class="hover:underline">Home</a></li>
+            <li><a href="{% url 'search' %}" class="hover:underline">Search</a></li>
+            <li><a href="{% url 'cart' %}" class="hover:underline">Cart</a></li>
+            <li><a href="{% url 'login' %}" class="hover:underline">Sign In</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4 -->
+        <div>
+          <h4 class="font-semibold mb-2">Policies</h4>
+          <ul class="space-y-1">
+            <li><a href="#" class="hover:underline">Privacy Policy</a></li>
+            <li><a href="#" class="hover:underline">Terms of Use</a></li>
+            <li><a href="#" class="hover:underline">Cookies</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Copyright -->
+      <div class="text-center text-white/80 text-sm py-4">
+        &copy; {{ now|date:"Y" }} Kinbo. All rights reserved.
+      </div>
+    </div>
+  </div>
+
+  <!-- Animation CSS -->
+  <style>
+    /* Footer Columns Fade-in Animation */
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .footer-columns-animation > div {
+      opacity: 0;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    .footer-columns-animation > div:nth-child(1) { animation-delay: 0.1s; }
+    .footer-columns-animation > div:nth-child(2) { animation-delay: 0.3s; }
+    .footer-columns-animation > div:nth-child(3) { animation-delay: 0.5s; }
+    .footer-columns-animation > div:nth-child(4) { animation-delay: 0.7s; }
+
+    /* Smooth Bouncing Dots */
+    @keyframes dot-bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: dot-bounce 1.2s infinite ease-in-out;
+    }
+  </style>
+
+</footer>

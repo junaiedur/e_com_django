@@ -1,0 +1,434 @@
+<!-- amar ager so code checkout_by_me.html 
+ ace ja 15-11-25 e change kore jodi kono error ase tahole sekan teke ta change kore nibo -->
+
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout | Kinbo Shop{% endblock %}
+{% block nav %}{% endblock %}
+{% block category %}{% endblock %}
+{% block content %}
+
+<div class="min-h-screen bg-orange-50 py-10">
+  <div class="max-w-[1320px] mx-auto px-4">
+
+    <h1 class="text-3xl font-bold text-orange-600 mb-6 text-center">Checkout</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- LEFT SIDE -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Address Toggle -->
+        <div class="bg-white rounded-xl shadow p-4 flex items-center justify-between">
+          <div class="flex gap-2">
+
+            <button id="btnUseSaved" type="button" 
+                    class="px-4 py-2 bg-orange-600 text-white rounded-lg font-medium">
+              Use Saved Address
+            </button>
+
+            <button id="btnAddNew" type="button" 
+                    class="px-4 py-2 bg-gray-100 text-gray-800 rounded-lg font-medium hover:bg-orange-100 hover:text-orange-700">
+              + Add New Address
+            </button>
+
+          </div>
+
+          <p class="text-sm text-gray-500">Choose how you want to provide your delivery address</p>
+        </div>
+
+        <!-- Saved Addresses -->
+        <section id="savedAddressesSection" class="bg-white rounded-xl shadow p-6 space-y-3">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Saved Addresses</h2>
+
+          {% if saved_addresses %}
+            {% for a in saved_addresses %}
+              <label class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50 transition">
+                <input type="radio" name="savedAddress" value="{{ a.id }}" class="mt-1" {% if forloop.first %}checked{% endif %}>
+                <div>
+                  <p class="font-semibold">{{ a.first_name }} {{ a.last_name }}</p>
+                  <p class="text-gray-800 font-medium">{{ a.label }}</p>
+                  <p class="text-sm text-gray-700">{{ a.address_line_1 }}, {{ a.city }}, {{ a.state }}</p>
+                  <p class="text-xs text-gray-500">Mobile: {{ a.phone }}</p>
+                </div>
+              </label>
+            {% endfor %}
+          {% else %}
+            <p class="text-gray-500 text-sm">No saved address found.</p>
+          {% endif %}
+
+          <p id="savedAddressError" class="hidden text-red-600 text-sm">Please select an address.</p>
+        </section>
+                <!-- New Address Form -->
+        <section id="newAddressSection" class="hidden bg-white rounded-xl shadow p-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Add New Address</h2>
+
+          <div class="space-y-4">
+
+            <!-- FIRST/LAST NAME -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="font-medium text-gray-700">First Name *</label>
+                <input id="firstName" type="text" 
+                       class="w-full px-4 py-2 border rounded">
+              </div>
+
+              <div>
+                <label class="font-medium text-gray-700">Last Name *</label>
+                <input id="lastName" type="text" 
+                       class="w-full px-4 py-2 border rounded">
+              </div>
+            </div>
+
+            <!-- DISTRICT + CITY -->
+            <div>
+              <label class="font-medium text-gray-700">City *</label>
+              <input id="city" type="text" 
+                     class="w-full px-4 py-2 border rounded">
+            </div>
+
+            <!-- AREA -->
+            <div>
+              <label class="font-medium text-gray-700">Area *</label>
+              <input id="area" type="text" 
+                     class="w-full px-4 py-2 border rounded">
+            </div>
+
+            <!-- STREET -->
+            <div>
+              <label class="font-medium text-gray-700">Street *</label>
+              <input id="street" type="text" 
+                     class="w-full px-4 py-2 border rounded">
+            </div>
+
+            <!-- PHONE -->
+            <div>
+              <label class="font-medium text-gray-700">Phone *</label>
+              <input id="phoneNumber" type="text" 
+                     class="w-full px-4 py-2 border rounded">
+              <p id="phoneError" class="hidden text-red-600 text-sm">Invalid phone number</p>
+            </div>
+
+            <!-- LABEL -->
+            <div>
+              <label class="font-medium text-gray-700">Label *</label>
+              <select id="label" class="w-full px-4 py-2 border rounded">
+                <option value="">Choose Label</option>
+                <option>Home</option>
+                <option>Office</option>
+                <option>Other</option>
+              </select>
+
+              <input id="customLabel" type="text" placeholder="Custom Label"
+                     class="hidden mt-3 w-full px-4 py-2 border rounded">
+            </div>
+
+            <button id="saveNewAddressBtn" 
+                    class="w-full bg-orange-600 text-white py-2 rounded-lg">
+              Save New Address
+            </button>
+
+          </div>
+        </section>
+
+        <!-- BILLING FORM + PAYMENT -->
+        <form id="checkout-form" action="{% url 'place_order' %}" method="POST" class="space-y-6 bg-white rounded-xl shadow p-6">
+          {% csrf_token %}
+
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Payment Method</h2>
+
+          <div class="space-y-2">
+
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50">
+              <input type="radio" name="paymentMethod" value="bkash" class="mt-0.5">
+              <span>Bkash</span>
+            </label>
+
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50">
+              <input type="radio" name="paymentMethod" value="nagad" class="mt-0.5">
+              <span>Nagad</span>
+            </label>
+
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50">
+              <input type="radio" name="paymentMethod" value="cod" class="mt-0.5">
+              <span>Cash on Delivery</span>
+            </label>
+
+            <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-orange-50">
+              <input type="radio" name="paymentMethod" value="card" class="mt-0.5">
+              <span>Credit/Debit Card</span>
+            </label>
+
+          </div>
+
+          <!-- Card Fields -->
+          <div id="cardFields" class="hidden mt-4 space-y-4">
+            <div>
+              <label>Name on Card</label>
+              <input id="cardName" class="w-full px-4 py-2 border rounded">
+            </div>
+
+            <div>
+              <label>Card Number</label>
+              <input id="cardNumber" maxlength="19" class="w-full px-4 py-2 border rounded">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label>Expiry (MM/YY)</label>
+                <input id="cardExpiry" maxlength="5" class="w-full px-4 py-2 border rounded">
+              </div>
+
+              <div>
+                <label>CVV</label>
+                <input id="cardCvv" maxlength="4" class="w-full px-4 py-2 border rounded">
+              </div>
+            </div>
+          </div>
+
+          <p id="paymentError" class="hidden text-red-600 text-sm">Please select a payment method.</p>
+
+          <button type="submit"
+                  class="w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700">
+            Place Order
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+<script>
+  // ============================
+  // ELEMENT REFERENCES
+  // ============================
+
+  const btnUseSaved = document.getElementById('btnUseSaved');
+  const btnAddNew = document.getElementById('btnAddNew');
+
+  const savedAddressesSection = document.getElementById('savedAddressesSection');
+  const newAddressSection = document.getElementById('newAddressSection');
+
+  // New Address Fields
+  const fields = {
+    firstName: document.getElementById('firstName'),
+    lastName: document.getElementById('lastName'),
+    city: document.getElementById('city'),
+    area: document.getElementById('area'),
+    street: document.getElementById('street'),
+    phoneNumber: document.getElementById('phoneNumber'),
+    label: document.getElementById('label'),
+    customLabel: document.getElementById('customLabel'),
+  };
+
+  const phoneError = document.getElementById('phoneError');
+  const savedAddressError = document.getElementById('savedAddressError');
+
+  // Payment
+  const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+  const paymentError = document.getElementById('paymentError');
+
+  const cardFields = document.getElementById('cardFields');
+  const card = {
+    name: document.getElementById('cardName'),
+    number: document.getElementById('cardNumber'),
+    expiry: document.getElementById('cardExpiry'),
+    cvv: document.getElementById('cardCvv')
+  };
+
+  // ============================
+  // TOGGLE ADDRESS MODE
+  // ============================
+
+  function activateButton(active, inactive) {
+    active.classList.add('bg-orange-600', 'text-white');
+    active.classList.remove('bg-gray-100', 'text-gray-800');
+
+    inactive.classList.add('bg-gray-100', 'text-gray-800');
+    inactive.classList.remove('bg-orange-600', 'text-white');
+  }
+
+  function showSavedAddressMode() {
+    savedAddressesSection.classList.remove('hidden');
+    newAddressSection.classList.add('hidden');
+    activateButton(btnUseSaved, btnAddNew);
+  }
+
+  function showNewAddressMode() {
+    newAddressSection.classList.remove('hidden');
+    savedAddressesSection.classList.add('hidden');
+    activateButton(btnAddNew, btnUseSaved);
+  }
+
+  btnAddNew.addEventListener('click', showNewAddressMode);
+  btnUseSaved.addEventListener('click', showSavedAddressMode);
+
+
+  // ============================
+  // LABEL LOGIC
+  // ============================
+  fields.label.addEventListener('change', () => {
+    if (fields.label.value === 'Other') {
+      fields.customLabel.classList.remove('hidden');
+      fields.customLabel.setAttribute('required', true);
+    } else {
+      fields.customLabel.classList.add('hidden');
+      fields.customLabel.removeAttribute('required');
+      fields.customLabel.value = '';
+    }
+  });
+
+
+  // ============================
+  // VALIDATION HELPERS
+  // ============================
+  function validateRequired(field) {
+    if (!field.value.trim()) {
+      field.classList.add('border-red-500');
+      return false;
+    }
+    field.classList.remove('border-red-500');
+    return true;
+  }
+
+  function validatePhone() {
+    const valid = /^[0-9]{6,15}$/.test(fields.phoneNumber.value.trim());
+    if (!valid) {
+      phoneError.classList.remove('hidden');
+      fields.phoneNumber.classList.add('border-red-500');
+    } else {
+      phoneError.classList.add('hidden');
+      fields.phoneNumber.classList.remove('border-red-500');
+    }
+    return valid;
+  }
+
+  function validateCardFields() {
+    let ok = true;
+
+    if (!cardFields.classList.contains('hidden')) {
+      // Name
+      ok &= validateRequired(card.name);
+
+      // Card Number
+      const digits = card.number.value.replace(/\D/g, '');
+      const validNum = /^[0-9]{13,19}$/.test(digits);
+      validNum ? card.number.classList.remove('border-red-500') : card.number.classList.add('border-red-500');
+      ok &= validNum;
+
+      // Expiry
+      const exp = card.expiry.value.trim();
+      const validExp = /^(0[1-9]|1[0-2])\/\d{2}$/.test(exp);
+      if (!validExp) {
+        card.expiry.classList.add('border-red-500');
+        ok = false;
+      } else {
+        const [mm, yy] = exp.split('/').map(x => parseInt(x));
+        const now = new Date();
+        const currentMM = now.getMonth() + 1;
+        const currentYY = now.getFullYear() % 100;
+        if (yy < currentYY || (yy === currentYY && mm < currentMM)) {
+          card.expiry.classList.add('border-red-500');
+          ok = false;
+        } else {
+          card.expiry.classList.remove('border-red-500');
+        }
+      }
+
+      // CVV
+      const validCvv = /^[0-9]{3,4}$/.test(card.cvv.value.trim());
+      validCvv ? card.cvv.classList.remove('border-red-500') : card.cvv.classList.add('border-red-500');
+      ok &= validCvv;
+    }
+
+    return !!ok;
+  }
+
+
+  // ============================
+  // CARD NUMBER AUTO FORMAT
+  // ============================
+  card.number.addEventListener('input', () => {
+    const digits = card.number.value.replace(/\D/g, '').slice(0, 19);
+    card.number.value = digits.replace(/(.{4})/g, '$1 ').trim();
+  });
+
+
+  // ============================
+  // PAYMENT LOGIC
+  // ============================
+  paymentRadios.forEach(r => {
+    r.addEventListener('change', () => {
+      paymentError.classList.add('hidden');
+
+      if (r.value === 'card') {
+        cardFields.classList.remove('hidden');
+      } else {
+        cardFields.classList.add('hidden');
+      }
+    });
+  });
+
+
+  // ============================
+  // FORM SUBMIT VALIDATION
+  // ============================
+  document.getElementById("checkout-form").addEventListener("submit", function (e) {
+
+    let valid = true;
+
+    const usingSaved = !savedAddressesSection.classList.contains('hidden');
+
+    // Saved Address Validation
+    if (usingSaved) {
+      const selected = document.querySelector('input[name="savedAddress"]:checked');
+      if (!selected) {
+        savedAddressError.classList.remove('hidden');
+        valid = false;
+      }
+    }
+
+    // New Address Validation
+    if (!usingSaved) {
+      Object.values(fields).forEach(field => {
+        if (field === fields.customLabel && fields.label.value !== 'Other') return;
+        if (!validateRequired(field)) valid = false;
+      });
+
+      if (!validatePhone()) valid = false;
+    }
+
+    // Payment Validation
+    const payment = document.querySelector('input[name="paymentMethod"]:checked');
+
+    if (!payment) {
+      paymentError.classList.remove('hidden');
+      valid = false;
+    }
+
+    // Card Validation
+    if (payment && payment.value === 'card') {
+      if (!validateCardFields()) valid = false;
+    }
+
+    if (!valid) {
+      e.preventDefault();
+    }
+  });
+
+
+  // ============================
+  // INITIAL MODE
+  // ============================
+  document.addEventListener("DOMContentLoaded", () => {
+    showSavedAddressMode();  // Default to saved address
+  });
+</script>
+
+
+
+

@@ -1,7 +1,6 @@
-# ai views.py er backend code 15-11-2025 a views_by_me.py file a ace error
-#asle change kore nio 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
+
 from .forms import RegistationForm
 from .models import Account
 from core.views import home
@@ -22,13 +21,12 @@ from .tokens import account_activation_token
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import requests
-from collections import OrderedDict
-from order.models import Order
+
 # Create your views here.
 
 #customize:
-
 def register(request):
+    
     if request.method == 'POST':
         form = RegistationForm(request.POST)
         if form.is_valid():
@@ -37,34 +35,11 @@ def register(request):
             email = form.cleaned_data['email']
             phone_number = form.cleaned_data['phone_number']
             password = form.cleaned_data['password']
-
-            # -------- FIX START --------
-            # Base username from email prefix
-            base_username = email.split("@")[0]
-            username = base_username
-
-            # If username exists, add numbers (sadik, sadik1, sadik2 ...)
-            counter = 1
-            while Account.objects.filter(username=username).exists():
-                username = f"{base_username}{counter}"
-                counter += 1
-            # -------- FIX END --------
-
-            # Create user with unique username
-            user = Account.objects.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                username=username,
-                password=password
-            )
-
-            # Add phone number & save
+            username = email.split("@")[0]
+            user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
             user.phone_number = phone_number
-            user.is_active = False 
             user.save()
-
-            # ----- Email Verification -----
+            #user activation
             current_site = get_current_site(request)
             mail_subject = 'Activate your account.'
             message = render_to_string('account/account_variafication_email.html', {
@@ -73,19 +48,56 @@ def register(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user),
             })
-            to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
+            to_email = form.cleaned_data.get("email")
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
 
-            messages.success(request, 'Registration successful! Please check your email to verify your account.')
+            messages.success(request, 'Registation Successful.')
+            """query_string = f"?command=verification_email&email={email_address}"
+            return redirect('/account/login/' + query_string)"""
 
-            return redirect('/account/login/?verification=sent')
+            email_string = "?command=verification&email={email}"
+            return redirect('/account/login/' + email_string)
 
+            # messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address [rathan.kumar@gmail.com]. Please verify it.')
+##           # return redirect('login')
+            # return redirect('home')
+#             # messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address [rathan.kumar@gmail.com]. Please verify it.') 
+#             # return redirect('login')
+#             # return redirect('home') 
+#             # return redirect('dashboard')
+#             # return redirect('home')
+#             # return HttpResponseRedirect(reverse('home'))
+#             # return redirect('home')
+#             # return redirect('dashboard')
+#             # return redirect('login')
+#             # return redirect('home')
+#             # return redirect('dashboard')
+#             # return redirect('login')
+#ai line ta project teke neya:
+
+## USER ACTIVATION
+#             current_site = get_current_site(request)
+#             mail_subject = 'Please activate your account'
+#             message = render_to_string('accounts/account_verification_email.html', {
+#                 'user': user,
+#                 'domain': current_site,
+#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                 'token': default_token_generator.make_token(user),
+#             })
+#             to_email = email
+#             send_email = EmailMessage(mail_subject, message, to=[to_email])
+#             send_email.send()
+#             # messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address [rathan.kumar@gmail.com]. Please verify it.')
+#             return 
+
+            
     else:
         form = RegistationForm()
-
     context = {
-        'form': form,
+        'form' : form,
     }
     return render(request, 'account/register.html', context)
 
@@ -142,7 +154,7 @@ def login(request):
                     nextPage = params['next']
                     return redirect(nextPage)
             except:
-                return redirect('home')
+                return redirect('dashboard')
             # return HttpResponseRedirect(reverse('home'))
         else:
             messages.error(request, 'Invalid login credentials')
@@ -242,75 +254,3 @@ def resetPassword(request):
 
 # def home(request):
 #     return render(request, 'index.html')
-@login_required(login_url='login')
-# def profile(request):
-#     user = request.user
-#     orders = Order.objects.filter(user=user).values(
-#         'first_name', 'last_name', 'phone', 'email',
-#         'address_line_1', 'address_line_2',
-#         'city', 'state', 'country', 'postal_code'
-
-#     ).distinct()
-#     context = {
-#         'user': user,
-#         'addresses': orders
-#     }   
-#     return render(request, 'account/profile.html', context)
-def profile(request):
-    #
-    user = request.user
-    orders = Order.objects.filter(
-        user=user, is_ordered=True
-    ).order_by('-created_at')
-    unique_addresses = OrderedDict()
-    for order in orders:
-        addr_keys  = f"{order.address_line_1}|{order.address_line_2}|{order.city}|{order.state}|{order.country}|{order.phone}"
-
-        if addr_keys not in unique_addresses:
-            unique_addresses[addr_keys] = order
-    
-    default_address = None
-    if unique_addresses:
-        default_address = list(unique_addresses.values())[0]
-        context = {
-            'user': user,
-            'addresses': unique_addresses.values(),  # merged
-            'default_address': default_address,       # for highlight
-        }
-        return render(request, 'account/profile.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-    # # ========= 1) UNIQUE ADDR
-    
-    # #  POST request jnno (form update  )
-    # if request.method == 'POST':
-    #     # akn a profile update logic implement korechi
-    #     first_name = request.POST.get('first_name')
-    #     last_name = request.POST.get('last_name')
-    #     email = request.POST.get('email')
-    #     phone_number = request.POST.get('phone_number')
-        
-    #     # User data update
-    #     user.first_name = first_name
-    #     user.last_name = last_name
-    #     user.email = email
-    #     user.phone_number = phone_number
-    #     user.save()
-        
-    #     messages.success(request, 'Profile updated successfully!')
-    #     return redirect('profile')
-    
-    # context = {
-    #     'user': user,
-    # }
-    # return render(request, 'account/profile.html', context)

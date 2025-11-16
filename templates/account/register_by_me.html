@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+  <section class="section-content padding-y">
+    <div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+        <article class="card-body">
+            {% include 'footer/alarts.html' %}
+            <header class="mb-4"><h4 class="card-title">Sign up</h4></header>
+            <form action="{% url 'register' %}" method="POST">
+                {% csrf_token %}
+                
+                <div class="form-row">
+                    <div class="col form-group">
+						<label>First Name:</label>
+					  	{{ form.first_name }}
+					</div> <!-- form-group end.// -->
+                    <div class="col form-group">
+                        <label>Last Name:</label>
+                        {{ form.last_name }}
+                    </div> <!-- form-group end.// -->
+                </div> <!-- form-row end.// -->
+
+
+                <!-- aita pore jodi drk hoi seii jnno amra hide kore rakci -->
+                 <!--<div class="form-group">
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input class="custom-control-input" checked="" type="radio" name="gender" value="option1">
+                        <span class="custom-control-label"> Male </span>
+                    </label>
+                    <label class="custom-control custom-radio custom-control-inline">
+                        <input class="custom-control-input" type="radio" name="gender" value="option2">
+                        <span class="custom-control-label"> Female </span>
+                      </label>
+                </div>  -->
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Email Address:</label>
+					    {{ form.email }}
+                    </div> <!-- form-group end.// -->
+                    <div class="form-group col-md-6">
+                        <label>Phone Number</label>
+                        {{ form.phone_number }}
+                    </div> <!-- form-group end.// -->
+                </div>
+
+
+                 <!-- aita pore jodi drk hoi seii jnno amra hide kore rakci -->
+                <!-- <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Country</label>
+					   <input type="text" class="form-control">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>City</label>
+                        <select id="inputState" class="form-control">
+                            <option> Choose...</option>
+					        <option>Sylet</option>
+					        <option>Rajshahi</option>
+					        <option selected="">Dhaka</option>
+					        <option>Cox's Bazar</option>
+					        <option>Gazipur</option>
+                        </select>
+                    </div> 
+                </div> -->
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Create Password:</label>
+					    {{ form.password }}
+                    </div> <!-- form-group end.// --> 
+                    <div class="form-group col-md-6">
+                        <label>Confirm Password</label>
+					    {{ form.confirm_password }}
+                    </div> <!-- form-group end.// -->  
+                </div>
+                <div class="form-group">
+			        <button type="submit" class="btn btn-primary btn-block"> Register  </button>
+                    {{ form.email.errors }}
+                    {{ form.non_field_errors }}
+			    </div>
+                </form>
+            </form>
+        </article> <!-- card-body.// -->
+    </div>
+    <p class="text-center mt-4">Have an account? <a href="{% url 'login' %}">Log In</a></p>
+    <br><br>
+<!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+  </section>
+{% endblock %}
