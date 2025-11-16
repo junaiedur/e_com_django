@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from django.urls import path, include
 from core import views
@@ -15,6 +14,7 @@ urlpatterns = [
     path('order/', include("order.urls")),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('reviews/', include('reviews.urls')),
+    path('oauth/', include('social_django.urls', namespace='social')),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
 
