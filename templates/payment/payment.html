@@ -1,133 +1,130 @@
+<!-- Redesigned payment.html matching checkout.html styling -->
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-  <script src="https://scripts.sandbox.bka.sh/versions/1.2.0-beta/checkout/bKash-checkout-sandbox.js"></script>
-  <section class="section-content padding-y bg">
-    <div class="container">
-      <div class="row justify-content-center">
-        <aside class="col-md-8">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="card-title mb-4">Complete Your Payment</h4>
-              <p><strong>Order Total:</strong> {{ order.grand_total | floatformat:2 }}TK</p>
-              <hr>
-              {% include 'footer/alarts.html' %}
-              {% if form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">
-                  {% for error in form.non_field_errors %}
-                    <p class="mb-0">{{ error }}</p>
-                  {% endfor %}
-                </div>
-              {% endif %}
 
-              <form action="{% url 'payments' %}" method="POST">
-                {% csrf_token %}
-                <div class="form-group">
-                  <label class="font-weight-bold">Select Payment Method:</label><br>
-                  {% for value, name in form.payment_method.field.choices %}
-                    <div class="form-check m-3">
-                      <input class="form-check-input" type="radio" name="payment_method" id="payment_{{ value }}" value="{{ value }}"
-                      {% if form.payment_method.value|stringformat:"s" == value|stringformat:"s" %}checked{% endif %} required>
-                        <label class="form-check-label" for="payment_{{ value }}">
-                          <strong>{{ name }}</strong>
-                        </label>     
-                    </div>
-                  {% endfor %}
-                  {% if form.payment_method.errors %}
-                    <div class="invalid-feedback d-block">
-                      {{ form.payment_method.errors.as_text }}
-                    </div>
-                  {% endif %}
-                </div>
-                <div id="mobile_payment_fields" class="payment-fields" style="display:none;">
-                  <h5 class="mt-3">Mobile Payment Details</h5>
-                  <p class="text-muted">Please complete your payment and enter the details below.</p>
-                  <div class="form-group">
-                    <label for="{{ form.mobile_number.id_for_label }}">{{ form.mobile_number.label }}</label>
-                    {{ form.mobile_number }}
-                    <small class="form-text text-danger">{{ form.mobile_number.errors.as_text }}</small>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="{{ form.transaction_id.id_for_label }}">{{ form.transaction_id.label }}</label>
-                    {{ form.transaction_id }}
-                    <small class="form-text text-danger">{{ form.transaction_id.errors.as_text }}</small>
-                  </div>
-                </div>
-                <div id="card_payment_fields" class="payment-fields" style="display:none;">
-                  <h5 class="mt-3">Card Payment Details</h5>
-                  <div class="form-group">
-                    <label for="{{ form.card_holder_name.id_for_label }}">{{ form.card_holder_name.label }}</label>
-                    {{ form.card_holder_name }}
-                    <small class="form-text text-danger">{{ form.card_holder_name.errors.as_text }}</small>
-                  </div>
-                  <div class="form-group">
-                    <label for="{{ form.card_number.id_for_label }}">{{ form.card_number.label }}</label>
-                    {{ form.card_number }}
-                    <small class="form-text text-danger">{{ form.card_number.errors.as_text }}</small>
-                  </div>
-                </div>
-                <div id="emi_fields" class="payment-fields" style="display:none;">
-                  <h5 class="mt-3">EMI Option</h5>
-                  <div class="form-group">
-                    <label for="{{ form.emi_month.id_for_label }}">{{ form.emi_month.label }}</label>
-                    {% for value, name in form.emi_month.field.choices %}
-                      <div class="form-check ml-3"> <input class="form-check-input" type="radio" name="{{ form.emi_month.name }}" id="id_emi_month_{{ forloop.counter }}" value="{{ value }}" {% if form.emi_month.value|stringformat:"s" == value|stringformat:"s" %}checked{% endif %}>
-                        <label class="form-check-label" for="id_emi_month_{{ forloop.counter }}">
-                          {{ name }}
-                        </label>
-                      </div>
-                    {% endfor %}
-                    <small class="form-text text-danger">{{ form.emi_month.errors.as_text }}</small>
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block mt-4">Payment {{ order.grand_total | floatformat:2 }} TK</button>
-                <br> OR
-                <button type="submit" class="btn btn-primary btn-block mt-4">Download Invoice </button>
-              </form>
-            </div>
-          </div>
-        </aside>
-      </div>
+<section class="min-h-screen bg-orange-50 py-10">
+  <div class="max-w-5xl mx-auto px-4 checkout-animate">
+
+    <!-- Page Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-orange-600">Payment</h1>
+      <p class="text-gray-600 mt-2">Complete your payment securely</p>
     </div>
-  </section>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const bkashRadio = document.getElementById('payment_bkash');
-      const paymentForm = document.querySelector('form');
-      if (bkashRadio) {
-        paymentForm.addEventListener('submit', function(e) {
-          if (bkashRadio.checked) {
-            e.preventDefault();
-            initiateBkashPayment();
-          }
-        });
-      }
-      function initiateBkashPayment() {
-        const orderId = {{ order.id }};
-        fetch(`/payments/bkash/initiate/${orderId}/`, {
-          method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': '{{ csrf_token }}'
-            }
 
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            window.location.href = data.bkash_url;
-          } else {
-            alert('bKash payment initiation failed: ' + data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Payment initiation failed');
+    <div class="bg-white shadow-lg rounded-xl p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-3">Order Total</h2>
+      <p class="text-lg font-bold text-orange-600 mb-4">{{ order.grand_total | floatformat:2 }} TK</p>
 
-        });
-      }
-    });
-    
-  </script>
+      {% include 'footer/alarts.html' %}
+
+      {% if form.non_field_errors %}
+      <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form action="{% url 'payments' %}" method="POST" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Payment Method -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Select Payment Method</label>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for value, name in form.payment_method.field.choices %}
+            <label class="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:border-orange-500 transition">
+              <input type="radio" name="payment_method" value="{{ value }}" class="h-5 w-5 text-orange-600" {% if form.payment_method.value|stringformat:"s" == value|stringformat:"s" %}checked{% endif %} required>
+              <span class="font-semibold text-gray-700">{{ name }}</span>
+            </label>
+            {% endfor %}
+          </div>
+          {% if form.payment_method.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.payment_method.errors.as_text }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Mobile Payment Fields -->
+        <div id="mobile_payment_fields" class="hidden bg-orange-50 p-4 rounded-lg">
+          <h3 class="text-md font-semibold text-gray-800 mb-2">Mobile Payment Details</h3>
+
+          <label class="block mb-2 text-sm text-gray-700">{{ form.mobile_number.label }}</label>
+          {{ form.mobile_number }}
+          <p class="text-red-600 text-sm">{{ form.mobile_number.errors.as_text }}</p>
+
+          <label class="block mt-4 mb-2 text-sm text-gray-700">{{ form.transaction_id.label }}</label>
+          {{ form.transaction_id }}
+          <p class="text-red-600 text-sm">{{ form.transaction_id.errors.as_text }}</p>
+        </div>
+
+        <!-- Card Payment Fields -->
+        <div id="card_payment_fields" class="hidden bg-blue-50 p-4 rounded-lg">
+          <h3 class="text-md font-semibold text-gray-800 mb-2">Card Payment Details</h3>
+
+          <label class="block mb-2 text-sm text-gray-700">{{ form.card_holder_name.label }}</label>
+          {{ form.card_holder_name }}
+          <p class="text-red-600 text-sm">{{ form.card_holder_name.errors.as_text }}</p>
+
+          <label class="block mt-4 mb-2 text-sm text-gray-700">{{ form.card_number.label }}</label>
+          {{ form.card_number }}
+          <p class="text-red-600 text-sm">{{ form.card_number.errors.as_text }}</p>
+        </div>
+
+        <!-- EMI Payment Fields -->
+        <div id="emi_fields" class="hidden bg-purple-50 p-4 rounded-lg">
+          <h3 class="text-md font-semibold text-gray-800 mb-2">EMI Options</h3>
+
+          {% for value, name in form.emi_month.field.choices %}
+          <label class="flex items-center gap-3 mb-2">
+            <input type="radio" name="{{ form.emi_month.name }}" value="{{ value }}" class="h-4 w-4 text-purple-600" {% if form.emi_month.value|stringformat:"s" == value|stringformat:"s" %}checked{% endif %}>
+            <span>{{ name }}</span>
+          </label>
+          {% endfor %}
+
+          <p class="text-red-600 text-sm">{{ form.emi_month.errors.as_text }}</p>
+        </div>
+
+        <!-- Buttons -->
+        <button type="submit" class="w-full bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
+          Pay {{ order.grand_total | floatformat:2 }} TK
+        </button>
+
+        <button type="submit" formaction="{% url 'invoice_cart_pdf' %}" formmethod="post"
+          class="w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
+          Download Invoice
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- JS to Toggle Fields -->
+<script>
+const radios = document.querySelectorAll('input[name="payment_method"]');
+const mobileFields = document.getElementById('mobile_payment_fields');
+const cardFields = document.getElementById('card_payment_fields');
+const emiFields = document.getElementById('emi_fields');
+
+function toggleFields() {
+  const val = document.querySelector('input[name="payment_method"]:checked')?.value;
+
+  mobileFields.classList.add('hidden');
+  cardFields.classList.add('hidden');
+  emiFields.classList.add('hidden');
+
+  if (['bkash','nagad','rocket','upay'].includes(val)) mobileFields.classList.remove('hidden');
+  if (val === 'card') cardFields.classList.remove('hidden');
+  if (val === 'emi') emiFields.classList.remove('hidden');
+}
+
+radios.forEach(r => r.addEventListener('change', toggleFields));
+toggleFields();
+</script>
+
+<style>
+.checkout-animate { animation: fadeSlide .6s ease-out forwards; }
+@keyframes fadeSlide { 0% {opacity:0; transform:translateY(20px);} 100% {opacity:1; transform:translateY(0);} }
+</style>
+
 {% endblock %}

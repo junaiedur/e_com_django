@@ -22,7 +22,8 @@ from .tokens import account_activation_token
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import requests
-
+from collections import OrderedDict
+from order.models import Order
 # Create your views here.
 
 #customize:
@@ -141,7 +142,7 @@ def login(request):
                     nextPage = params['next']
                     return redirect(nextPage)
             except:
-                return redirect('dashboard')
+                return redirect('home')
             # return HttpResponseRedirect(reverse('home'))
         else:
             messages.error(request, 'Invalid login credentials')
@@ -241,3 +242,75 @@ def resetPassword(request):
 
 # def home(request):
 #     return render(request, 'index.html')
+@login_required(login_url='login')
+# def profile(request):
+#     user = request.user
+#     orders = Order.objects.filter(user=user).values(
+#         'first_name', 'last_name', 'phone', 'email',
+#         'address_line_1', 'address_line_2',
+#         'city', 'state', 'country', 'postal_code'
+
+#     ).distinct()
+#     context = {
+#         'user': user,
+#         'addresses': orders
+#     }   
+#     return render(request, 'account/profile.html', context)
+def profile(request):
+    #
+    user = request.user
+    orders = Order.objects.filter(
+        user=user, is_ordered=True
+    ).order_by('-created_at')
+    unique_addresses = OrderedDict()
+    for order in orders:
+        addr_keys  = f"{order.address_line_1}|{order.address_line_2}|{order.city}|{order.state}|{order.country}|{order.phone}"
+
+        if addr_keys not in unique_addresses:
+            unique_addresses[addr_keys] = order
+    
+    default_address = None
+    if unique_addresses:
+        default_address = list(unique_addresses.values())[0]
+        context = {
+            'user': user,
+            'addresses': unique_addresses.values(),  # merged
+            'default_address': default_address,       # for highlight
+        }
+        return render(request, 'account/profile.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+    # # ========= 1) UNIQUE ADDR
+    
+    # #  POST request jnno (form update  )
+    # if request.method == 'POST':
+    #     # akn a profile update logic implement korechi
+    #     first_name = request.POST.get('first_name')
+    #     last_name = request.POST.get('last_name')
+    #     email = request.POST.get('email')
+    #     phone_number = request.POST.get('phone_number')
+        
+    #     # User data update
+    #     user.first_name = first_name
+    #     user.last_name = last_name
+    #     user.email = email
+    #     user.phone_number = phone_number
+    #     user.save()
+        
+    #     messages.success(request, 'Profile updated successfully!')
+    #     return redirect('profile')
+    
+    # context = {
+    #     'user': user,
+    # }
+    # return render(request, 'account/profile.html', context)

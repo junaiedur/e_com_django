@@ -16,7 +16,7 @@
       <div class="relative w-full flex items-center">
         <img src="{% static 'images/search.png' %}" alt="Search"
              class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2">
-        <input type="text" name="q" placeholder="Search for any product or brand"
+        <input type="text" name="keyword" placeholder="Search for any product or brand"
                class="w-full rounded-l-full py-2 pl-10 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none">
       </div>
       <button type="submit"
@@ -28,8 +28,13 @@
     <!-- Desktop Right -->
     <div class="hidden lg:flex items-center gap-6">
       <!-- Cart -->
-      <a href="{% url 'cart' %}" class="hover:opacity-90" title="Cart">
+      <a href="{% url 'cart' %}" class="relative hover:opacity-90" title="Cart">
         <img src="{% static 'images/cart.png' %}" alt="Cart" class="h-5 w-5">
+        {% if cart_count > 0 %}
+          <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold h-5 w-5 flex items-center justify-center rounded-full">
+            {{ cart_count }}
+          </span>
+        {% endif %}
       </a>
 
       {% if user.is_authenticated %}
@@ -50,7 +55,7 @@
              class="absolute right-0 mt-2 w-56 bg-white text-gray-800 rounded-md shadow-lg py-2 opacity-0 scale-95 transform origin-top-right transition-all duration-200 pointer-events-none z-50"
              role="menu" aria-label="User menu">
           <!-- NOTE: Using static HTML links for now so it works without backend routes. Replace with later. -->
-          <a href="{% url 'dashboard' %}" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Profile Settings</a>
+          <a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Profile </a>
           <a href="/wishlist.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Your Wishlist</a>
           <a href="/order.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Order History</a>
           <a href="/returns.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Product Return</a>
@@ -106,7 +111,7 @@
         <div class="relative w-full flex items-center">
           <img src="{% static 'images/search.png' %}" alt="Search"
                class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2">
-          <input type="text" name="q" placeholder="Search"
+          <input type="text" name="keyword" placeholder="Search"
                  class="w-full rounded-l-full py-2 pl-10 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none">
         </div>
         <button type="submit"

@@ -1,3 +1,4 @@
+<!-- junayed ar category ar amar store.html file marge korci -->
 {% extends 'base.html' %}
 {% load static %}
 
@@ -70,95 +71,7 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 .bottomnav-animate { animation: slideUpFadeIn .5s ease-out forwards; }
-
-/* ========== STORE PAGE COLOR THEME (Index.html Styled) ========== */
-
-/* Title Section */
-.section-pagetop.bg {
-    background-color: #fff7ed !important;
-    padding: 25px 0;
-}
-
-/* Left Filter Panel */
-aside .card {
-    background: white !important;
-    border: 1px solid #ffe4c7;
-    border-radius: 10px;
-}
-
-.filter-group .card-header {
-    background-color: #fff7ed !important;
-    border-bottom: 1px solid #ffedd5;
-}
-
-.filter-group .title {
-    color: #ea580c;
-    font-weight: 600;
-}
-
-.filter-group .card-body a {
-    color: #ea580c !important;
-}
-
-.filter-group .card-body a:hover {
-    color: #c2410c !important;
-    background: #fff7ed;
-}
-
-/* Price Button */
-.btn-primary {
-    background-color: #ea580c !important;
-    border-color: #ea580c !important;
-}
-.btn-primary:hover {
-    background-color: #c2410c !important;
-}
-
-/* Product Cards */
-.card-product-grid {
-    border-radius: 12px;
-    border: 1px solid #ffe4c7;
-    transition: .2s;
-}
-.card-product-grid:hover {
-    box-shadow: 0 5px 15px rgba(255,120,40,0.20);
-}
-
-.card-product-grid .title {
-    color: #ea580c !important;
-    font-weight: 600;
-}
-.card-product-grid .price {
-    color: #ea580c !important;
-    font-weight: 700;
-}
-
-/* Details Button */
-.btn-block.btn-primary {
-    background-color: #ea580c !important;
-    border-color: #ea580c !important;
-}
-.btn-block.btn-primary:hover {
-    background-color: #c2410c !important;
-}
-
-/* Pagination */
-.pagination .page-link {
-    color: #ea580c;
-    font-weight: 600;
-}
-.pagination .active .page-link {
-    background-color: #ea580c !important;
-    border-color: #ea580c !important;
-    color: white !important;
-}
-
-/* Section Background */
-.section-content {
-    background-color: #fffaf3 !important;
-}
 </style>
-
 
 <!-- ========================= ORIGINAL STORE.HTML BACKEND PART ========================= -->
 
@@ -178,12 +91,13 @@ aside .card {
 
       <!-- LEFT FILTER PANEL -->
       <aside class="col-md-3">
+        
         <div class="card">
 
           <!-- Category Filter -->
           <article class="filter-group">
             <header class="card-header">
-              <a data-toggle="collapse" data-target="#collapse_1">
+              <a data-toggle="collapse" data-target="#collapse_1" class="">
                 <i class="icon-control fa fa-chevron-down"></i>
                 <h6 class="title">Categories</h6>
               </a>
@@ -306,7 +220,9 @@ aside .card {
                 </div>
                 <figcaption class="info-wrap">
                   <div class="fix-height">
-                    <a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
+                    <a href="{{ product.get_url }}" class="title">
+                      {{ product.product_name }}
+                    </a>
                     <div class="price-wrap mt-2">
                       <span class="price">{{ product.price }} Tk</span>
                     </div>
@@ -349,5 +265,96 @@ aside .card {
     </div>
   </div>
 </section>
+<style>
+    
+  /* ========== STORE PAGE COLOR THEME (Index.html Styled) ========== */
+
+  /* Top Page Title Section */
+  .section-pagetop.bg {
+      background-color: #fff7ed !important; /* bg-orange-50 */
+      padding: 25px 0;
+  }
+
+  /* Left Filter Panel */
+  .filter-group .card-header {
+      background-color: #fff7ed !important; 
+      border-bottom: 1px solid #ffedd5;
+  }
+
+  .filter-group .title {
+      color: #ea580c; /* text-orange-600 */
+      font-weight: 600;
+  }
+
+  /* Filter Body */
+  .filter-group .card-body a {
+      color: #ea580c;
+  }
+
+  .filter-group .card-body a:hover {
+      color: #c2410c; /* hover:text-orange-800 */
+      background: #fff7ed;
+  }
+
+  /* Price Apply Button */
+  .btn-primary {
+      background-color: #ea580c !important; 
+      border-color: #ea580c !important;
+  }
+  .btn-primary:hover {
+      background-color: #c2410c !important;
+  }
+
+  /* Product Cards */
+  .card-product-grid {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #ffedd5;
+      transition: 0.2s;
+  }
+  .card-product-grid:hover {
+      box-shadow: 0 4px 12px rgba(255,120,40,0.2);
+  }
+
+  /* Product Text */
+  .card-product-grid .title {
+      color: #ea580c !important;
+  }
+  .card-product-grid .price {
+      color: #ea580c !important;
+  }
+
+  /* View Details Button */
+  .btn-block.btn-primary {
+      background-color: #ea580c !important;
+      border-color: #ea580c !important;
+  }
+  .btn-block.btn-primary:hover {
+      background-color: #c2410c !important;
+  }
+
+  /* Pagination */
+  .pagination .page-link {
+      color: #ea580c;
+  }
+  .pagination .active .page-link {
+      background-color: #ea580c !important;
+      border-color: #ea580c !important;
+  }
+
+  /* Filter Panel Card */
+  aside .card {
+      border: 1px solid #ffe4c7;
+      background-color: white !important;
+  }
+
+  /* Section Content Background */
+  .section-content {
+      background-color: #fffaf3; /* very light orange tone */
+  }
+
+  /* Category Navigation (your existing orange theme kept) */
+</style>
+
 
 {% endblock %}

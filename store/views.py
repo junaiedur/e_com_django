@@ -38,21 +38,21 @@ from django.db.models import Q, Min, Max
 def store(request, category_slug=None):
     categories = None
 
-    # সব available প্রোডাক্ট
+    
     products = Product.objects.filter(is_available=True)
 
-    # যদি category থাকে, আগে সেটা দিয়ে ফিল্টার
+    # 
     if category_slug is not None:
         categories = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=categories)
 
-    # ====== ফিল্টার প্যারামিটারগুলো নেওয়া ======
+    # ======  ======
     selected_size = request.GET.get('size')
     selected_color = request.GET.get('color')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
 
-    # size ফিল্টার
+    # size 
     if selected_size:
         products = products.filter(
             variation__variation_category='size',
@@ -60,7 +60,7 @@ def store(request, category_slug=None):
             variation__is_active=True,
         )
 
-    # color ফিল্টার
+    # color 
     if selected_color:
         products = products.filter(
             variation__variation_category='color',
@@ -68,17 +68,15 @@ def store(request, category_slug=None):
             variation__is_active=True,
         )
 
-    # price ফিল্টার
+    # price 
     if min_price:
         products = products.filter(price__gte=min_price)
 
     if max_price:
         products = products.filter(price__lte=max_price)
 
-    # variation থেকে ডুপ্লিকেট প্রোডাক্ট যেন না আসে
     products = products.distinct()
 
-    # ====== সাইডবারে দেখানোর জন্য available size / color লিস্ট ======
     available_sizes = Variation.objects.filter(
         variation_category='size',
         is_active=True,
@@ -91,7 +89,7 @@ def store(request, category_slug=None):
         product__is_available=True,
     ).values_list('variation_value', flat=True).distinct()
 
-    # ====== ডায়নামিক price range (min / max) ======
+    # ====== daynamic price range (min / max) ======
     base_price_qs = Product.objects.filter(is_available=True)
     if category_slug is not None:
         base_price_qs = base_price_qs.filter(category=categories)
@@ -132,6 +130,8 @@ def store(request, category_slug=None):
 
 #search diye kojar jnno use korteci
 def search(request):
+    products = Product.objects.none()   # default empty
+    product_count = 0                   # default count
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
         if keyword:
@@ -159,14 +159,14 @@ def search(request):
 #     else:
 #         order_product = None
 
-#     # 👉 এখানে রিভিউ গুলো নিন
+#
 #     reviews = Review.objects.filter(product_id=single_product.id, status=True).order_by('-created_at')
 
 #     context = {
 #         'single_product': single_product,
 #         'in_cart': in_cart,
 #         'orderproduct': order_product,
-#         'reviews': reviews,   # 👉 টেমপ্লেটে পাঠালাম
+#         'reviews': reviews,   # 
 #     }
 #     return render(request, 'store/product_detail.html', context)
 from django.shortcuts import render, get_object_or_404
@@ -178,20 +178,20 @@ from .models import Product
 
 
 def product_detail(request, category_slug, product_slug):
-    # প্রোডাক্ট না পেলে সরাসরি 404
+
     single_product = get_object_or_404(
         Product,
         category__slug=category_slug,
         slug=product_slug,
     )
 
-    # কার্টে আছে কিনা
+
     in_cart = CartItem.objects.filter(
         cart__cart_id=_cart_id(request),
         product=single_product
     ).exists()
 
-    # এই ইউজার আসলে প্রোডাক্টটা কিনেছে কিনা (তখনই রিভিউ দেওয়ার সুযোগ)
+    
     if request.user.is_authenticated:
         order_product = OrderProduct.objects.filter(
             user=request.user,
@@ -200,7 +200,7 @@ def product_detail(request, category_slug, product_slug):
     else:
         order_product = None
 
-    # এই প্রোডাক্টের অ্যাপ্রুভড রিভিউ তালিকা (নতুনটা আগে)
+
     reviews = Review.objects.filter(
         product=single_product,
         status=True

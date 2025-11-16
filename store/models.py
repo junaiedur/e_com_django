@@ -12,9 +12,12 @@ class Product(models.Model):
     image = models.ImageField(upload_to='photos/products')
     stock = models.IntegerField()
     is_available = models.BooleanField(default=True)
-
+    discount_price = models.IntegerField(null=True, blank=True)  # Flash Sale
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
+    is_featured = models.BooleanField(default=False)  # Admin Feature
+    views = models.IntegerField(default=0)  # Popular Products
+    cart_added = models.IntegerField(default=0)  # Popular Products
 
     def get_url(self):
         return reverse('product_detail', args=[self.category.slug, self.slug])
@@ -45,3 +48,12 @@ class Variation(models.Model):
 
     def __str__(self):
         return self.variation_value
+    
+#sub banner
+class SubBanner(models.Model):
+    title = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(upload_to='banners/')
+    link = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.title

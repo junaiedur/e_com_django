@@ -2,7 +2,7 @@ from urllib import request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Cart, CartItem, Coupon, DeliveryMethod, UsedCoupon
-from store.models import Product , Variation
+from store.models import Product , Variation, SubBanner
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -164,29 +164,59 @@ def remove(request, product_id, cart_item_id):
         pass
     return redirect('cart')
 
-#cupon start#
+# #cupon start#
+# def apply_coupon(request):
+#     if request.method == 'POST':
+#         coupon_code = request.POST.get('code')
+#         try:
+#             coupon = Coupon.objects.get(code=coupon_code, is_active=True)
+#             cart_total = 0
+#             if request.user.is_authenticated:
+#                 cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+#             else:
+#                 cart = Cart.objects.get(cart_id=_cart_id(request))
+#                 cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+            
+#             for item in cart_items:
+#                 cart_total += (item.product.price * item.quantity)
+#             if coupon.is_valid(cart_total):
+#                 request.session['coupon_id'] = coupon.id
+#                 request.session['coupon_code'] = coupon.code
+#                 messages.success(request, 'Coupon applied successfully!')
+#             else:
+#                 messages.error(request, 'Coupon is not valid or has expired.')
+#         except Coupon.DoesNotExist:
+#             messages.error(request, 'Coupon does not exist.')
+#     return redirect('cart')
+
 def apply_coupon(request):
     if request.method == 'POST':
         coupon_code = request.POST.get('code')
         try:
             coupon = Coupon.objects.get(code=coupon_code, is_active=True)
-            cart_total = 0
-            if request.user.is_authenticated:
-                cart_items = CartItem.objects.filter(user=request.user, is_active=True)
-            else:
-                cart = Cart.objects.get(cart_id=_cart_id(request))
-                cart_items = CartItem.objects.filter(cart=cart, is_active=True)
-            
-            for item in cart_items:
-                cart_total += (item.product.price * item.quantity)
-            if coupon.is_valid(cart_total):
-                request.session['coupon_id'] = coupon.id
-                request.session['coupon_code'] = coupon.code
-                messages.success(request, 'Coupon applied successfully!')
-            else:
-                messages.error(request, 'Coupon is not valid or has expired.')
         except Coupon.DoesNotExist:
+            request.session.pop('coupon_id', None)
+            request.session.pop('coupon_code', None)
             messages.error(request, 'Coupon does not exist.')
+            return redirect('cart')
+        
+         # Cart items collect 
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:
+            cart, created = Cart.objects.get_or_create(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        cart_total = sum([item.product.price * item.quantity for item in cart_items])
+
+        if coupon.is_valid(cart_total):
+            request.session['coupon_id'] = coupon.id
+            request.session['coupon_code'] = coupon.code
+            messages.success(request, 'Coupon applied successfully!')
+        else:
+            # Invalid হলে session থেকে remove
+            request.session.pop('coupon_id', None)
+            request.session.pop('coupon_code', None)
+            messages.error(request, 'Coupon is not valid or has expired.')
     return redirect('cart')
 
 
@@ -229,8 +259,12 @@ def cart(request, total=0, quantity=0, cart_items=None):
                 coupon = Coupon.objects.get(id=coupon_id)
                 if coupon.is_valid(total):
                     discount_amount = coupon.get_discount_amount(total)
+                else:
+                    request.session.pop('coupon_id', None)
+                    request.session.pop('coupon_code', None)
             except Coupon.DoesNotExist:
-                discount_amount = 0
+                request.session.pop('coupon_id', None)
+                request.session.pop('coupon_code', None)
 # Calculate delivery charge (you can implement more complex logic)
         delivery_method_id = request.session.get('delivery_method_id')
         delivery_methods = DeliveryMethod.objects.filter(is_active=True)
@@ -313,8 +347,13 @@ def checkout(request, total=0, quantity=0, cart_items=None):
                 coupon = Coupon.objects.get(id=coupon_id)
                 if coupon.is_valid(total):
                     discount_amount = coupon.get_discount_amount(total)
+                else:
+                    # Invalid হলে session থেকে remove
+                    request.session.pop('coupon_id', None)
+                    request.session.pop('coupon_code', None)
             except Coupon.DoesNotExist:
-                discount_amount = 0
+                request.session.pop('coupon_id', None)
+                request.session.pop('coupon_code', None)
 
 
         delivery_method_id = request.session.get('delivery_method_id')
@@ -387,3 +426,37 @@ def select_delivery_method(request):
             except DeliveryMethod.DoesNotExist:
                 pass
     return redirect('cart')
+
+from store.models import Product
+
+def home(request):
+    featured_products = Product.objects.filter(is_available=True).order_by('-created_date')[:8]
+
+    # Popular products
+    products = Product.objects.filter(is_available=True).order_by('?')[:8]
+    # Sub banners
+    sub_banners = SubBanner.objects.all()[:3]
+
+    # Flash sale
+    flash_sale = Product.objects.filter(discount_price__isnull=False).order_by('-created_date')[:8]
+
+    # Best deals (cheapest items)
+    best_deals = Product.objects.filter(is_available=True).order_by('price')[:8]
+
+    # Trending products (most viewed)
+    trending = Product.objects.filter(is_available=True).order_by('-views')[:8]
+
+    # Popular categories
+    from category.models import Category
+    popular_categories = Category.objects.all()[:6]
+
+    context = {
+        'featured_products': featured_products,
+        'products': products,
+        'sub_banners': sub_banners,
+        'flash_sale': flash_sale,
+        'best_deals': best_deals,
+        'trending': trending,
+        'popular_categories': popular_categories
+    }
+    return render(request, 'index.html', context)
