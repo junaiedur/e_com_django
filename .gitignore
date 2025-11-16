@@ -143,6 +143,7 @@ venv.bak/
 node_modules/
 package-lock.json
 package.json
+e_com/settings.py
 
 # Spyder project settings
 .spyderproject
