@@ -79,8 +79,32 @@ INSTALLED_APPS = [
     'payment',
     'ckeditor',
     'ckeditor_uploader',
+    'social_django'
   
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1087000889936-vabi7r29me5vsogj1n4e1squjppjh3kl.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',  # Google auto creates user
+    'accounts.pipeline.activate_user', # Custom pipeline to activate user
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -107,7 +131,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'category.context_processors.menu_links',
                 'carts.context_processors.counter',
-
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -125,7 +150,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'e_com_projects',
         'USER': 'root',
-        'PASSWORD':'SaaDik@410',
+        'PASSWORD':'',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -208,7 +233,17 @@ EMAIL_HOST_USER = 'sadikislam410@gmail.com'  # Your Gmail email address
 EMAIL_HOST_PASSWORD = 'mwen usnp gcjj szlg' #Use the App Password generated whice create in google account 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# For Social Auth and Normal Login Redirects
+LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_LOGIN_URL = '/account/login/'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/account/login/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/account/home/'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+
+
 
 #castomize admin pannel:
 # Add this at the end
