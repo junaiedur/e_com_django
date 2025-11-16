@@ -102,16 +102,9 @@
 <!-- =======================
      BEST DEALS SECTION
 ======================= -->
-<div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
-    {% for product in best_deals %}
-      <div class="bg-white shadow rounded-xl p-3">
-        <a href="{{ product.get_url }}">
-
-            <img src="{{ product.image.url }}" class="h-48 w-full object-cover rounded-lg">
-        </a>
-        <p class="text-orange-600 font-bold mt-2">{{ product.price }} TK</p>
-      </div>
-    {% endfor %}
+<div class="flex justify-between items-center mt-10">
+    <h2 class="text-xl font-bold text-orange-600">Best Deals</h2>
+    <a href="{% url 'best_deals' %}" class="text-orange-600 hover:text-orange-800 text-sm">View More →</a>
 </div>
 
 

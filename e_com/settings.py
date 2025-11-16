@@ -79,6 +79,9 @@ INSTALLED_APPS = [
     'payment',
     'ckeditor',
     'ckeditor_uploader',
+    'bestdeal',
+    'flashsale',
+
   
 ]
 
@@ -130,6 +133,13 @@ DATABASES = {
         'PORT': '3306',
     }
 } 
+
+
+# Project name 
+# Django ecom
+# Project ID 
+# django-ecom-478422
+# Project ID can have lowercase letters, digits, or hyphens. It must start with a lowercase letter and end with a letter or number.
 #mysql pass: SaaDik@410
 # (env) C:\Users\SADIK\e_com>python manage.py createsuperuser
 # Email: sadikslam410@gmail.com
@@ -203,7 +213,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Port 587 is used for TLS
 EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False # EMAIL_USE_TLS True হলে এটি False হবে
+EMAIL_USE_SSL = False 
 EMAIL_HOST_USER = 'sadikislam410@gmail.com'  # Your Gmail email address
 EMAIL_HOST_PASSWORD = 'mwen usnp gcjj szlg' #Use the App Password generated whice create in google account 
 
@@ -229,11 +239,21 @@ COMPANY_INFO = {
     "website": "https://yourcompany.com",
     "tin": "1234567890",
     "vat": "9876543210",
-    # লোগো: স্ট্যাটিক/মিডিয়া URL – WeasyPrint ব্যবহার করলে অ্যাবসোলিউট URL সবচেয়ে ভালো
+
     "logo_url": "https://yourcdn.com/static/img/logo.png",
-    # ফুটার নোটস
-    "return_policy": "ডেলিভারির ৭ দিনের মধ্যে আন-ইউজড পণ্য রিটার্ন করা যাবে।",
-    "warranty": "ইলেকট্রনিক্স পণ্যে ১ বছর অফিসিয়াল ওয়ারেন্টি।",
-    "note": "ইনভয়েস ছাড়া কোনো সার্ভিস বা রিটার্ন প্রযোজ্য হবে না।",
+    "return_policy": "Return Product in & days",
+    "warranty": "Electronics Product 1 year warrenty",
+    "note": "without Invoice you won't provide Services",
 }
-# (যদি আগেই থাকে) USE_WEASY = True  # WeasyPrint থাকলে সুন্দর পেজ নাম্বার/টাইপোগ্রাফি
+
+# using for email login:
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1050442585736-vvjh3l5p3i18gr0df8fl9il11j93i9s2.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'

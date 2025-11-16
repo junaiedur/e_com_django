@@ -12,6 +12,7 @@ from django.utils import timezone
 from order.models import Order, OrderProduct
 from reviews.models import Review
 from django.db.models import Q, Min, Max 
+from bestdeal.views import best_deals
 # Create your views here.
 # def store(request, category_slug=None):
 #     categories = None

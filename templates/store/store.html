@@ -5,63 +5,18 @@
 
 <!-- ========================= CATEGORY_J TOP UI (Merged) ========================= -->
 
-<!-- Mobile Buttons -->
-<div class="lg:hidden w-full bg-orange-50 py-2">
-  <div class="max-w-[1320px] mx-auto px-4 grid grid-cols-2 gap-3">
-    <a href="#" class="flex items-center justify-center bg-white text-orange-600 font-semibold text-sm py-3 rounded-lg shadow hover:bg-orange-100 transition">
-      <img src="{% static 'images/bestdeals.png' %}" class="h-4 w-4 mr-2" />
-      Best Deals
+<div class="flex space-x-6 items-center text-orange-600 text-xs font-semibold">
+  <a href="{% url 'best_deals' %}" class="flex items-center hover:text-orange-800">
+
+    <img src="{% static 'images/bestdeals.png' %}" class="h-4 w-4 mr-1" />
+       Best Deals
     </a>
 
-    <a href="#" class="flex items-center justify-center bg-white text-orange-600 font-semibold text-sm py-3 rounded-lg shadow hover:bg-orange-100 transition">
-      <img src="{% static 'images/flashsale.png' %}" class="h-4 w-4 mr-2" />
+    <a href="{% url 'best_deals' %}" class="flex items-center hover:text-orange-800">
+
+      <img src="{% static 'images/flashsale.png' %}" class="h-4 w-4 mr-1" />
       Flash Sale
     </a>
-  </div>
-</div>
-
-<!-- Desktop Category Nav -->
-<div class="sticky top-[60px] z-40 bg-orange-50 h-12 bottomnav-animate hidden lg:block">
-  <div class="max-w-[1320px] mx-auto h-full flex items-center justify-between">
-
-    <div class="flex space-x-6 text-orange-600 text-xs font-semibold">
-      <!-- Men -->
-      <div class="relative group cursor-pointer">
-        <span class="hover:text-orange-800 transition">Men</span>
-        <div class="dropdown-menu absolute left-0 top-full bg-white shadow-lg rounded-md mt-2 p-3 w-48 opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
-          <ul class="space-y-2 text-gray-700 text-xs">
-            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600">T-Shirts</a></li>
-            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600">Jeans</a></li>
-            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600">Jackets</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Women -->
-      <div class="relative group cursor-pointer">
-        <span class="hover:text-orange-800 transition">Women</span>
-        <div class="dropdown-menu absolute left-0 top-full bg-white shadow-lg rounded-md mt-2 p-3 w-48 opacity-0 invisible transition-all duration-200 group-hover:opacity-100 group-hover:visible">
-          <ul class="space-y-2 text-gray-700 text-xs">
-            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600">Dresses</a></li>
-            <li><a href="#" class="block px-2 py-1 rounded hover:bg-orange-50 hover:text-orange-600">Tops</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex space-x-6 items-center text-orange-600 text-xs font-semibold">
-      <a href="#" class="flex items-center hover:text-orange-800">
-        <img src="{% static 'images/bestdeals.png' %}" class="h-4 w-4 mr-1" />
-        Best Deals
-      </a>
-
-      <a href="#" class="flex items-center hover:text-orange-800">
-        <img src="{% static 'images/flashsale.png' %}" class="h-4 w-4 mr-1" />
-        Flash Sale
-      </a>
-    </div>
-
-  </div>
 </div>
 
 <style>
