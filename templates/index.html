@@ -22,14 +22,12 @@
         </div>
         
 
-        <div class="absolute top-1/2 left-6 -translate-y-1/2 text-white max-w-md drop-shadow-xl">
-            <h1 class="text-3xl sm:text-5xl font-bold mb-3">Welcome to Mart</h1>
-            <p class="text-lg mb-5">Discover amazing products at unbeatable prices</p>
-            <a href="{% url 'store' %}" 
-               class="bg-orange-600 hover:bg-orange-700 px-5 py-2 rounded-lg font-semibold shadow">
+        <!-- <div class="absolute top-1/2 left-6 -translate-y-1/2 text-white max-w-md drop-shadow-xl">
+            
+            <a href="{% url 'store' %}" class="bg-orange-600 hover:bg-orange-700 px-5 py-2 rounded-lg font-semibold shadow">
                 Shop Now
             </a>
-        </div>
+        </div> -->
     </div>
 </section>
 
@@ -40,9 +38,7 @@
 ======================= -->
 <div class="max-w-[1320px] mx-auto px-4 mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
     {% for banner in sub_banners %}
-      <a href="{{ banner.link }}">
-        <img src="{{ banner.image.url }}" class="w-full h-40 object-cover rounded-lg shadow" />
-      </a>
+      <img src="{{ banner.image.url }}" class="w-full h-40 object-cover rounded-lg shadow" />
     {% endfor %}
 </div>
 
