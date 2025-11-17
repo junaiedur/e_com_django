@@ -267,6 +267,12 @@ aside .card {
                     </div>
                   </div>
                   <a href="{{ product.get_url }}" class="btn btn-block btn-primary">View Details</a>
+                  <!-- ⭐ Add to Cart + Wishlist Button (Insert Here) -->
+                  <div class="flex justify-between items-center mt-2">
+                    <a href="{% url 'add_cart' product.id %}" class="bg-orange-600 hover:bg-orange-700 text-white text-sm px-4 py-1 rounded-full">Add</a>
+                    <!-- Add to Wishlist -->
+                    <a href="{% url 'add_wishlist' product.id %}" class="text-red-500 hover:text-red-700 text-xl ml-3">❤️</a>
+                  </div>
                 </figcaption>
               </figure>
             </div>

@@ -1,18 +1,13 @@
 from django.db import models
-
-# Create your models here.
+from store.models import Product
 
 class BestDeal(models.Model):
-    product = models.ForeignKey('store.Product', on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    subtitle = models.CharField(max_length=200, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    subtitle = models.CharField(max_length=255, blank=True)
     discount_percentage = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
-    display_order = models.IntegerField(default=0)
-    created_date = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        ordering = ['display_order', '-created_date']
-    
+    display_order = models.PositiveIntegerField(default=0)
+
     def __str__(self):
         return self.title

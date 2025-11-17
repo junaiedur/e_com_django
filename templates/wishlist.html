@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Your Wishlist | Kinbo Shop{% endblock %}
+{% block content %}
+
+<section class="min-h-screen bg-orange-50 py-10 px-4">
+  <div class="max-w-[1320px] mx-auto">
+
+    <h1 class="text-3xl font-semibold text-gray-800 text-center">Your Wishlist</h1>
+
+    {% if items %}
+    <!-- Select All (optional UI) -->
+    <div class="flex items-center justify-between mb-6 mt-6">
+      <div class="flex items-center gap-3">
+        <input id="selectAll" type="checkbox" class="h-5 w-5 accent-orange-600">
+        <label for="selectAll" class="text-gray-800 font-medium cursor-pointer">Select All</label>
+      </div>
+    </div>
+
+    <div id="wishlistItems" class="space-y-6">
+
+      {% for item in items %}
+      <div class="wl-item bg-white rounded-xl shadow overflow-hidden sm:flex sm:items-center"
+           data-id="{{ item.id }}" data-price="{{ item.product.price }}">
+
+        <!-- Select -->
+        <div class="p-4 sm:pl-5">
+          <input type="checkbox" class="select-item h-5 w-5 accent-orange-600">
+        </div>
+
+        <!-- Product Image -->
+        <div class="p-4">
+          <img src="{{ item.product.image.url }}" 
+               class="w-full sm:w-40 h-48 sm:h-40 object-cover rounded-lg">
+        </div>
+
+        <!-- Details -->
+        <div class="p-5 flex-1">
+          <div class="flex justify-between items-start flex-wrap gap-2">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-800">{{ item.product.product_name }}</h2>
+              <p class="text-sm text-gray-500">{{ item.product.category.category_name }}</p>
+            </div>
+
+            <div class="text-right">
+              <p class="text-sm text-gray-500">Price</p>
+              <p class="text-lg font-semibold text-gray-800">
+                ৳ <span class="unit-price">{{ item.product.price }}</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="mt-4 flex flex-wrap justify-between items-center gap-4 border-t border-gray-100 pt-4">
+
+            <a href="{% url 'add_cart' item.product.id %}" class="bg-orange-600 text-white px-4 py-2 rounded-md font-medium hover:scale-105 transition">
+              Add to Cart
+            </a>
+
+            <a href="{% url 'remove_wishlist' item.product.id %}" 
+               class="flex items-center gap-2 text-red-600 hover:text-red-700 transition">
+              <img src="{% static 'images/remove.png' %}" class="w-4 h-4">
+              <span class="text-sm font-medium">Remove</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+
+    {% else %}
+    <!-- Empty -->
+    <div class="flex flex-col items-center justify-center py-24 text-gray-700">
+      <p class="text-xl font-medium mb-6 text-center">Your wishlist is empty ❤️</p>
+      <a href="/store/" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:scale-105 transition">
+        Shop Now
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

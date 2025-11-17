@@ -1,66 +1,56 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Flash Sale | Kinbo Shop{% endblock %}
-{% block footer %}{% endblock %}
+
 {% block content %}
-
-<!-- ===========================
-     TOP BANNER HOLDER
-=========================== -->
-<div class="w-full bg-orange-50 py-6">
-    <div class="max-w-[1320px] mx-auto" style="padding-left: 16px;padding-right: 16px;">
-        
-        <!-- Responsive Flash Sale Banner -->
-        <img src="{% static 'images/flashsales.jpg' %}" 
-             alt="Flash Sale Banner"
-             class="w-full h-40 sm:h-52 md:h-60 lg:h-80 object-cover rounded-lg" />
-
+  <div class="w-full bg-orange-50 py-6">
+    <div class="max-w-[1320px] mx-auto px-4">
+        <img src="{% static 'images/flashsales.jpg' %}" class="w-full h-48 md:h-72 object-cover rounded-xl" />
     </div>
-</div>
+  </div>
+  <div class="max-w-[1320px] mx-auto mt-6 px-4">
+    <h1 class="text-3xl font-bold text-orange-600 mb-4">Flash Sale</h1>
+  </div>
+  <div class="max-w-[1320px] mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+    {% for item in sales %}
+      <div class="bg-white shadow-lg rounded-xl p-3 hover:shadow-xl transition">
+        <a href="{{ item.product.get_url }}">
+            <img src="{{ item.product.image.url }}" class="h-48 w-full object-cover rounded-lg">
+        </a>
+        <h3 class="mt-2 font-semibold text-gray-700">
 
-<!-- ==== PAGE TITLE + COUNTDOWN TIMER === -->
-<div class="max-w-[1320px] mx-auto mt-8 px-4">
-    <div class="flex items-center justify-between">
-        <!-- LEFT: Flash Sale Title -->
-        <h1 class="text-2xl font-bold text-orange-600">
-            Flash Sale
-        </h1>
-        <!-- RIGHT: Countdown Timer -->
-        <div class="text-lg font-semibold text-red-600 bg-red-100 px-4 py-1 rounded-lg" id="countdown-timer">
-            60:00
-        </div>
-    </div>
-</div>
+            {{ item.product.product_name }}
+        </h3>
 
-<!-- ===========================
-     DISCOUNT CARDS SECTION
-=========================== -->
-<div class="mt-6">
-    {% include 'discount_card.html' %}
-</div>
+        <p class="mt-1 text-orange-600 font-bold text-xl">
 
-<!-- ===========================
-     COUNTDOWN TIMER SCRIPT
-=========================== -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    let totalSeconds = 60 * 60; // 60 minutes
+            {{ item.discount_price }} TK
+            <del class="text-gray-500 text-sm">{{ item.product.price }} TK</del>
+        </p>
 
-    function updateTimer() {
-        let minutes = Math.floor(totalSeconds / 60);
-        let seconds = totalSeconds % 60;
+        <a href="{% url 'add_cart' item.product.id %}" class="block text-center bg-orange-600 text-white py-2 rounded-lg mt-2">Add to Cart</a>
 
-        document.getElementById("countdown-timer").textContent =
-            `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      </div>
+    {% endfor %}
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let totalSeconds = 60 * 60; // 60 minutes
 
-        if (totalSeconds > 0) {
-            totalSeconds--;
+        function updateTimer() {
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            document.getElementById("countdown-timer").textContent =
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            if (totalSeconds > 0) {
+                totalSeconds--;
+            }
         }
-    }
 
-    updateTimer(); // initial load
-    setInterval(updateTimer, 1000);
-});
-</script>
+        updateTimer(); // initial load
+        setInterval(updateTimer, 1000);
+    });
+  </script>
+{% endblock %}
 
-{% endblock content %}

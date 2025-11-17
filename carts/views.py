@@ -12,7 +12,8 @@ from django.utils import timezone
 from django.conf import settings
 # Import your models and forms
 from accounts.models import Account
-
+from category.models import Category
+from bestdeal.models import BestDeal
 # Helper function to get or create a unique cart ID for sessions
 def _cart_id(request):
     cart = request.session.session_key
@@ -430,33 +431,24 @@ def select_delivery_method(request):
 from store.models import Product
 
 def home(request):
-    featured_products = Product.objects.filter(is_available=True).order_by('-created_date')[:8]
+    featured_products = Product.objects.filter(is_featured=True, is_available=True)[:8]
+    flash_sale = Product.objects.filter(discount_price__isnull=False, is_available=True)[:4]
+    trending = Product.objects.filter(views__gt=10).order_by('-views')[:8]
 
-    # Popular products
-    products = Product.objects.filter(is_available=True).order_by('?')[:8]
-    # Sub banners
-    sub_banners = SubBanner.objects.all()[:3]
-
-    # Flash sale
-    flash_sale = Product.objects.filter(discount_price__isnull=False).order_by('-created_date')[:8]
-
-    # Best deals (cheapest items)
-    best_deals = Product.objects.filter(is_available=True).order_by('price')[:8]
-
-    # Trending products (most viewed)
-    trending = Product.objects.filter(is_available=True).order_by('-views')[:8]
-
-    # Popular categories
-    from category.models import Category
-    popular_categories = Category.objects.all()[:6]
+    # Best Deals (Dynamic)
+    best_deals = BestDeal.objects.filter(is_active=True).select_related("product").order_by("display_order")
+    best_deal_products = [deal.product for deal in best_deals]
 
     context = {
-        'featured_products': featured_products,
-        'products': products,
-        'sub_banners': sub_banners,
-        'flash_sale': flash_sale,
-        'best_deals': best_deals,
-        'trending': trending,
-        'popular_categories': popular_categories
+        "featured_products": featured_products,
+        "sub_banners": SubBanner.objects.all(),
+        "flash_sale": flash_sale,
+        "trending": trending,
+        "popular_categories": Category.objects.all(),
+
+        # Best Deals
+        "best_deals": best_deals,
+        "best_deal_products": best_deal_products,
     }
-    return render(request, 'index.html', context)
+
+    return render(request, "index.html", context)

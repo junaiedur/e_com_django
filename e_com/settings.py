@@ -15,10 +15,11 @@ import os
 # ai line ta ami gimini theke copy koira marci
 import environ
 env = environ.Env(DEBUG=(bool, False))
-# django-environ সেটআপ
+# django-environ
 env = environ.Env(
     DEBUG=(bool, False)
 )
+
 USE_WEASY = True
 # environ.Env.read_env() # read in .env 
 
@@ -79,13 +80,10 @@ INSTALLED_APPS = [
     'payment',
     'ckeditor',
     'ckeditor_uploader',
-<<<<<<< HEAD
     'bestdeal',
     'flashsale',
+    'wishlist',
 
-=======
-    'social_django'
->>>>>>> c0daccab1cc38d897fc9d768899d3c06278397b8
   
 ]
 
@@ -139,6 +137,7 @@ TEMPLATES = [
                 'carts.context_processors.counter',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
+                'wishlist.context_processors.wishlist_count',
             ],
         },
     },
@@ -156,7 +155,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'e_com_projects',
         'USER': 'root',
-        'PASSWORD':'',
+        'PASSWORD':'SaaDik@410',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -285,13 +284,13 @@ COMPANY_INFO = {
 }
 
 # using for email login:
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
+# AUTHENTICATION_BACKENDS = (
+#     'social_core.backends.google.GoogleOAuth2',
+#     'django.contrib.auth.backends.ModelBackend',
+# )
 
-LOGIN_REDIRECT_URL = 'dashboard'
-LOGOUT_REDIRECT_URL = 'login'
+# LOGIN_REDIRECT_URL = 'dashboard'
+# LOGOUT_REDIRECT_URL = 'login'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1050442585736-vvjh3l5p3i18gr0df8fl9il11j93i9s2.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1050442585736-vvjh3l5p3i18gr0df8fl9il11j93i9s2.apps.googleusercontent.com'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'

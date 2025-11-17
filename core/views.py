@@ -2,11 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from store.models import Product
 
+from store.models import SubBanner
 
-# Create your views here.
+from store.models import SubBanner
+
 def home(request):
-    products = Product.objects.all().filter(is_available=True) 
+    sub_banners = SubBanner.objects.all()
+
     context = {
-        'products': products,
+        'sub_banners': sub_banners,
     }
     return render(request, 'index.html', context)

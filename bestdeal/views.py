@@ -1,18 +1,21 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from .models import BestDeal
 from store.models import Product
-# Create your views here.
+from category.models import Category
 
 def best_deals(request):
-    best_deals = BestDeal.objects.filter(is_active=True)
+    deals = BestDeal.objects.filter(is_active=True).select_related("product").order_by("display_order")
     
-    best_deal_products = Product.objects.filter(
-        id__in=best_deals.values_list('product_id', flat=True),
+    products = Product.objects.filter(
+        id__in=deals.values_list("product_id", flat=True),
         is_available=True
     )
-    
+      # For easy matching in template
+    deal_map = {deal.product_id: deal for deal in deals}
     context = {
-        'best_deals': best_deals,
-        'best_deal_products': best_deal_products,
+         "best_deal_products": products,
+        "deal_map": deal_map,
+        "popular_categories": Category.objects.all(),
     }
-    return render(request, 'bestdeals.html', context)
+
+    return render(request, "sale/bestdeals.html", context)
