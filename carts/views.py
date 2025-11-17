@@ -429,16 +429,20 @@ def select_delivery_method(request):
     return redirect('cart')
 
 from store.models import Product
+from bestdeal.models import BestDeal
 
 def home(request):
     featured_products = Product.objects.filter(is_featured=True, is_available=True)[:8]
-    flash_sale = Product.objects.filter(discount_price__isnull=False, is_available=True)[:4]
+    flash_sale = Product.objects.filter(discount_price__isnull=False, is_available=True)
     trending = Product.objects.filter(views__gt=10).order_by('-views')[:8]
 
     # Best Deals (Dynamic)
-    best_deals = BestDeal.objects.filter(is_active=True).select_related("product").order_by("display_order")
+    # best_deals = BestDeal.objects.filter(is_active=True).select_related("product").order_by("display_order")
+    # best_deal_products = [deal.product for deal in best_deals]
+    from bestdeal.models import BestDeal
+    best_deals = BestDeal.objects.filter(is_active=True)
     best_deal_products = [deal.product for deal in best_deals]
-
+    
     context = {
         "featured_products": featured_products,
         "sub_banners": SubBanner.objects.all(),
