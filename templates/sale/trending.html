@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Trending | Kinbo Shop{% endblock %}
+{% block footer %}{% endblock %}
+{% block content %}
+
+<!-- ===========================
+     TOP BANNER HOLDER
+=========================== -->
+<div class="w-full bg-orange-50 py-6">
+    <div class="max-w-[1320px] mx-auto" style="padding-left: 16px;padding-right: 16px;">
+        
+        <!-- Responsive Banner Image -->
+        <img src="{% static 'images/trending.jpg' %}" 
+             alt="Trending Banner"
+             class="w-full h-40 sm:h-52 md:h-60 lg:h-80 object-cover rounded-lg" />
+
+    </div>
+</div>
+
+
+<!-- ===========================
+     PAGE TITLE
+=========================== -->
+<div class="max-w-[1320px] mx-auto mt-8 px-4">
+    <h1 class="text-2xl font-bold text-orange-600">
+        Best Deals
+    </h1>
+</div>
+
+
+<!-- ===========================
+     CARDS SECTION
+     (Uses existing card file)
+=========================== -->
+<div class="mt-6">
+    {% include 'card.html' %}
+</div>
+
+{% endblock content %}

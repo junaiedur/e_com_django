@@ -1,12 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from store.models import Product
+from bestdeal.models import BestDeal 
 
+from store.models import SubBanner
 
-# Create your views here.
+from store.models import SubBanner
+
 def home(request):
-    products = Product.objects.all().filter(is_available=True) 
+    sub_banners = SubBanner.objects.all()
+    best_deals = BestDeal.objects.filter(is_active=True)
+    best_deal_products = [deal.product for deal in best_deals]
+
     context = {
-        'products': products,
+        'sub_banners': sub_banners,
     }
     return render(request, 'index.html', context)

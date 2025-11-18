@@ -56,9 +56,15 @@
              role="menu" aria-label="User menu">
           <!-- NOTE: Using static HTML links for now so it works without backend routes. Replace with later. -->
           <a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Profile </a>
-          <a href="/wishlist.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Your Wishlist</a>
-          <a href="/order.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Order History</a>
-          <a href="/returns.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Product Return</a>
+          <a href="{% url 'wishlist' %}" class="block px-4 py-2 hover:bg-orange-50 flex justify-between" role="menuitem">
+            <span>Your Wishlist</span>
+            {% if wishlist_count > 0 %}
+              <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold h-5 w-5 flex items-center justify-center rounded-full">{{ wishlist_count }}</span>
+            {% endif %}
+          </a>
+            
+          <!--<a href="/order.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Order History</a>
+          <a href="/returns.html" class="block px-4 py-2 hover:bg-orange-50" role="menuitem">Product Return</a> -->
           <div class="my-1 h-px bg-gray-100"></div>
           <!-- update Logout url-->
           <a href="{% url 'logout' %}" class="block px-4 py-2 hover:bg-orange-50 text-red-600 font-medium" role="menuitem">Logout</a>
