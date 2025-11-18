@@ -3,9 +3,9 @@
 
 {% block content %}
 
-<!-- ========================= CATEGORY_J TOP UI (Merged) ========================= -->
+<!-- ========================= CATEGORY_J TOP UI (Merged) ========================= --> 
 
-<div class="flex space-x-6 items-center text-orange-600 text-xs font-semibold">
+<div class="flex space-x-6 items-center text-orange-600 text- font-semibold">
   <a href="{% url 'best_deals' %}" class="flex items-center hover:text-orange-800">
 
     <img src="{% static 'images/bestdeals.png' %}" class="h-4 w-4 mr-1" />
@@ -120,9 +120,9 @@ aside .card {
 <section class="section-pagetop bg">
   <div class="container">
     {% if 'search' in request.path %}
-      <h2 class="title-page">Search Page</h2>
+      <h2 class="title-page text-center">Search Page</h2>
     {% else %}
-      <h2 class="title-page">Our Store</h2>
+      <h2 class="title-page text-center">Our Store</h2>
     {% endif %}
   </div>
 </section>
